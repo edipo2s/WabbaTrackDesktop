@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage
  */
 object Recognition {
 
-    const val PHASH_SIZE = 10
+    const val PHASH_SIZE = 16
 
     fun recognize(image: BufferedImage): String {
         val dHash = calcDHash(image)
@@ -15,7 +15,7 @@ object Recognition {
         var lessDistance = Int.MAX_VALUE
         CardsDHash.CARDS_DHASH.forEach {
             val dHashDistance = calcDHashDistance(dHash, it.value)
-            Logger.d(" -- $dHashDistance from ${it.key}")
+//            Logger.d(" -- $dHashDistance from ${it.key}")
             if (dHashDistance < lessDistance) {
                 cardShortName = it.key
                 lessDistance = dHashDistance

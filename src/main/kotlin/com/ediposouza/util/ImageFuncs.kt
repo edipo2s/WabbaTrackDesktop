@@ -13,28 +13,17 @@ import javax.imageio.ImageIO
  */
 object ImageFuncs {
 
-    const val ARENA_PICK_CARD_HEIGHT = 183
-    const val ARENA_PICK_CARD_WIDTH = 150
-    const val ARENA_PICK_CARD_START_Y = 147
+    const val ARENA_PICK_CARD_HEIGHT = 155
+    const val ARENA_PICK_CARD_WIDTH = 118
+    const val ARENA_PICK_CARD_START_Y = 152
+    const val ARENA_PICK_CARD_FIRST_X = 284
+    const val ARENA_PICK_CARD_SECOND_X = 513
+    const val ARENA_PICK_CARD_THIRD_X = 740
 
-    const val ARENA_PICK_FIRST_CARD_X = 268
-    const val ARENA_PICK_SECOND_CARD_X = 495
-    const val ARENA_PICK_THIRD_CARD_X = 724
-
-    const val FULL_CARD_HEIGHT = 320
-    const val FULL_CARD_WIDTH = 215
-    const val FULL_CARD_START_X = 78
-    const val FULL_CARD_START_Y = 98
-
-    fun takeScreenshot(): BufferedImage? {
-        try {
-            val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
-            return Robot().createScreenCapture(screenRect)
-        } catch (e: Exception) {
-            Logger.e(e)
-            return null
-        }
-    }
+    const val FULL_CARD_HEIGHT = 275
+    const val FULL_CARD_WIDTH = 212
+    const val FULL_CARD_START_X = 80
+    const val FULL_CARD_START_Y = 100
 
     fun getCardImage(fileName: String): BufferedImage? {
         try {
@@ -60,11 +49,21 @@ object ImageFuncs {
 
     fun getArenaPickImage(image: BufferedImage, position: Int): BufferedImage {
         val cardX = when(position) {
-            1 -> ARENA_PICK_FIRST_CARD_X
-            2 -> ARENA_PICK_SECOND_CARD_X
-            else -> ARENA_PICK_THIRD_CARD_X
+            1 -> ARENA_PICK_CARD_FIRST_X
+            2 -> ARENA_PICK_CARD_SECOND_X
+            else -> ARENA_PICK_CARD_THIRD_X
         }
         return image.getSubimage(cardX, ARENA_PICK_CARD_START_Y, ARENA_PICK_CARD_WIDTH, ARENA_PICK_CARD_HEIGHT)
+    }
+
+    fun takeScreenshot(): BufferedImage? {
+        try {
+            val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
+            return Robot().createScreenCapture(screenRect)
+        } catch (e: Exception) {
+            Logger.e(e)
+            return null
+        }
     }
 
 }
