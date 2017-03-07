@@ -12,30 +12,40 @@ import javax.imageio.ImageIO
  */
 object Main {
 
+    const val SCREENSHOT_DELAY: Long = 2_000
+
+    var lastScreenshotDHash = ""
+
     @JvmStatic fun main(args: Array<String>) {
-        testArenaPick()
+        while(true) {
+            Thread.sleep(SCREENSHOT_DELAY)
+            ImageFuncs.takeScreenshot()?.apply {
+                val screenshotDHash = Recognition.calcDHash(this)
+                if (screenshotDHash == lastScreenshotDHash) {
+                    Logger.d("Waiting..")
+                } else {
+                    lastScreenshotDHash = screenshotDHash
+                    recognizeArenaPick(this)
+                }
+            }
+        }
     }
 
     private fun testArenaPick() {
         val image = ImageIO.read(javaClass.getResource("/Test/Pick.png"))
-        recognize(ImageFuncs.getArenaPickImage(image, 1))
-        recognize(ImageFuncs.getArenaPickImage(image, 2))
-        recognize(ImageFuncs.getArenaPickImage(image, 3))
+        recognizeArenaPick(image)
     }
 
-    private fun recognize(image: BufferedImage) {
-        ImageIO.write(image, "png", File("src/main/resources/Test/Tmp/recognize_${System.currentTimeMillis()}.png"))
-        Logger.d(Recognition.recognize(image))
+    private fun recognizeArenaPick(image: BufferedImage) {
+        recognizeCard(ImageFuncs.getArenaPickImage(image, 1))
+        recognizeCard(ImageFuncs.getArenaPickImage(image, 2))
+        recognizeCard(ImageFuncs.getArenaPickImage(image, 3))
     }
 
-    private fun saveScreenshot() {
-        val screenFullImage = ImageFuncs.takeScreenshot()
-        if (screenFullImage != null) {
-            val grayscale = ImageFuncs.toGrayscale(screenFullImage)
-            Logger.d(grayscale.toString())
-            ImageIO.write(grayscale, "jpg", File("Screenshot.jpg"))
-            println("A full screenshot saved!")
-        }
+    private fun recognizeCard(cardImage: BufferedImage) {
+        val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
+        ImageIO.write(cardImage, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
+        Logger.d(Recognition.recognizeDHash(Recognition.calcDHash(cardImage)))
     }
 
 }

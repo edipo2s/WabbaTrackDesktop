@@ -9,8 +9,7 @@ object Recognition {
 
     const val PHASH_SIZE = 16
 
-    fun recognize(image: BufferedImage): String {
-        val dHash = calcDHash(image)
+    fun recognizeDHash(dHash: String): String {
         var cardShortName = ""
         var lessDistance = Int.MAX_VALUE
         CardsDHash.CARDS_DHASH.forEach {
