@@ -1,6 +1,8 @@
 package com.ediposouza.util
 
+import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
+import java.awt.image.ColorConvertOp
 
 /**
  * Created by ediposouza on 06/03/17.
@@ -9,12 +11,15 @@ object Recognition {
 
     const val PHASH_SIZE = 16
 
-    fun recognizeDHash(dHash: String): String {
+    fun recognizeCardDHash(dHash: String): String {
+        return recognizeDHashInMap(dHash, CardsDHash.CARDS_DHASH)
+    }
+
+    fun recognizeDHashInMap(dHash: String, dHashMap: Map<String, String>): String {
         var cardShortName = ""
         var lessDistance = Int.MAX_VALUE
-        CardsDHash.CARDS_DHASH.forEach {
+        dHashMap.forEach {
             val dHashDistance = calcDHashDistance(dHash, it.value)
-//            Logger.d(" -- $dHashDistance from ${it.key}")
             if (dHashDistance < lessDistance) {
                 cardShortName = it.key
                 lessDistance = dHashDistance
@@ -24,7 +29,7 @@ object Recognition {
     }
 
     fun calcDHash(image: BufferedImage): String {
-        val grayImage = ImageFuncs.toGrayscale(ImageFuncs.getScaledImage(image))
+        val grayImage = toGrayscale(getScaledImage(image))
         val difference = mutableListOf<Boolean>().apply {
             for (x in 0..PHASH_SIZE - 1) {
                 for (y in 0..PHASH_SIZE - 2) {
@@ -55,6 +60,18 @@ object Recognition {
             throw IllegalArgumentException()
         }
         return (0..s1.length - 1).count { s1[it] != s2[it] }
+    }
+
+    fun getScaledImage(image: BufferedImage): BufferedImage {
+        val tmp = image.getScaledInstance(Recognition.PHASH_SIZE, Recognition.PHASH_SIZE, BufferedImage.SCALE_FAST)
+        val scaledImage = BufferedImage(Recognition.PHASH_SIZE, Recognition.PHASH_SIZE, BufferedImage.TYPE_INT_RGB)
+        scaledImage.graphics.drawImage(tmp, 0, 0, null)
+        return scaledImage
+    }
+
+    fun toGrayscale(image: BufferedImage): BufferedImage {
+        val cs = ColorSpace.getInstance(ColorSpace.CS_GRAY)
+        return ColorConvertOp(cs, null).filter(image, null)
     }
 
 }

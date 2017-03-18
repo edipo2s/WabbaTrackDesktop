@@ -8,6 +8,16 @@ abstract class ReferenceConfig {
     abstract val SCREEN_REFERENCE_WIDTH: Int
     abstract val SCREEN_REFERENCE_HEIGHT: Int
 
+    abstract val ARENA_PICKS_REMAINING_HEIGHT: Int
+    abstract val ARENA_PICKS_REMAINING_WIDTH: Int
+    abstract val ARENA_PICKS_REMAINING_START_X: Int
+    abstract val ARENA_PICKS_REMAINING_START_Y: Int
+
+    abstract val ARENA_CLASS_SELECTED_HEIGHT: Int
+    abstract val ARENA_CLASS_SELECTED_WIDTH: Int
+    abstract val ARENA_CLASS_SELECTED_START_X: Int
+    abstract val ARENA_CLASS_SELECTED_START_Y: Int
+
     abstract val ARENA_PICK_CARD_HEIGHT: Int
     abstract val ARENA_PICK_CARD_WIDTH: Int
     abstract val ARENA_PICK_CARD_START_Y: Int
