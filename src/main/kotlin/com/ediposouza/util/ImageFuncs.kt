@@ -14,14 +14,6 @@ import javax.imageio.ImageIO
 object ImageFuncs {
 
     var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
-        set(value) {
-            field = value
-            Logger.d("Changed to ${referenceConfig.SCREEN_REFERENCE} as screen reference")
-        }
-
-    init {
-        Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as screen reference")
-    }
 
     fun getCardImage(fileName: String): BufferedImage? {
         try {
