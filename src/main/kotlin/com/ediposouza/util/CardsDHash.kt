@@ -393,7 +393,7 @@ object CardsDHash {
             "kvatchsoldier" to "0020800290c25043b590518413864d29a25447ec4aa969339551e28e2055",
             "legionpraefect" to "59023515958408d50a6257d5d31a6ad61a8425d144296299a6126c714a3d",
             "legionshield" to "0a5785cba3abf0725889ab401a01312a2aa11c04926c4136a680055d69e9",
-            "loyalhousecarl" to "5ce9c0e43817880ce4d8f484056e8e33555ba227b529ab16b58b59d5b9ca",
+            "loyalhousecarl" to "c480d260966e3b479bd22cd7a26a321917219d934ce4a7a84cf00580ad75",
             "mantikora" to "6d25958750e26c1dcba4ec8af285f48bb539ee1cb39f9945f9495d904f2a",
             "miraakdragonborn" to "f9fdf8b97a563a06ae145701a57433bdb0ae305f8037aa16d30255456a28",
             "morthalexecutioner" to "aca9cc0d65c713189109e564525e65d501e3a54879a310d1c80834c51046",

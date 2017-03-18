@@ -38,7 +38,10 @@ object CalcCardsDHash {
                     mkdir()
                 }
             }
-            val cardShortName = imageName.substring(imageName.lastIndexOf("/") + 1, imageName.indexOf("."))
+            var cardShortName = imageName.substring(imageName.lastIndexOf("/") + 1, imageName.indexOf("."))
+            if (cardShortName.contains("\\")) {
+                cardShortName = imageName.substring(imageName.lastIndexOf("\\") + 1, imageName.indexOf("."))
+            }
             ImageIO.write(image, "png", File("src/main/resources/Test/Images/$cardShortName.png"))
             Logger.d("\"$cardShortName\" to \"${Recognition.calcDHash(image)}\",")
         }
