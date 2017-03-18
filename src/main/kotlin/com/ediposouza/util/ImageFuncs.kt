@@ -13,22 +13,21 @@ import javax.imageio.ImageIO
  */
 object ImageFuncs {
 
-    const val ARENA_PICK_CARD_HEIGHT = 155
-    const val ARENA_PICK_CARD_WIDTH = 118
-    const val ARENA_PICK_CARD_START_Y = 152
-    const val ARENA_PICK_CARD_FIRST_X = 284
-    const val ARENA_PICK_CARD_SECOND_X = 513
-    const val ARENA_PICK_CARD_THIRD_X = 740
+    var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
+        set(value) {
+            field = value
+            Logger.d("Changed to ${referenceConfig.SCREEN_REFERENCE} as screen reference")
+        }
 
-    const val FULL_CARD_HEIGHT = 275
-    const val FULL_CARD_WIDTH = 212
-    const val FULL_CARD_START_X = 80
-    const val FULL_CARD_START_Y = 100
+    init {
+        Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as screen reference")
+    }
 
     fun getCardImage(fileName: String): BufferedImage? {
         try {
             val image = ImageIO.read(javaClass.getResource("/Cards/$fileName"))
-            return image.getSubimage(FULL_CARD_START_X, FULL_CARD_START_Y, FULL_CARD_WIDTH, FULL_CARD_HEIGHT)
+            return image.getSubimage(referenceConfig.FULL_CARD_START_X, referenceConfig.FULL_CARD_START_Y,
+                    referenceConfig.FULL_CARD_WIDTH, referenceConfig.FULL_CARD_HEIGHT)
         } catch (e: Exception) {
             Logger.e("Error loading $fileName - ${e.message}")
             return null
@@ -48,12 +47,39 @@ object ImageFuncs {
     }
 
     fun getArenaPickImage(image: BufferedImage, position: Int): BufferedImage {
-        val cardX = when(position) {
-            1 -> ARENA_PICK_CARD_FIRST_X
-            2 -> ARENA_PICK_CARD_SECOND_X
-            else -> ARENA_PICK_CARD_THIRD_X
+        val cardX = when (position) {
+            1 -> referenceConfig.ARENA_PICK_CARD_FIRST_X
+            2 -> referenceConfig.ARENA_PICK_CARD_SECOND_X
+            else -> referenceConfig.ARENA_PICK_CARD_THIRD_X
         }
-        return image.getSubimage(cardX, ARENA_PICK_CARD_START_Y, ARENA_PICK_CARD_WIDTH, ARENA_PICK_CARD_HEIGHT)
+        return image.getSubimage(cardX, referenceConfig.ARENA_PICK_CARD_START_Y, referenceConfig.ARENA_PICK_CARD_WIDTH,
+                referenceConfig.ARENA_PICK_CARD_HEIGHT)
+    }
+
+    fun getArenaPickImageScaled(image: BufferedImage, position: Int): BufferedImage {
+        val cardPositionPickStartX = when (position) {
+            1 -> referenceConfig.ARENA_PICK_CARD_FIRST_X
+            2 -> referenceConfig.ARENA_PICK_CARD_SECOND_X
+            else -> referenceConfig.ARENA_PICK_CARD_THIRD_X
+        }
+        val cardPosition = getCardPosition(image, cardPositionPickStartX, referenceConfig.ARENA_PICK_CARD_START_Y)
+        val cardSize = getCardSize(image, referenceConfig.ARENA_PICK_CARD_WIDTH, referenceConfig.ARENA_PICK_CARD_HEIGHT)
+        return image.getSubimage(cardPosition.first, cardPosition.second, cardSize.first, cardSize.second)
+    }
+
+    private fun getCardPosition(image: BufferedImage, referenceX: Int, referenceY: Int): Pair<Int, Int> {
+        val normalizedCardX = referenceX / referenceConfig.SCREEN_REFERENCE_WIDTH.toDouble()
+        val normalizedCardY = referenceY / referenceConfig.SCREEN_REFERENCE_HEIGHT.toDouble()
+
+        val ratio = referenceConfig.SCREEN_REFERENCE_RATIO / (image.width.toDouble() / image.height)
+        val imageCardPositionPickStartX = (image.width * ratio * normalizedCardX) + (image.width.toDouble() * (1 - ratio) / 2)
+        val imageCardPositionPickStartY = normalizedCardY * image.height
+        return imageCardPositionPickStartX.toInt() to imageCardPositionPickStartY.toInt()
+    }
+
+    private fun getCardSize(image: BufferedImage, referenceX: Int, referenceY: Int): Pair<Int, Int> {
+        val scaleFactor = image.height.toDouble() / referenceConfig.SCREEN_REFERENCE_HEIGHT
+        return (scaleFactor * referenceX).toInt() to (scaleFactor * referenceY).toInt()
     }
 
     fun takeScreenshot(): BufferedImage? {

@@ -33,6 +33,11 @@ object CalcCardsDHash {
     private fun calcDHash(imageName: String) {
         val image = ImageFuncs.getCardImage(imageName)
         if (image != null) {
+            File("src/main/resources/Test/Images").apply {
+                if (!exists()) {
+                    mkdir()
+                }
+            }
             val cardShortName = imageName.substring(imageName.lastIndexOf("/") + 1, imageName.indexOf("."))
             ImageIO.write(image, "png", File("src/main/resources/Test/Images/$cardShortName.png"))
             Logger.d("\"$cardShortName\" to \"${Recognition.calcDHash(image)}\",")

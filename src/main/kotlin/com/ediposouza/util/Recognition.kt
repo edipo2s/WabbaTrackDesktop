@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage
  */
 object Recognition {
 
-    const val PHASH_SIZE = 16
+    const val PHASH_SIZE = 10
 
     fun recognizeDHash(dHash: String): String {
         var cardShortName = ""

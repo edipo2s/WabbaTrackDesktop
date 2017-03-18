@@ -3,6 +3,7 @@ package com.ediposouza
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognition
+import com.ediposouza.util.ReferenceConfig1024x768
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -12,23 +13,25 @@ import javax.imageio.ImageIO
  */
 object Main {
 
-    const val SCREENSHOT_DELAY: Long = 2_000
+    const val SCREENSHOT_DELAY: Long = 1_000
 
     var lastScreenshotDHash = ""
 
     @JvmStatic fun main(args: Array<String>) {
-        while(true) {
-            Thread.sleep(SCREENSHOT_DELAY)
-            ImageFuncs.takeScreenshot()?.apply {
-                val screenshotDHash = Recognition.calcDHash(this)
-                if (screenshotDHash == lastScreenshotDHash) {
-                    Logger.d("Waiting..")
-                } else {
-                    lastScreenshotDHash = screenshotDHash
-                    recognizeArenaPick(this)
-                }
-            }
-        }
+//        while(true) {
+//            Thread.sleep(SCREENSHOT_DELAY)
+//            ImageFuncs.takeScreenshot()?.apply {
+//                val screenshotDHash = Recognition.calcDHash(this)
+//                if (screenshotDHash == lastScreenshotDHash) {
+//                    Logger.d("Waiting..")
+//                } else {
+//                    lastScreenshotDHash = screenshotDHash
+//                    recognizeArenaPick(this)
+//                }
+//            }
+//        }
+        ImageFuncs.referenceConfig = ReferenceConfig1024x768()
+        testArenaPick()
     }
 
     private fun testArenaPick() {
@@ -37,13 +40,19 @@ object Main {
     }
 
     private fun recognizeArenaPick(image: BufferedImage) {
-        recognizeCard(ImageFuncs.getArenaPickImage(image, 1))
-        recognizeCard(ImageFuncs.getArenaPickImage(image, 2))
-        recognizeCard(ImageFuncs.getArenaPickImage(image, 3))
+        Logger.d("Image size: ${image.width}x${image.height}")
+        recognizeCard(ImageFuncs.getArenaPickImageScaled(image, 1))
+        recognizeCard(ImageFuncs.getArenaPickImageScaled(image, 2))
+        recognizeCard(ImageFuncs.getArenaPickImageScaled(image, 3))
     }
 
     private fun recognizeCard(cardImage: BufferedImage) {
         val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
+        File("src/main/resources/Test/Tmp").apply {
+            if (!exists()) {
+                mkdir()
+            }
+        }
         ImageIO.write(cardImage, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
         Logger.d(Recognition.recognizeDHash(Recognition.calcDHash(cardImage)))
     }
