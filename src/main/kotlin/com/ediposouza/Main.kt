@@ -8,26 +8,64 @@ import com.sun.jna.Platform
 import com.sun.jna.PointerType
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.win32.StdCallLibrary
+import java.awt.MenuItem
+import java.awt.PopupMenu
+import java.awt.SystemTray
+import java.awt.TrayIcon
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
-
+import javax.swing.JOptionPane
 
 /**
  * Created by ediposouza on 06/03/17.
  */
 object Main {
 
-    const val WINDOW_DETECTION_DELAY: Long = 5_000
-    const val ELDER_SCROLL_SCREENSHOT_DELAY: Long = 1_000
-    const val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
+    val TRAY_TIP = "TES Legends Tracker"
+    val TARY_ICON = "ic_legend.png"
+    val WINDOW_DETECTION_DELAY = 5_000L
+    val ELDER_SCROLL_SCREENSHOT_DELAY = 1_000L
+    val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     var lastScreenshotDHash = ""
 
     @JvmStatic fun main(args: Array<String>) {
-        startElderScrollDetection()
+        createSystemTrayIcon()
+//        startElderScrollDetection()
+    }
+
+    private fun createSystemTrayIcon() {
+        if (SystemTray.isSupported()) {
+            val systemTray = SystemTray.getSystemTray()
+            with(TrayIcon(ImageIO.read(javaClass.getResource("/$TARY_ICON")), TRAY_TIP)) {
+                PopupMenu().apply {
+                    add(MenuItem("About").apply {
+                        addActionListener { showAboutDialog() }
+                    })
+                    add(MenuItem("Exit").apply {
+                        addActionListener {
+                            systemTray.remove(this@with)
+                            javafx.application.Platform.exit()
+                        }
+                    })
+                    isImageAutoSize = true
+                    popupMenu = this
+                }
+                systemTray.add(this)
+            }
+        }
+    }
+
+    private fun showAboutDialog() {
+        JOptionPane.showMessageDialog(null, "TES Legends Tracker \nby Edipo2s")
+//        Alert(AlertType.INFORMATION, "TES Legends Tracker \nby Edipo2s", ButtonType.OK).apply {
+//            if (showAndWait().get() == ButtonType.OK) {
+//                close()
+//            }
+//        }
     }
 
     private fun startElderScrollDetection() {
@@ -44,24 +82,24 @@ object Main {
     private fun startElderScrollRecognition() {
         while (true) {
             Logger.d("Waiting arena window..")
-//            ImageFuncs.takeScreenshot()?.apply {
-//                val screenshotDHash = Recognition.calcDHash(this)
-//                if (screenshotDHash == lastScreenshotDHash) {
-//                    Logger.d("Waiting..")
-//                } else {
-//                    lastScreenshotDHash = screenshotDHash
-//                    recognizeArenaPick(this)
-//                }
-//            }
+            ImageFuncs.takeScreenshot()?.apply {
+                val screenshotDHash = Recognition.calcDHash(this)
+                if (screenshotDHash == lastScreenshotDHash) {
+                    Logger.d("Waiting..")
+                } else {
+                    lastScreenshotDHash = screenshotDHash
+                    recognizeArenaPick(this)
+                }
+            }
         }
     }
 
     private fun recognizeArenaPick(image: BufferedImage) {
         Logger.d("Using ${ImageFuncs.referenceConfig.SCREEN_REFERENCE} as screen reference")
         Logger.d("Image size: ${image.width}x${image.height}")
-        recognizeCard(ImageFuncs.getArenaPickImageScaled(image, 1))
-        recognizeCard(ImageFuncs.getArenaPickImageScaled(image, 2))
-        recognizeCard(ImageFuncs.getArenaPickImageScaled(image, 3))
+        recognizeCard(ImageFuncs.getArenaCardCropped(image, 1))
+        recognizeCard(ImageFuncs.getArenaCardCropped(image, 2))
+        recognizeCard(ImageFuncs.getArenaCardCropped(image, 3))
     }
 
     private fun recognizeCard(cardImage: BufferedImage, outputFile: Boolean = false): String {
@@ -74,7 +112,7 @@ object Main {
             }
             ImageIO.write(cardImage, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
         }
-        return Recognition.recognizeDHash(Recognition.calcDHash(cardImage))
+        return Recognition.recognizeCardDHash(Recognition.calcDHash(cardImage))
     }
 
     interface User32 : StdCallLibrary {
