@@ -4,68 +4,63 @@ import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognition
 import com.sun.jna.Native
-import com.sun.jna.Platform
 import com.sun.jna.PointerType
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.win32.StdCallLibrary
+import javafx.application.Platform
+import javafx.scene.control.Alert
+import javafx.stage.Stage
+import javafx.stage.StageStyle
+import tornadofx.App
+import tornadofx.alert
 import java.awt.MenuItem
 import java.awt.PopupMenu
-import java.awt.SystemTray
-import java.awt.TrayIcon
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
-import javax.swing.JOptionPane
 
 /**
  * Created by ediposouza on 06/03/17.
  */
-object Main {
+class Main : App(MainView::class) {
 
     val TRAY_TIP = "TES Legends Tracker"
-    val TARY_ICON = "ic_legend.png"
+    val TRAY_ICON = "ic_legend.png"
     val WINDOW_DETECTION_DELAY = 5_000L
     val ELDER_SCROLL_SCREENSHOT_DELAY = 1_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     var lastScreenshotDHash = ""
 
-    @JvmStatic fun main(args: Array<String>) {
-        createSystemTrayIcon()
+    override fun start(stage: Stage) {
+        stage.initStyle(StageStyle.TRANSPARENT)
+        stage.isIconified = true
+        super.start(stage)
+
+        stage.close()
+        configureSystemTrayIcon()
 //        startElderScrollDetection()
     }
 
-    private fun createSystemTrayIcon() {
-        if (SystemTray.isSupported()) {
-            val systemTray = SystemTray.getSystemTray()
-            with(TrayIcon(ImageIO.read(javaClass.getResource("/$TARY_ICON")), TRAY_TIP)) {
-                PopupMenu().apply {
-                    add(MenuItem("About").apply {
-                        addActionListener { showAboutDialog() }
-                    })
-                    add(MenuItem("Exit").apply {
-                        addActionListener {
-                            systemTray.remove(this@with)
-                            javafx.application.Platform.exit()
+    private fun configureSystemTrayIcon() {
+        trayicon(javaClass.getResourceAsStream("/$TRAY_ICON"), TRAY_TIP, false, true) {
+            popupMenu = PopupMenu().apply {
+                add(MenuItem("About").apply {
+                    addActionListener {
+                        Platform.runLater {
+                            alert(Alert.AlertType.INFORMATION, "About", "TES Legends Tracker \nby Edipo2s")
                         }
-                    })
-                    isImageAutoSize = true
-                    popupMenu = this
-                }
-                systemTray.add(this)
+                    }
+                })
+                add(MenuItem("Exit").apply {
+                    addActionListener {
+                        Platform.exit()
+                    }
+                })
             }
         }
-    }
-
-    private fun showAboutDialog() {
-        JOptionPane.showMessageDialog(null, "TES Legends Tracker \nby Edipo2s")
-//        Alert(AlertType.INFORMATION, "TES Legends Tracker \nby Edipo2s", ButtonType.OK).apply {
-//            if (showAndWait().get() == ButtonType.OK) {
-//                close()
-//            }
-//        }
     }
 
     private fun startElderScrollDetection() {
@@ -126,12 +121,12 @@ object Main {
 
     fun getActiveWindowTitle(): String {
         var titleStr = ""
-        if (Platform.isWindows()) {
+        if (com.sun.jna.Platform.isWindows()) {
             val windowText = ByteArray(512)
             val hwnd = User32.INSTANCE.GetForegroundWindow() // then you can call it!
             User32.INSTANCE.GetWindowTextA(hwnd, windowText, 512)
             titleStr = Native.toString(windowText)
-        } else if (Platform.isMac()) {
+        } else if (com.sun.jna.Platform.isMac()) {
             val script = "tell application \"System Events\"\n" +
                     "\tname of application processes whose frontmost is tru\n" +
                     "end"

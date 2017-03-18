@@ -21,6 +21,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "net.java.dev.jna:jna-platform:4.4.0"
+    compile "no.tornado:tornadofx:1.7.0"
 
     testCompile "junit:junit:4.12"
     testCompile "com.google.truth:truth:0.31"
