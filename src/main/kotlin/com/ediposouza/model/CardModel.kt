@@ -9,7 +9,7 @@ import javax.json.JsonObject
 /**
  * Created by Edipo on 19/03/2017.
  */
-class CardModel(val shortname: String, var attribute: String) : JsonModel {
+class CardModel(val shortname: String, var attribute: String, var set: String) : JsonModel {
 
     var name by property<String>()
     fun nameProperty() = getProperty(CardModel::name)
@@ -27,6 +27,7 @@ class CardModel(val shortname: String, var attribute: String) : JsonModel {
     override fun toString(): String {
         return "CardModel(shortname='$shortname', " +
                 "attribute='$attribute', " +
+                "set='$set', " +
                 "name='$name', " +
                 "arenaTier='$arenaTier')"
     }

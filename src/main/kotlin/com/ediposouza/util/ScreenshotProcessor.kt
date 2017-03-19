@@ -3,8 +3,6 @@ package com.ediposouza.util
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 
 /**
  * Created by Edipo on 18/03/2017.
@@ -14,41 +12,30 @@ object ScreenshotProcessor {
     fun process(screenshot: BufferedImage) {
         with(ImageFuncs.getArenaClassSelectedCroppedImage(screenshot)) {
             Recognizer.recognizeArenaClassSelectImage(this)?.apply {
-                Logger.i("Arena Class ${this} Detected!")
+                Logger.i("\nArena Class ${this} Detected!")
                 saveCroppedImage()
                 return
             }
         }
         with(ImageFuncs.getArenaPicksRemainingCroppedImage(screenshot)) {
             Recognizer.recognizeArenaScreenImage(this)?.apply {
-                Logger.i("Arena Screen ${this} Detected!")
+                Logger.i("\nArena Screen ${this} Detected!")
                 saveCroppedImage()
-                recognizeArenaPick(screenshot)
+                recognizeArenaPick(screenshot, 1)
+                recognizeArenaPick(screenshot, 2)
+                recognizeArenaPick(screenshot, 3)
                 return
             }
         }
     }
 
-    private fun recognizeArenaPick(image: BufferedImage) {
-        val card1 = TESLTrackerData.getCard(recognizeCard(ImageFuncs.getArenaCardCropped(image, 1)))
-        val card2 = TESLTrackerData.getCard(recognizeCard(ImageFuncs.getArenaCardCropped(image, 2)))
-        val card3 = TESLTrackerData.getCard(recognizeCard(ImageFuncs.getArenaCardCropped(image, 3)))
-        Logger.i("${card1?.name}: ${card1?.arenaTier}")
-        Logger.i("${card2?.name}: ${card2?.arenaTier}")
-        Logger.i("${card3?.name}: ${card3?.arenaTier}")
-    }
-
-    private fun recognizeCard(cardImage: BufferedImage, outputFile: Boolean = false): String? {
-        if (outputFile) {
-            val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
-            File("src/main/resources/Test/Tmp").apply {
-                if (!exists()) {
-                    mkdir()
-                }
+    private fun recognizeArenaPick(image: BufferedImage, pick: Int) {
+        with(ImageFuncs.getArenaCardCropped(image, pick)) {
+            saveCroppedImage()
+            TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
+                Logger.i("--$name: $arenaTier")
             }
-            ImageIO.write(cardImage, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
         }
-        return Recognizer.recognizeCardImage(cardImage)
     }
 
 }

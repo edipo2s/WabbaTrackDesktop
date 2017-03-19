@@ -32,9 +32,7 @@ object Recognizer {
     fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>): String? {
         val highTolerance = dHashMap == CardsDHash.CARDS_DHASH
         val result = recognizeDHashInMap(calcDHash(image), dHashMap, highTolerance)
-        result.first?.apply {
-            Logger.d("${this} - ${result.second})")
-        }
+        Logger.d("${result.first} - ${result.second})")
         return result.first
     }
 

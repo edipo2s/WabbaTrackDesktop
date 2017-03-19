@@ -13,19 +13,26 @@ object TESLTrackerData {
 
     fun updateCardDB(firebaseDB: Rest) {
         CARDS.clear()
-        Logger.d("Getting cards json")
-        with(firebaseDB.get("cards/core.json").one()) {
+        Logger.d("Updating cards database")
+        with(firebaseDB.get("cards.json").one()) {
             keys.forEach {
-                val attr = it
-                val cards = getJsonObject(attr)
-                cards.keys.forEach {
-                    val card = com.ediposouza.model.CardModel(it, attr).apply {
-                        updateModel(cards.getJsonObject(it))
+                val set = it
+                val setAttrs = getJsonObject(set)
+                setAttrs.keys.forEach {
+                    val attr = it
+                    val cards = setAttrs.getJsonObject(attr)
+                    cards.keys.forEach {
+                        val card = CardModel(it, attr, set).apply {
+                            updateModel(cards.getJsonObject(it))
+                        }
+                        CARDS.add(card)
+//                        Logger.d("$card")
                     }
-                    CARDS.add(card)
-//                    Logger.d("$card")
                 }
             }
+        }
+        CARDS.groupBy { it.set }.forEach { set, cards ->
+            Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
         }
     }
 
