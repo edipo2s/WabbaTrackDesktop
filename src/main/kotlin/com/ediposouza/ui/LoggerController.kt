@@ -1,5 +1,6 @@
 package com.ediposouza.ui
 
+import com.ediposouza.util.Logger
 import tornadofx.Controller
 
 /**
@@ -9,14 +10,27 @@ class LoggerController : Controller() {
 
     private val loggerView by inject<LoggerView>()
 
+    private val logs = mutableMapOf<String, Logger.Level>()
+
     init {
         subscribe<LogEvent> {
-            logText(it.text)
+            logText(it.text, it.level)
         }
     }
 
-    fun logText(text: String) {
-        loggerView.textArea.appendText("\n$text")
+    fun logText(text: String, level: Logger.Level) {
+        logs.put(text, level)
+        val selectedLogViewIndex = loggerView.logLevelView.selectionModel.selectedIndex
+        if (selectedLogViewIndex == Logger.Level.ALL.ordinal || selectedLogViewIndex == level.ordinal) {
+            loggerView.textArea.appendText("\n${level.prefix}: $text")
+        }
+    }
+
+    fun changeLogLevelView(level: Logger.Level?) {
+        loggerView.textArea.clear()
+        logs.filter { level == Logger.Level.ALL || level == it.value }.forEach {
+            logText(it.key, it.value)
+        }
     }
 
 }

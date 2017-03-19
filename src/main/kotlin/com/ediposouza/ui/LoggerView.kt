@@ -1,6 +1,9 @@
 package com.ediposouza.ui
 
+import com.ediposouza.util.Logger
 import javafx.application.Platform
+import javafx.collections.FXCollections
+import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
@@ -15,11 +18,13 @@ class LoggerView : View("TES Legends Tracker Log") {
 
     val TRAY_ICON = "ic_legend.png"
 
-    var textArea: TextArea by singleAssign()
+    override val root = BorderPane()
 
     private val loggerController by inject<LoggerController>()
+    private val logLevels = FXCollections.observableArrayList("All", "Info", "Debug", "Error")
 
-    override val root = BorderPane()
+    var textArea: TextArea by singleAssign()
+    var logLevelView: ComboBox<String> by singleAssign()
 
     init {
         FX.primaryStage.icons += Image(javaClass.getResourceAsStream("/$TRAY_ICON"))
@@ -30,11 +35,19 @@ class LoggerView : View("TES Legends Tracker Log") {
                 textArea.scrollTop = Double.MAX_VALUE
             }
         }
+        logLevelView = ComboBox<String>(logLevels).apply {
+            selectionModel.select(1)
+            setOnAction {
+                val selectedIndex = logLevels.indexOf(selectionModel.selectedItem)
+                loggerController.changeLogLevelView(Logger.Level.values()[selectedIndex])
+            }
+        }
         with(root) {
+            top = logLevelView
             center = textArea
         }
         Platform.runLater {
-            loggerController.logText("Logger Initialized")
+            loggerController.logText("Logger Initialized", Logger.Level.DEBUG)
         }
     }
 }

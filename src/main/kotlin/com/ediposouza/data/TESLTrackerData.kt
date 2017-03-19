@@ -13,7 +13,7 @@ object TESLTrackerData {
 
     fun updateCardDB(firebaseDB: Rest) {
         CARDS.clear()
-        Logger.d("Getting json")
+        Logger.d("Getting cards json")
         with(firebaseDB.get("cards/core.json").one()) {
             keys.forEach {
                 val attr = it

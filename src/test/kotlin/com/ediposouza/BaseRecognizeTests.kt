@@ -15,7 +15,7 @@ abstract class BaseRecognizeTests {
     protected fun getFileImage(testFileName: String): BufferedImage {
         val image = ImageIO.read(javaClass.getResource("/Test/$testFileName"))
         val reference = ImageFuncs.referenceConfig.SCREEN_REFERENCE
-        Logger.d("Using $reference as screen reference with Image size: ${image.width}x${image.height}")
+        Logger.i("Using $reference as screen reference with Image size: ${image.width}x${image.height}")
         return image
     }
 

@@ -52,10 +52,10 @@ class Main : App(LoggerView::class) {
             y = Screen.getPrimary().visualBounds.height - height
         })
 
-        TESLTrackerData.updateCardDB(firebaseDB)
         stage.close()
         configureSystemTrayIcon()
         CompletableFuture.runAsync {
+            TESLTrackerData.updateCardDB(firebaseDB)
             startElderScrollDetection()
         }
     }
@@ -87,10 +87,10 @@ class Main : App(LoggerView::class) {
     }
 
     private fun startElderScrollDetection() {
-        Logger.d("Waiting Elder scroll legends..")
+        Logger.i("Waiting Elder scroll legends..")
         while (true) {
             if (ScreenFuncs.getActiveWindowTitle() == ELDER_SCROLL_LEGENDS_WINDOW_TITLE) {
-                Logger.d("Elder scroll legends detected!")
+                Logger.i("Elder scroll legends detected!")
                 startElderScrollRecognition()
             }
             Thread.sleep(DELAY_WINDOW_DETECTION)
@@ -102,7 +102,7 @@ class Main : App(LoggerView::class) {
         with(Screen.getPrimary().visualBounds) {
             Logger.d("Image size: ${width.toInt()}x${height.toInt()}")
         }
-        Logger.d("Start screenshot game screens..")
+        Logger.i("Start screenshot game screens..")
         while (true) {
             analyseScreenshot(ScreenFuncs.takeScreenshot())
             Thread.sleep(DELAY_ELDER_SCROLL_SCREENSHOT)

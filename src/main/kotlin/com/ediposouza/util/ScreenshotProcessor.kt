@@ -14,14 +14,14 @@ object ScreenshotProcessor {
     fun process(screenshot: BufferedImage) {
         with(ImageFuncs.getArenaClassSelectedCroppedImage(screenshot)) {
             Recognizer.recognizeArenaClassSelectImage(this)?.apply {
-                Logger.d("Arena Class ${this} Detected!")
+                Logger.i("Arena Class ${this} Detected!")
                 saveCroppedImage()
                 return
             }
         }
         with(ImageFuncs.getArenaPicksRemainingCroppedImage(screenshot)) {
             Recognizer.recognizeArenaScreenImage(this)?.apply {
-                Logger.d("Arena Screen ${this} Detected!")
+                Logger.i("Arena Screen ${this} Detected!")
                 saveCroppedImage()
                 recognizeArenaPick(screenshot)
                 return
