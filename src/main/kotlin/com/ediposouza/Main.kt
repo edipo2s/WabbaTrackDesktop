@@ -9,9 +9,11 @@ import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.win32.StdCallLibrary
 import javafx.application.Platform
 import javafx.scene.control.Alert
+import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
+import tornadofx.FX
 import tornadofx.alert
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -24,7 +26,7 @@ import javax.script.ScriptException
 /**
  * Created by ediposouza on 06/03/17.
  */
-class Main : App(MainView::class) {
+class Main : App(LoggerView::class) {
 
     val TRAY_TIP = "TES Legends Tracker"
     val TRAY_ICON = "ic_legend.png"
@@ -32,12 +34,19 @@ class Main : App(MainView::class) {
     val ELDER_SCROLL_SCREENSHOT_DELAY = 1_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
+    val legendsIcon by lazy { javaClass.getResourceAsStream("/$TRAY_ICON") }
+
     var lastScreenshotDHash = ""
 
     override fun start(stage: Stage) {
-        stage.initStyle(StageStyle.TRANSPARENT)
-        stage.isIconified = true
-        super.start(stage)
+        super.start(stage.apply {
+            initStyle(StageStyle.UTILITY)
+            isAlwaysOnTop = true
+            height = 300.0
+            width = 200.0
+            x = 0.0
+            y = Screen.getPrimary().visualBounds.height - height
+        })
 
         stage.close()
         configureSystemTrayIcon()
@@ -45,8 +54,15 @@ class Main : App(MainView::class) {
     }
 
     private fun configureSystemTrayIcon() {
-        trayicon(javaClass.getResourceAsStream("/$TRAY_ICON"), TRAY_TIP, false, true) {
+        trayicon(legendsIcon, TRAY_TIP, false, true) {
             popupMenu = PopupMenu().apply {
+                add(MenuItem("Show Log").apply {
+                    addActionListener {
+                        Platform.runLater {
+                            FX.primaryStage.show()
+                        }
+                    }
+                })
                 add(MenuItem("About").apply {
                     addActionListener {
                         Platform.runLater {
