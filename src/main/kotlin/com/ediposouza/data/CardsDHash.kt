@@ -6,6 +6,7 @@ package com.ediposouza.data
 object CardsDHash {
 
     val CARDS_DHASH = mapOf(
+            "" to "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
             "anxileelinvader" to "34083ea26c324ea86fb0b6884364762797724269307a8c3b739d2e1657ba",
             "arenthiaswindler" to "48d866646816dc4bd44473d21b67c5a2d8916168996cba8dbeccc8ea622e",
             "arrowintheknee" to "aa61ca6e9a27cd826a52735e1d1187d5442a07c585643432e26cc8964a4f",

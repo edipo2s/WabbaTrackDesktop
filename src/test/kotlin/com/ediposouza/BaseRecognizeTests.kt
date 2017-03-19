@@ -14,12 +14,12 @@ abstract class BaseRecognizeTests {
 
     protected fun getFileImage(testFileName: String): BufferedImage {
         val image = ImageIO.read(javaClass.getResource("/Test/$testFileName"))
-        Logger.d("Using ${ImageFuncs.referenceConfig.SCREEN_REFERENCE} as screen reference")
-        Logger.d("Image size: ${image.width}x${image.height}")
+        val reference = ImageFuncs.referenceConfig.SCREEN_REFERENCE
+        Logger.d("Using $reference as screen reference with Image size: ${image.width}x${image.height}")
         return image
     }
 
-    protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false): String {
+    protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
             File("src/main/resources/Test/Tmp").apply {
@@ -29,7 +29,7 @@ abstract class BaseRecognizeTests {
             }
             ImageIO.write(image, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
         }
-        return Recognizer.recognizeDHashInMap(Recognizer.calcDHash(image), dHashMap)
+        return Recognizer.recognizeImageInMap(image, dHashMap)
     }
 
 }

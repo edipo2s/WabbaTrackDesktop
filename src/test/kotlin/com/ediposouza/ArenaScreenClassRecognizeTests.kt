@@ -10,7 +10,7 @@ import org.junit.Test
 /**
  * Created by ediposouza on 06/03/17.
  */
-class ArenaRecognizeTests : BaseRecognizeTests() {
+class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Before
     fun setUp() {

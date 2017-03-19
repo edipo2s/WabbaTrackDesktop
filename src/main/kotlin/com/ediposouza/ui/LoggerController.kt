@@ -16,7 +16,7 @@ class LoggerController : Controller() {
     }
 
     fun logText(text: String) {
-        loggerView.textArea.text += "\n$text"
+        loggerView.textArea.appendText("\n$text")
     }
 
 }

@@ -25,6 +25,10 @@ class LoggerView : View("TES Legends Tracker Log") {
         FX.primaryStage.icons += Image(javaClass.getResourceAsStream("/$TRAY_ICON"))
         textArea = TextArea().apply {
             isEditable = false
+            isWrapText = true
+            textProperty().addListener { _ ->
+                textArea.scrollTop = Double.MAX_VALUE
+            }
         }
         with(root) {
             center = textArea
