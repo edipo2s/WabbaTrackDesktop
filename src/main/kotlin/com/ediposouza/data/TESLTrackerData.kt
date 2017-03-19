@@ -29,4 +29,8 @@ object TESLTrackerData {
         }
     }
 
+    fun getCard(shortName: String?): CardModel? {
+        return CARDS.find { it.shortname == shortName }
+    }
+
 }

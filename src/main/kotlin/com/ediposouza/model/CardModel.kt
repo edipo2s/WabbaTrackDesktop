@@ -11,11 +11,15 @@ import javax.json.JsonObject
  */
 class CardModel(val shortname: String, var attribute: String) : JsonModel {
 
+    var name by property<String>()
+    fun nameProperty() = getProperty(CardModel::name)
+
     var arenaTier by property<String>()
     fun arenaTierProperty() = getProperty(CardModel::arenaTier)
 
     override fun updateModel(json: JsonObject) {
         with(json) {
+            name = string("name")
             arenaTier = string("arenaTier")
         }
     }
@@ -23,6 +27,7 @@ class CardModel(val shortname: String, var attribute: String) : JsonModel {
     override fun toString(): String {
         return "CardModel(shortname='$shortname', " +
                 "attribute='$attribute', " +
+                "name='$name', " +
                 "arenaTier='$arenaTier')"
     }
 

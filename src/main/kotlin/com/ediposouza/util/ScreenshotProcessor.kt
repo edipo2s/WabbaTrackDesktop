@@ -1,5 +1,6 @@
 package com.ediposouza.util
 
+import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
@@ -29,9 +30,12 @@ object ScreenshotProcessor {
     }
 
     private fun recognizeArenaPick(image: BufferedImage) {
-        recognizeCard(ImageFuncs.getArenaCardCropped(image, 1))
-        recognizeCard(ImageFuncs.getArenaCardCropped(image, 2))
-        recognizeCard(ImageFuncs.getArenaCardCropped(image, 3))
+        val card1 = TESLTrackerData.getCard(recognizeCard(ImageFuncs.getArenaCardCropped(image, 1)))
+        val card2 = TESLTrackerData.getCard(recognizeCard(ImageFuncs.getArenaCardCropped(image, 2)))
+        val card3 = TESLTrackerData.getCard(recognizeCard(ImageFuncs.getArenaCardCropped(image, 3)))
+        Logger.i("${card1?.name}: ${card1?.arenaTier}")
+        Logger.i("${card2?.name}: ${card2?.arenaTier}")
+        Logger.i("${card3?.name}: ${card3?.arenaTier}")
     }
 
     private fun recognizeCard(cardImage: BufferedImage, outputFile: Boolean = false): String? {
