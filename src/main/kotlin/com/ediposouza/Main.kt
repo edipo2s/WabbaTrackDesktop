@@ -1,5 +1,6 @@
 package com.ediposouza
 
+import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
@@ -13,6 +14,7 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
 import tornadofx.FX
+import tornadofx.Rest
 import tornadofx.alert
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -30,10 +32,15 @@ class Main : App(LoggerView::class) {
     val DELAY_ELDER_SCROLL_SCREENSHOT = 2_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
+    val firebaseDB: Rest by inject()
     val legendsIcon by lazy { javaClass.getResourceAsStream("/$TRAY_ICON") }
 
     var lastScreenshotDHash = ""
     var lastScreenshotDHashLogged = false
+
+    init {
+        firebaseDB.baseURI = "https://tes-legends-assistant.firebaseio.com"
+    }
 
     override fun start(stage: Stage) {
         super.start(stage.apply {
@@ -45,6 +52,7 @@ class Main : App(LoggerView::class) {
             y = Screen.getPrimary().visualBounds.height - height
         })
 
+        TESLTrackerData.updateCardDB(firebaseDB)
         stage.close()
         configureSystemTrayIcon()
         CompletableFuture.runAsync {
