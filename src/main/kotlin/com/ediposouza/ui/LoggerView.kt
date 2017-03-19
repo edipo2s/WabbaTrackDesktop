@@ -1,4 +1,4 @@
-package com.ediposouza
+package com.ediposouza.ui
 
 import javafx.application.Platform
 import javafx.scene.control.TextArea

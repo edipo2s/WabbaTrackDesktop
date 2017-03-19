@@ -1,8 +1,8 @@
 package com.ediposouza
 
-import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
-import com.ediposouza.util.Recognition
+import com.ediposouza.util.Recognizer
+import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -47,7 +47,7 @@ abstract class BaseCalcDHash {
             }
         }
         val imageShortName = imageName.substring(0, imageName.indexOf("."))
-        Logger.d("\"$imageShortName\" to \"${Recognition.calcDHash(image)}\",")
+        Logger.d("\"$imageShortName\" to \"${Recognizer.calcDHash(image)}\",")
         ImageIO.write(image, "png", File("$cropFolderPath/$imageShortName.png"))
     }
 }

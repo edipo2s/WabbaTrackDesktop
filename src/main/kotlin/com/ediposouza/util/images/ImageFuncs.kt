@@ -1,8 +1,6 @@
-package com.ediposouza.util
+package com.ediposouza.util.images
 
-import java.awt.Rectangle
-import java.awt.Robot
-import java.awt.Toolkit
+import com.ediposouza.util.Logger
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -13,16 +11,6 @@ import javax.imageio.ImageIO
 object ImageFuncs {
 
     var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
-
-    fun takeScreenshot(): BufferedImage? {
-        try {
-            val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
-            return Robot().createScreenCapture(screenRect)
-        } catch (e: Exception) {
-            Logger.e(e)
-            return null
-        }
-    }
 
     fun getFileImage(file: File): BufferedImage? {
         try {

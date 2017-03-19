@@ -1,8 +1,8 @@
 package com.ediposouza
 
-import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
-import com.ediposouza.util.Recognition
+import com.ediposouza.util.Recognizer
+import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -29,7 +29,7 @@ abstract class BaseRecognizeTests {
             }
             ImageIO.write(image, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
         }
-        return Recognition.recognizeDHashInMap(Recognition.calcDHash(image), dHashMap)
+        return Recognizer.recognizeDHashInMap(Recognizer.calcDHash(image), dHashMap)
     }
 
 }

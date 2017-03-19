@@ -1,5 +1,6 @@
 package com.ediposouza.util
 
+import com.ediposouza.data.CardsDHash
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -7,7 +8,7 @@ import java.awt.image.ColorConvertOp
 /**
  * Created by ediposouza on 06/03/17.
  */
-object Recognition {
+object Recognizer {
 
     const val PHASH_SIZE = 16
 
@@ -63,8 +64,8 @@ object Recognition {
     }
 
     fun getScaledImage(image: BufferedImage): BufferedImage {
-        val tmp = image.getScaledInstance(Recognition.PHASH_SIZE, Recognition.PHASH_SIZE, BufferedImage.SCALE_FAST)
-        val scaledImage = BufferedImage(Recognition.PHASH_SIZE, Recognition.PHASH_SIZE, BufferedImage.TYPE_INT_RGB)
+        val tmp = image.getScaledInstance(PHASH_SIZE, PHASH_SIZE, BufferedImage.SCALE_FAST)
+        val scaledImage = BufferedImage(PHASH_SIZE, PHASH_SIZE, BufferedImage.TYPE_INT_RGB)
         scaledImage.graphics.drawImage(tmp, 0, 0, null)
         return scaledImage
     }

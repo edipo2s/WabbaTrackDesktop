@@ -1,6 +1,6 @@
 package com.ediposouza.util
 
-import com.ediposouza.LogEvent
+import com.ediposouza.ui.LogEvent
 import tornadofx.FX
 
 /**
@@ -22,7 +22,10 @@ object Logger {
 
     private fun print(text: String) {
         println(text)
-        FX.eventbus.fire(LogEvent(text))
+        try {
+            FX.eventbus.fire(LogEvent(text))
+        } catch (e: Exception) {
+        }
     }
 
 }

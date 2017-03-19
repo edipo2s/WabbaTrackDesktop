@@ -1,4 +1,4 @@
-package com.ediposouza.util
+package com.ediposouza.data
 
 /**
  * Created by Edipo on 18/03/2017.

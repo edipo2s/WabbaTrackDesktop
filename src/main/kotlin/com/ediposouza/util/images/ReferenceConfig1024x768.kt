@@ -1,4 +1,4 @@
-package com.ediposouza.util
+package com.ediposouza.util.images
 
 /**
  * Created by ediposouza on 16/03/17.

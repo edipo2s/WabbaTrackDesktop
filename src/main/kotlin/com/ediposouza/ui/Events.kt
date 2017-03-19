@@ -1,4 +1,4 @@
-package com.ediposouza
+package com.ediposouza.ui
 
 import tornadofx.FXEvent
 

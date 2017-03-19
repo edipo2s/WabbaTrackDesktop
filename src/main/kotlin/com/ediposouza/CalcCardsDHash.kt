@@ -1,6 +1,6 @@
 package com.ediposouza
 
-import com.ediposouza.util.ImageFuncs
+import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
 

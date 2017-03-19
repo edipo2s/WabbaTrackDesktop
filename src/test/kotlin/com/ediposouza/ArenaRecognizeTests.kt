@@ -1,8 +1,8 @@
 package com.ediposouza
 
-import com.ediposouza.util.ArenaDHash
-import com.ediposouza.util.ImageFuncs
-import com.ediposouza.util.ReferenceConfig1366x768
+import com.ediposouza.data.ArenaDHash
+import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.util.images.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
