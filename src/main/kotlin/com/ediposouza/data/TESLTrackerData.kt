@@ -1,6 +1,8 @@
 package com.ediposouza.data
 
-import com.ediposouza.model.CardModel
+import com.ediposouza.model.Card
+import com.ediposouza.model.CardAttribute
+import com.ediposouza.model.CardSet
 import com.ediposouza.util.Logger
 import tornadofx.Rest
 
@@ -9,7 +11,7 @@ import tornadofx.Rest
  */
 object TESLTrackerData {
 
-    val CARDS = mutableListOf<CardModel>()
+    val CARDS = mutableListOf<Card>()
 
     fun updateCardDB(firebaseDB: Rest) {
         CARDS.clear()
@@ -22,22 +24,20 @@ object TESLTrackerData {
                     val attr = it
                     val cards = setAttrs.getJsonObject(attr)
                     cards.keys.forEach {
-                        val card = CardModel(it, attr, set).apply {
-                            updateModel(cards.getJsonObject(it))
-                        }
+                        val card = Card.fromJson(it, CardAttribute.of(attr), CardSet.of(set), cards.getJsonObject(it))
                         CARDS.add(card)
-//                        Logger.d("$card")
+                        Logger.d("$card")
                     }
                 }
             }
         }
-        CARDS.groupBy { it.set }.forEach { set, cards ->
+        CARDS.groupBy { it.set.name }.forEach { set, cards ->
             Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
         }
     }
 
-    fun getCard(shortName: String?): CardModel? {
-        return CARDS.find { it.shortname == shortName }
+    fun getCard(shortName: String?): Card? {
+        return CARDS.find { it.shortName == shortName }
     }
 
 }

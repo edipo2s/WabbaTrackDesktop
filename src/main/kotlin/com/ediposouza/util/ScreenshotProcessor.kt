@@ -39,14 +39,7 @@ object ScreenshotProcessor {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
                 Logger.i("--$name: $arenaTier")
-                val arenaTierValue = when (arenaTier) {
-                    "Terrible" -> 10
-                    "Poor" -> 20
-                    "Average" -> 30
-                    "Good" -> 50
-                    "Excellent" -> 70
-                    else -> 90
-                }
+                val arenaTierValue = arenaTier.value
                 showPickValue(pick, arenaTierValue)
             }
         }
