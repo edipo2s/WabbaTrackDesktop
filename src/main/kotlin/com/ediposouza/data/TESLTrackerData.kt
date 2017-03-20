@@ -26,7 +26,7 @@ object TESLTrackerData {
                     cards.keys.forEach {
                         val card = Card.fromJson(it, CardAttribute.of(attr), CardSet.of(set), cards.getJsonObject(it))
                         CARDS.add(card)
-                        Logger.d("$card")
+//                        Logger.d("$card")
                     }
                 }
             }

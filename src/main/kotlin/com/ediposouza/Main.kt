@@ -19,6 +19,7 @@ import tornadofx.alert
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
+import java.awt.TrayIcon
 import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
 
@@ -27,7 +28,7 @@ import java.util.concurrent.CompletableFuture
  */
 class Main : App(LoggerView::class) {
 
-    val TRAY_TIP = "TES Legends Tracker"
+    val APP_NAME = "TES Legends Tracker"
     val DELAY_WINDOW_DETECTION = 5_000L
     val DELAY_ELDER_SCROLL_SCREENSHOT = 2_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
@@ -66,7 +67,7 @@ class Main : App(LoggerView::class) {
         if (!SystemTray.isSupported()) {
             Logger.d("Tray Icon not supported")
         }
-        trayicon(legendsIcon, TRAY_TIP, false, true) {
+        trayicon(legendsIcon, APP_NAME, false, true) {
             popupMenu = PopupMenu().apply {
                 add(MenuItem("Show Log").apply {
                     addActionListener {
@@ -88,6 +89,7 @@ class Main : App(LoggerView::class) {
                     }
                 })
             }
+            displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.INFO)
         }
     }
 
