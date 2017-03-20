@@ -27,13 +27,12 @@ import java.util.concurrent.CompletableFuture
 class Main : App(LoggerView::class) {
 
     val TRAY_TIP = "TES Legends Tracker"
-    val TRAY_ICON = "ic_legend.png"
     val DELAY_WINDOW_DETECTION = 5_000L
     val DELAY_ELDER_SCROLL_SCREENSHOT = 2_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val firebaseDB: Rest by inject()
-    val legendsIcon by lazy { javaClass.getResourceAsStream("/$TRAY_ICON") }
+    val legendsIcon by lazy { javaClass.getResourceAsStream("/ic_legend.png") }
 
     var lastScreenshotDHash = ""
     var lastScreenshotDHashLogged = false

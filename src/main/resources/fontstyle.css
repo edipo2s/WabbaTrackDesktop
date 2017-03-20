@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Planewalker';
+    src: url('Planewalker.otf');
+}
+
+.label {
+    -fx-font-family: 'Planewalker';
+    -fx-font-size: 50;
+}
+
+.button .text {
+    -fx-font-family: 'Planewalker';
+}
