@@ -17,6 +17,8 @@ import javax.script.ScriptException
  */
 object ScreenFuncs {
 
+    //OSX need Download - Java para OS X 2015-001
+
     interface User32 : StdCallLibrary {
         fun GetForegroundWindow(): WinDef.HWND   // add this
         fun GetWindowTextA(hWnd: PointerType, lpString: ByteArray, nMaxCount: Int): Int
@@ -27,7 +29,7 @@ object ScreenFuncs {
     }
 
     fun getActiveWindowTitle(): String {
-        var titleStr = ""
+        var titleStr: String
         if (Platform.isWindows()) {
             val windowText = ByteArray(512)
             val hwnd = User32.INSTANCE.GetForegroundWindow() // then you can call it!
@@ -35,13 +37,13 @@ object ScreenFuncs {
             titleStr = Native.toString(windowText)
         } else if (Platform.isMac()) {
             val script = "tell application \"System Events\"\n" +
-                    "\tname of application processes whose frontmost is tru\n" +
-                    "end"
+                    "	name of application processes whose frontmost is true\n" +
+                    "end tell"
             val appleScript = ScriptEngineManager().getEngineByName("AppleScript")
             try {
-                titleStr = appleScript.eval(script) as String
+                titleStr = appleScript.eval(script).toString()
             } catch (e: ScriptException) {
-                e.printStackTrace()
+                titleStr = ""
             }
 
         } else {

@@ -18,6 +18,7 @@ import tornadofx.Rest
 import tornadofx.alert
 import java.awt.MenuItem
 import java.awt.PopupMenu
+import java.awt.SystemTray
 import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
 
@@ -32,7 +33,9 @@ class Main : App(LoggerView::class) {
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val firebaseDB: Rest by inject()
-    val legendsIcon by lazy { javaClass.getResourceAsStream("/ic_legend.png") }
+    val legendsIcon by lazy {
+        javaClass.getResourceAsStream("/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png")
+    }
 
     var lastScreenshotDHash = ""
     var lastScreenshotDHashLogged = false
@@ -60,6 +63,9 @@ class Main : App(LoggerView::class) {
     }
 
     private fun configureSystemTrayIcon() {
+        if (!SystemTray.isSupported()) {
+            Logger.d("Tray Icon not supported")
+        }
         trayicon(legendsIcon, TRAY_TIP, false, true) {
             popupMenu = PopupMenu().apply {
                 add(MenuItem("Show Log").apply {
