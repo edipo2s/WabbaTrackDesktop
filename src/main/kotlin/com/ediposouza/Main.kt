@@ -23,6 +23,7 @@ import java.awt.SystemTray
 import java.awt.TrayIcon
 import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
+import javax.swing.SwingUtilities
 
 /**
  * Created by ediposouza on 06/03/17.
@@ -93,7 +94,9 @@ class Main : App(LoggerView::class) {
                     }
                 })
             }
-            displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.INFO)
+            SwingUtilities.invokeLater {
+                displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)
+            }
         }
     }
 

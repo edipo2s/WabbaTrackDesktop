@@ -13,7 +13,7 @@ object Recognizer {
 
     const val DHASH_SIZE = 16
     const val DHASH_MAX_DISTANCE = 60
-    const val DHASH_DISTANCE_TOLERANCE_SUPER_HIGH = DHASH_MAX_DISTANCE * 0.25
+    const val DHASH_DISTANCE_TOLERANCE_SUPER_HIGH = DHASH_MAX_DISTANCE * 0.15
     const val DHASH_DISTANCE_TOLERANCE_HIGH = DHASH_MAX_DISTANCE * 0.85
     const val DHASH_DISTANCE_TOLERANCE_LOW = DHASH_MAX_DISTANCE * 0.5
 
@@ -83,7 +83,7 @@ object Recognizer {
             return true
         }
         val calcDHashDistance = calcDHashDistance(screenshot1Hash, screenshot2Hash)
-//        Logger.d("Different distance: $calcDHashDistance")
+        Logger.d("Different distance: $calcDHashDistance")
         return calcDHashDistance > DHASH_DISTANCE_TOLERANCE_SUPER_HIGH
     }
 
