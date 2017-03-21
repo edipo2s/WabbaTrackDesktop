@@ -1,6 +1,7 @@
 package com.ediposouza.util
 
-import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.extensions.getArenaClassSelectedCroppedImage
+import com.ediposouza.extensions.getArenaPicksRemainingCroppedImage
 import java.awt.image.BufferedImage
 
 /**
@@ -9,16 +10,14 @@ import java.awt.image.BufferedImage
 object ScreenshotProcessor {
 
     fun process(screenshot: BufferedImage): Boolean {
-        //Arena screenshot check
-        with(ImageFuncs.getArenaClassSelectedCroppedImage(screenshot)) {
-            Recognizer.recognizeArenaClassSelectImage(this)?.apply {
+        with(screenshot) {
+            //Arena screenshot check
+            Recognizer.recognizeArenaClassSelectImage(getArenaClassSelectedCroppedImage())?.apply {
                 Logger.i("\nArena Class ${this} Detected!")
                 ScreenshotHandlerArena.processArenaClassSelectScreenshot(this, screenshot)
                 return true
             }
-        }
-        with(ImageFuncs.getArenaPicksRemainingCroppedImage(screenshot)) {
-            Recognizer.recognizeArenaScreenImage(this)?.apply {
+            Recognizer.recognizeArenaScreenImage(getArenaPicksRemainingCroppedImage())?.apply {
                 Logger.i("\nArena Screen ${this} Detected!")
                 ScreenshotHandlerArena.processArenaPickScreenshot(screenshot)
                 return true

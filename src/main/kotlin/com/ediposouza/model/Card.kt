@@ -1,9 +1,9 @@
 package com.ediposouza.model
 
+import com.ediposouza.extensions.jsonBool
+import com.ediposouza.extensions.jsonString
+import com.ediposouza.extensions.toIntSafely
 import com.ediposouza.util.Logger
-import com.ediposouza.util.jsonBool
-import com.ediposouza.util.jsonString
-import com.ediposouza.util.toIntSafely
 import javax.json.JsonObject
 
 /**

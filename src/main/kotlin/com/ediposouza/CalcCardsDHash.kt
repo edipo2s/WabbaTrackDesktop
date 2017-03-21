@@ -1,6 +1,6 @@
 package com.ediposouza
 
-import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.extensions.getCardCroppedImage
 import java.awt.image.BufferedImage
 import java.io.File
 
@@ -15,7 +15,7 @@ object CalcCardsDHash : BaseCalcDHash() {
     }
 
     override fun getCroppedImage(fullImage: BufferedImage, type: Int): BufferedImage? {
-        return ImageFuncs.getCardCroppedImage(fullImage)
+        return fullImage.getCardCroppedImage()
     }
 
 }

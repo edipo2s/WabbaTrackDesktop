@@ -1,7 +1,8 @@
 package com.ediposouza
 
-import com.ediposouza.data.ArenaDHash
-import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.data.ScreensDHash
+import com.ediposouza.extensions.getArenaClassSelectedCroppedImage
+import com.ediposouza.extensions.getArenaPicksRemainingCroppedImage
 import com.ediposouza.util.images.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -14,7 +15,7 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Before
     fun setUp() {
-        ImageFuncs.referenceConfig = ReferenceConfig1366x768()
+        App.referenceConfig = ReferenceConfig1366x768()
     }
 
     @Test
@@ -53,13 +54,13 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     private fun recognizeArenaScreen(testFileName: String, screen: String) {
-        val croppedImage = ImageFuncs.getArenaPicksRemainingCroppedImage(getFileImage(testFileName))
-        assertThat(recognizeImage(croppedImage, ArenaDHash.ARENA_SCREENS_DHASH)).isEqualTo(screen)
+        val croppedImage = getFileImage(testFileName).getArenaPicksRemainingCroppedImage()
+        assertThat(recognizeImage(croppedImage, ScreensDHash.SCREENS_DHASH)).isEqualTo(screen)
     }
 
     private fun recognizeArenaClassSelected(testFileName: String, cls: String) {
-        val croppedImage = ImageFuncs.getArenaClassSelectedCroppedImage(getFileImage(testFileName))
-        assertThat(recognizeImage(croppedImage, ArenaDHash.CLASS_SELECTED_DHASH)).isEqualTo(cls)
+        val croppedImage = getFileImage(testFileName).getArenaClassSelectedCroppedImage()
+        assertThat(recognizeImage(croppedImage, ScreensDHash.CLASS_SELECTED_DHASH)).isEqualTo(cls)
     }
 
 }

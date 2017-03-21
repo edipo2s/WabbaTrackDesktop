@@ -2,7 +2,6 @@ package com.ediposouza
 
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
-import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -14,7 +13,7 @@ abstract class BaseRecognizeTests {
 
     protected fun getFileImage(testFileName: String): BufferedImage {
         val image = ImageIO.read(javaClass.getResource("/Test/$testFileName"))
-        val reference = ImageFuncs.referenceConfig.SCREEN_REFERENCE
+        val reference = App.referenceConfig.SCREEN_REFERENCE
         Logger.i("Using $reference as screen reference with Image size: ${image.width}x${image.height}")
         return image
     }

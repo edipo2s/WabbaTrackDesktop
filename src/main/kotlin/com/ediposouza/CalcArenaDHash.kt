@@ -1,6 +1,7 @@
 package com.ediposouza
 
-import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.extensions.getArenaClassSelectedCroppedImage
+import com.ediposouza.extensions.getArenaPicksRemainingCroppedImage
 import java.awt.image.BufferedImage
 import java.io.File
 
@@ -21,8 +22,8 @@ object CalcArenaDHash : BaseCalcDHash() {
 
     override fun getCroppedImage(fullImage: BufferedImage, type: Int): BufferedImage? {
         return when (type) {
-            TYPE_PICKS_REMAINING -> ImageFuncs.getArenaPicksRemainingCroppedImage(fullImage)
-            TYPE_CLASS_SELECTED -> ImageFuncs.getArenaClassSelectedCroppedImage(fullImage)
+            TYPE_PICKS_REMAINING -> fullImage.getArenaPicksRemainingCroppedImage()
+            TYPE_CLASS_SELECTED -> fullImage.getArenaClassSelectedCroppedImage()
             else -> null
         }
     }

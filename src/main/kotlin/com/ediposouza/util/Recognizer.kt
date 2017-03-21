@@ -1,7 +1,7 @@
 package com.ediposouza.util
 
-import com.ediposouza.data.ArenaDHash
 import com.ediposouza.data.CardsDHash
+import com.ediposouza.data.ScreensDHash
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -22,11 +22,11 @@ object Recognizer {
     }
 
     fun recognizeArenaScreenImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, ArenaDHash.ARENA_SCREENS_DHASH)
+        return recognizeImageInMap(image, ScreensDHash.SCREENS_DHASH)
     }
 
     fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, ArenaDHash.CLASS_SELECTED_DHASH)
+        return recognizeImageInMap(image, ScreensDHash.CLASS_SELECTED_DHASH)
     }
 
     fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>): String? {

@@ -1,5 +1,6 @@
 package com.ediposouza.ui
 
+import com.ediposouza.App
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardArenaTier
 import com.ediposouza.util.ScreenshotProcessor
@@ -27,7 +28,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         isUndecorated = true
         isAlwaysOnTop = true
         background = Color(0, 0, 0, 0)
-        with(ImageFuncs.referenceConfig) {
+        with(App.referenceConfig) {
             val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_FIRST_X, ARENA_PICK_VALUE_Y)
             val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_SECOND_X, ARENA_PICK_VALUE_Y)
             val tierValueThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_THIRD_X, ARENA_PICK_VALUE_Y)

@@ -3,9 +3,9 @@ package com.ediposouza.data
 /**
  * Created by Edipo on 18/03/2017.
  */
-object ArenaDHash {
+object ScreensDHash {
 
-    val ARENA_SCREENS_DHASH = mapOf(
+    val SCREENS_DHASH = mapOf(
             "" to "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
             "Pick" to "000000000024084255248c614620a25053a2495514000000040000000080"
     )

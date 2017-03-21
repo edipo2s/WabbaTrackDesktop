@@ -1,9 +1,10 @@
 package com.ediposouza.util
 
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.extensions.getArenaCardCropped
+import com.ediposouza.extensions.saveCroppedImage
 import com.ediposouza.model.*
 import com.ediposouza.ui.ShowArenaTierEvent
-import com.ediposouza.util.images.ImageFuncs
 import tornadofx.FX
 import java.awt.image.BufferedImage
 
@@ -25,7 +26,7 @@ object ScreenshotHandlerArena {
     }
 
     private fun recognizeArenaPick(image: BufferedImage, pick: Int): Pair<Int, List<Card>> {
-        with(ImageFuncs.getArenaCardCropped(image, pick)) {
+        with(image.getArenaCardCropped(pick)) {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
                 Logger.i("--$name: $arenaTier")
