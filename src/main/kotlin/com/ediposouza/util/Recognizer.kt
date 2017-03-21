@@ -1,7 +1,7 @@
 package com.ediposouza.util
 
-import com.ediposouza.data.CardsDHash
-import com.ediposouza.data.ScreensDHash
+import com.ediposouza.data.DHash
+import com.ediposouza.data.DHashCards
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -18,19 +18,19 @@ object Recognizer {
     const val DHASH_DISTANCE_TOLERANCE_LOW = DHASH_MAX_DISTANCE * 0.5
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, CardsDHash.CARDS_DHASH)
+        return recognizeImageInMap(image, DHashCards.LIST)
     }
 
-    fun recognizeArenaScreenImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, ScreensDHash.SCREENS_DHASH)
+    fun recognizeScreenImage(image: BufferedImage): String? {
+        return recognizeImageInMap(image, DHash.SCREENS_LIST)
     }
 
     fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, ScreensDHash.CLASS_SELECTED_DHASH)
+        return recognizeImageInMap(image, DHash.CLASS_SELECTED_LIST)
     }
 
     fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>): String? {
-        val highTolerance = dHashMap == CardsDHash.CARDS_DHASH
+        val highTolerance = dHashMap == DHashCards.LIST
         val result = recognizeDHashInMap(calcDHash(image), dHashMap, highTolerance)
         Logger.d("${result.first} - ${result.second})")
         return result.first

@@ -21,12 +21,12 @@ abstract class BaseRecognizeTests {
     protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
-            File("src/main/resources/Test/Tmp").apply {
+            File("src/test/resources/Test/Tmp").apply {
                 if (!exists()) {
                     mkdir()
                 }
             }
-            ImageIO.write(image, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
+            ImageIO.write(image, "png", File("src/test/resources/Test/Tmp/$tmpFileName"))
         }
         return Recognizer.recognizeImageInMap(image, dHashMap)
     }

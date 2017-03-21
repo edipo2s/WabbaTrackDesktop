@@ -1,7 +1,7 @@
 package com.ediposouza
 
-import com.ediposouza.data.CardsDHash
-import com.ediposouza.extensions.getArenaCardCropped
+import com.ediposouza.data.DHashCards
+import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.util.images.ReferenceConfig1024x768
 import com.ediposouza.util.images.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
@@ -63,12 +63,12 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
     }
 
     private fun recognizeArenaPick(testFileName: String, card1: String, card2: String, card3: String) {
-        val croppedImage1 = getFileImage(testFileName).getArenaCardCropped(1)
-        assertThat(recognizeImage(croppedImage1, CardsDHash.CARDS_DHASH)).isEqualTo(card1)
-        val croppedImage2 = getFileImage(testFileName).getArenaCardCropped(2)
-        assertThat(recognizeImage(croppedImage2, CardsDHash.CARDS_DHASH)).isEqualTo(card2)
-        val croppedImage3 = getFileImage(testFileName).getArenaCardCropped(3)
-        assertThat(recognizeImage(croppedImage3, CardsDHash.CARDS_DHASH)).isEqualTo(card3)
+        val croppedImage1 = getFileImage(testFileName).getArenaCardCrop(1)
+        assertThat(recognizeImage(croppedImage1, DHashCards.LIST)).isEqualTo(card1)
+        val croppedImage2 = getFileImage(testFileName).getArenaCardCrop(2)
+        assertThat(recognizeImage(croppedImage2, DHashCards.LIST)).isEqualTo(card2)
+        val croppedImage3 = getFileImage(testFileName).getArenaCardCrop(3)
+        assertThat(recognizeImage(croppedImage3, DHashCards.LIST)).isEqualTo(card3)
     }
 
 }
