@@ -2,14 +2,9 @@ package com.ediposouza.util
 
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.model.*
+import com.ediposouza.ui.ShowArenaTierEvent
 import com.ediposouza.util.images.ImageFuncs
-import javafx.application.Platform
-import javafx.scene.Scene
-import javafx.scene.control.Label
-import javafx.scene.layout.BorderPane
-import javafx.scene.paint.Color
-import javafx.stage.Stage
-import javafx.stage.StageStyle
+import tornadofx.FX
 import java.awt.image.BufferedImage
 
 /**
@@ -17,60 +12,27 @@ import java.awt.image.BufferedImage
  */
 object ScreenshotHandlerArena {
 
-    fun processArenaClassSelectScreenshot(className: String, croppedScreenshot: BufferedImage) {
-        croppedScreenshot.saveCroppedImage()
+    fun processArenaClassSelectScreenshot(className: String, screenshot: BufferedImage) {
+        screenshot.saveCroppedImage()
     }
 
-    fun processArenaPickScreenshot(croppedScreenshot: BufferedImage) {
-        croppedScreenshot.saveCroppedImage()
-        recognizeArenaPick(croppedScreenshot, 1)
-        recognizeArenaPick(croppedScreenshot, 2)
-        recognizeArenaPick(croppedScreenshot, 3)
+    fun processArenaPickScreenshot(screenshot: BufferedImage) {
+        screenshot.saveCroppedImage()
+        val arenaTier1Value = recognizeArenaPick(screenshot, 1)
+        val arenaTier2Value = recognizeArenaPick(screenshot, 2)
+        val arenaTier3Value = recognizeArenaPick(screenshot, 3)
+        FX.eventbus.fire(ShowArenaTierEvent(arenaTier1Value, arenaTier2Value, arenaTier3Value))
     }
 
-    private fun recognizeArenaPick(image: BufferedImage, pick: Int) {
+    private fun recognizeArenaPick(image: BufferedImage, pick: Int): Pair<Int, List<Card>> {
         with(ImageFuncs.getArenaCardCropped(image, pick)) {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
                 Logger.i("--$name: $arenaTier")
-                val arenaTierValue = calcArenaValue(this, listOf())
-                Platform.runLater {
-                    showPickValue(pick, arenaTierValue.first, arenaTierValue.second)
-                }
+                return calcArenaValue(this, listOf())
             }
         }
-    }
-
-    private fun showPickValue(pick: Int, value: Int, synergyWith: List<Card>) {
-        val layout = BorderPane().apply {
-            center = Label("$value".takeIf { synergyWith.isEmpty() } ?: "$value*").apply {
-                textFill = Color.web(when (value) {
-                    in 0..CardArenaTier.AVERAGE.value.minus(1) -> "#F44336"
-                    in CardArenaTier.AVERAGE.value..CardArenaTier.EXCELLENT.value.minus(1) -> "#212121"
-                    else -> "#4DB6AC"
-                })
-            }
-        }
-        with(ImageFuncs.referenceConfig) {
-            val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_FIRST_X, ARENA_PICK_VALUE_Y)
-            val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_SECOND_X, ARENA_PICK_VALUE_Y)
-            val tierValueThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_THIRD_X, ARENA_PICK_VALUE_Y)
-            val tierValueSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_VALUE_WIDTH, ARENA_PICK_VALUE_HEIGHT)
-            Stage(StageStyle.TRANSPARENT).apply {
-                scene = Scene(layout, tierValueSize.first.toDouble(), tierValueSize.second.toDouble()).apply {
-                    stylesheets.add(ScreenshotProcessor.javaClass.getResource("/fontstyle.css").toExternalForm())
-                }
-                x = when (pick) {
-                    1 -> tierValueFirstPos.first.toDouble()
-                    2 -> tierValueSecondPos.first.toDouble()
-                    else -> tierValueThirdPos.first.toDouble()
-                }
-                y = tierValueFirstPos.second.toDouble()
-                opacity = 0.5
-                isAlwaysOnTop = true
-                show()
-            }
-        }
+        return Pair(0, listOf())
     }
 
     private fun calcArenaValue(card: Card, picksBefore: List<Card>): Pair<Int, List<Card>> {

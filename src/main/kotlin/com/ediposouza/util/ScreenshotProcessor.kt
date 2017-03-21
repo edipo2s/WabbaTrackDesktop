@@ -13,14 +13,14 @@ object ScreenshotProcessor {
         with(ImageFuncs.getArenaClassSelectedCroppedImage(screenshot)) {
             Recognizer.recognizeArenaClassSelectImage(this)?.apply {
                 Logger.i("\nArena Class ${this} Detected!")
-                ScreenshotHandlerArena.processArenaClassSelectScreenshot(this, this@with)
+                ScreenshotHandlerArena.processArenaClassSelectScreenshot(this, screenshot)
                 return true
             }
         }
         with(ImageFuncs.getArenaPicksRemainingCroppedImage(screenshot)) {
             Recognizer.recognizeArenaScreenImage(this)?.apply {
                 Logger.i("\nArena Screen ${this} Detected!")
-                ScreenshotHandlerArena.processArenaPickScreenshot(this@with)
+                ScreenshotHandlerArena.processArenaPickScreenshot(screenshot)
                 return true
             }
         }

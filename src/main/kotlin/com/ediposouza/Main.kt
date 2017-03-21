@@ -1,6 +1,7 @@
 package com.ediposouza
 
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.ui.ArenaTierController
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
@@ -34,6 +35,7 @@ class Main : App(LoggerView::class) {
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val firebaseDB: Rest by inject()
+    val arenaTierController: ArenaTierController by inject()
     val legendsIcon by lazy {
         javaClass.getResourceAsStream("/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png")
     }
@@ -43,6 +45,7 @@ class Main : App(LoggerView::class) {
 
     init {
         firebaseDB.baseURI = "https://tes-legends-assistant.firebaseio.com"
+        arenaTierController.config
     }
 
     override fun start(stage: Stage) {
@@ -86,6 +89,7 @@ class Main : App(LoggerView::class) {
                 add(MenuItem("Exit").apply {
                     addActionListener {
                         Platform.exit()
+                        System.exit(0)
                     }
                 })
             }

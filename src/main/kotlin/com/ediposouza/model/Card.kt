@@ -342,10 +342,14 @@ data class Card(
                 }
             } catch (e: Exception) {
                 Logger.e(e)
-                return Card("", "", CardSet.CORE, CardAttribute.STRENGTH, CardAttribute.STRENGTH, CardAttribute.STRENGTH,
-                        CardRarity.COMMON, false, 0, 0, 0, CardType.ACTION, CardRace.ARGONIAN, listOf(), "",
-                        CardArenaTier.NONE, null, false, "")
+                return getDefaultCard()
             }
+        }
+
+        fun getDefaultCard(): Card {
+            return Card("", "", CardSet.CORE, CardAttribute.STRENGTH, CardAttribute.STRENGTH, CardAttribute.STRENGTH,
+                    CardRarity.COMMON, false, 0, 0, 0, CardType.ACTION, CardRace.ARGONIAN, listOf(), "",
+                    CardArenaTier.NONE, null, false, "")
         }
 
         private fun getCardArenaTierPlus(arenaTierPlusJson: JsonObject?): CardArenaTierPlus? {
