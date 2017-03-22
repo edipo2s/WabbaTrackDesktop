@@ -35,12 +35,17 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testScreenArenaClassSelect() {
-        recognizeScreen("ClassCrusader.png", DHash.SCREEN_ARENA_CLASS_SELECT, BufferedImage::getScreenArenaClassSelectCrop)
+        recognizeScreen("ArenaClass/ClassCrusader.png", DHash.SCREEN_ARENA_CLASS_SELECT, BufferedImage::getScreenArenaClassSelectCrop)
     }
 
     @Test
-    fun testScreenArenaPick() {
-        recognizeScreen("Pick1024x768.png", DHash.SCREEN_ARENA_PICK, BufferedImage::getScreenArenaPickCrop)
+    fun testScreenArenaPicks() {
+        recognizeScreen("ArenaPick/ArenaPick01.png", DHash.SCREEN_ARENA_PICK_01, BufferedImage::getScreenArenaPickCrop)
+        recognizeScreen("ArenaPick/ArenaPick02.png", DHash.SCREEN_ARENA_PICK_02, BufferedImage::getScreenArenaPickCrop)
+        recognizeScreen("ArenaPick/ArenaPick03.png", DHash.SCREEN_ARENA_PICK_03, BufferedImage::getScreenArenaPickCrop)
+        recognizeScreen("ArenaPick/ArenaPick04.png", DHash.SCREEN_ARENA_PICK_04, BufferedImage::getScreenArenaPickCrop)
+        recognizeScreen("ArenaPick/ArenaPick05.png", DHash.SCREEN_ARENA_PICK_05, BufferedImage::getScreenArenaPickCrop)
+        recognizeScreen("ArenaPick/ArenaPick06.png", DHash.SCREEN_ARENA_PICK_06, BufferedImage::getScreenArenaPickCrop)
     }
 
     @Test
@@ -50,32 +55,32 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testArenaClassSelectedAssassin() {
-        recognizeArenaClassSelected("ClassAssassin.png", "Assassin")
+        recognizeArenaClassSelected("ArenaClass/ClassAssassin.png", "Assassin")
     }
 
     @Test
     fun testArenaClassSelectedCrusader() {
-        recognizeArenaClassSelected("ClassCrusader.png", "Crusader")
+        recognizeArenaClassSelected("ArenaClass/ClassCrusader.png", "Crusader")
     }
 
     @Test
     fun testArenaClassSelectedMage() {
-        recognizeArenaClassSelected("ClassMage.png", "Mage")
+        recognizeArenaClassSelected("ArenaClass/ClassMage.png", "Mage")
     }
 
     @Test
     fun testArenaClassSelectedScout() {
-        recognizeArenaClassSelected("ClassScout.png", "Scout")
+        recognizeArenaClassSelected("ArenaClass/ClassScout.png", "Scout")
     }
 
     @Test
     fun testArenaClassSelectedSorcerer() {
-        recognizeArenaClassSelected("ClassSorcerer.png", "Sorcerer")
+        recognizeArenaClassSelected("ArenaClass/ClassSorcerer.png", "Sorcerer")
     }
 
     @Test
     fun testArenaClassSelectedSpellword() {
-        recognizeArenaClassSelected("ClassSpellword.png", "Spellword")
+        recognizeArenaClassSelected("ArenaClass/ClassSpellword.png", "Spellword")
     }
 
     private fun recognizeScreen(testFileName: String, screen: String, cropFun: (BufferedImage) -> BufferedImage?) {

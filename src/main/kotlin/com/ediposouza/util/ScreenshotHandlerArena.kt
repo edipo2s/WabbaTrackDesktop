@@ -14,11 +14,10 @@ import java.awt.image.BufferedImage
 object ScreenshotHandlerArena {
 
     fun processArenaClassSelectScreenshot(className: String, screenshot: BufferedImage) {
-        screenshot.saveCroppedImage()
+
     }
 
     fun processArenaPickScreenshot(screenshot: BufferedImage) {
-        screenshot.saveCroppedImage()
         val arenaTier1Value = recognizeArenaPick(screenshot, 1)
         val arenaTier2Value = recognizeArenaPick(screenshot, 2)
         val arenaTier3Value = recognizeArenaPick(screenshot, 3)

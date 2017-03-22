@@ -18,19 +18,18 @@ object Recognizer {
     const val DHASH_DISTANCE_TOLERANCE_LOW = DHASH_MAX_DISTANCE * 0.5
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHashCards.LIST)
+        return recognizeImageInMap(image, DHashCards.LIST, true)
     }
 
-    fun recognizeScreenImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHash.SCREENS_LIST)
+    fun recognizeScreenImage(image: BufferedImage, highTolerance: Boolean = false): String? {
+        return recognizeImageInMap(image, DHash.SCREENS_LIST, highTolerance)
     }
 
     fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
         return recognizeImageInMap(image, DHash.CLASS_SELECTED_LIST)
     }
 
-    fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>): String? {
-        val highTolerance = dHashMap == DHashCards.LIST
+    fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>, highTolerance: Boolean = false): String? {
         val result = recognizeDHashInMap(calcDHash(image), dHashMap, highTolerance)
         Logger.d("${result.first} - ${result.second})")
         return result.first

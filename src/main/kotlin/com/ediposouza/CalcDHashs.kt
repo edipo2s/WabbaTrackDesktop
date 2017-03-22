@@ -30,7 +30,12 @@ object CalcDHashs {
         getDHashFile("/Screens/Game.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenGameCrop)
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaClassSelect.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassSelectCrop)
-        getDHashFile("/Screens/ArenaPick.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        getDHashFile("/Screens/ArenaPick01.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        getDHashFile("/Screens/ArenaPick02.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        getDHashFile("/Screens/ArenaPick03.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        getDHashFile("/Screens/ArenaPick04.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        getDHashFile("/Screens/ArenaPick05.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        getDHashFile("/Screens/ArenaPick06.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
 
         Logger.d("--Arena Class Select--")

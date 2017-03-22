@@ -130,6 +130,7 @@ class App : App(LoggerView::class) {
         Logger.i("Start screenshot game screens..")
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {
+                ScreenshotProcessor.lastScreenRecognized = ""
                 break
             }
             Thread.sleep(DELAY_ELDER_SCROLL_SCREENSHOT)

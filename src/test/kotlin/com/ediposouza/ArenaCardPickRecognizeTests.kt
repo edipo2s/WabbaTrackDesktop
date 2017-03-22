@@ -64,11 +64,11 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
 
     private fun recognizeArenaPick(testFileName: String, card1: String, card2: String, card3: String) {
         val croppedImage1 = getFileImage(testFileName).getArenaCardCrop(1)
-        assertThat(recognizeImage(croppedImage1, DHashCards.LIST)).isEqualTo(card1)
+        assertThat(recognizeImage(croppedImage1, DHashCards.LIST, highTolerance = true)).isEqualTo(card1)
         val croppedImage2 = getFileImage(testFileName).getArenaCardCrop(2)
-        assertThat(recognizeImage(croppedImage2, DHashCards.LIST)).isEqualTo(card2)
+        assertThat(recognizeImage(croppedImage2, DHashCards.LIST, highTolerance = true)).isEqualTo(card2)
         val croppedImage3 = getFileImage(testFileName).getArenaCardCrop(3)
-        assertThat(recognizeImage(croppedImage3, DHashCards.LIST)).isEqualTo(card3)
+        assertThat(recognizeImage(croppedImage3, DHashCards.LIST, highTolerance = true)).isEqualTo(card3)
     }
 
 }

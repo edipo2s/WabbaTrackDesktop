@@ -18,7 +18,8 @@ abstract class BaseRecognizeTests {
         return image
     }
 
-    protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false): String? {
+    protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false,
+                                 highTolerance: Boolean = false): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
             File("src/test/resources/Test/Tmp").apply {
@@ -28,7 +29,7 @@ abstract class BaseRecognizeTests {
             }
             ImageIO.write(image, "png", File("src/test/resources/Test/Tmp/$tmpFileName"))
         }
-        return Recognizer.recognizeImageInMap(image, dHashMap)
+        return Recognizer.recognizeImageInMap(image, dHashMap, highTolerance)
     }
 
 }
