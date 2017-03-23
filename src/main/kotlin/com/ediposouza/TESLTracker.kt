@@ -12,6 +12,7 @@ import com.ediposouza.util.images.ReferenceConfig1366x768
 import javafx.application.Platform
 import javafx.geometry.Rectangle2D
 import javafx.scene.control.Alert
+import javafx.scene.image.Image
 import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.stage.StageStyle
@@ -38,6 +39,8 @@ class TESLTracker : App(LoggerView::class) {
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
 
+        val iconName = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"
+        val legendsIcon: Image by lazy { Image(iconName) }
     }
 
     val APP_NAME = "TES Legends Tracker"
@@ -47,9 +50,7 @@ class TESLTracker : App(LoggerView::class) {
 
     val firebaseDB: Rest by inject()
     val arenaTierController: ArenaTierController by inject()
-    val legendsIcon: InputStream by lazy {
-        TESLTracker::class.java.getResourceAsStream("/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png")
-    }
+    val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
 
     var lastScreenshotDHash = ""
     var lastScreenshotDHashLogged = false
@@ -81,7 +82,7 @@ class TESLTracker : App(LoggerView::class) {
         if (!SystemTray.isSupported()) {
             Logger.d("Tray Icon not supported")
         }
-        trayicon(legendsIcon, APP_NAME, false, true) {
+        trayicon(legendsIconStream, APP_NAME, false, true) {
             popupMenu = PopupMenu().apply {
                 add(MenuItem("Show Log").apply {
                     addActionListener {

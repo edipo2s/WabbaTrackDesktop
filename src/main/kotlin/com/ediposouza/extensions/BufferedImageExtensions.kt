@@ -12,12 +12,12 @@ import javax.imageio.ImageIO
 
 fun BufferedImage.saveCroppedImage() {
     val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
-    File("src/main/resources/Test/Tmp").apply {
+    File("src/main/resources/Crops/Tmp").apply {
         if (!exists()) {
             mkdir()
         }
     }
-    ImageIO.write(this, "png", File("src/main/resources/Test/Tmp/$tmpFileName"))
+    ImageIO.write(this, "png", File("src/main/resources/Crops/Tmp/$tmpFileName"))
 }
 
 fun BufferedImage.getCardCrop(): BufferedImage? {

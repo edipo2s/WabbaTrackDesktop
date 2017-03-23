@@ -1,7 +1,8 @@
 
 # Created by https://www.gitignore.io/api/intellij,osx,linux,gradle,java,kotlin
 
-src/main/resources/Test/**
+src/main/resources/Crops/**
+src/test/resources/Crops/**
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm

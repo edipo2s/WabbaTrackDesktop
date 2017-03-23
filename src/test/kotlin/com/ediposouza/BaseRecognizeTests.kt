@@ -22,12 +22,12 @@ abstract class BaseRecognizeTests {
                                  highTolerance: Boolean = false): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
-            File("src/test/resources/Test/Tmp").apply {
+            File("src/test/resources/Crops/Tmp").apply {
                 if (!exists()) {
                     mkdir()
                 }
             }
-            ImageIO.write(image, "png", File("src/test/resources/Test/Tmp/$tmpFileName"))
+            ImageIO.write(image, "png", File("src/test/resources/Crops/Tmp/$tmpFileName"))
         }
         return Recognizer.recognizeImageInMap(image, dHashMap, highTolerance)
     }

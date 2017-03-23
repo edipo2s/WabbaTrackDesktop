@@ -6,10 +6,8 @@ import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
-import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
 import tornadofx.FX
-import tornadofx.FX.Companion.stylesheets
 import tornadofx.View
 import tornadofx.singleAssign
 
@@ -29,8 +27,7 @@ class LoggerView : View("TES Legends Tracker Log") {
     var logLevelView: ComboBox<String> by singleAssign()
 
     init {
-        FX.primaryStage.icons += Image(javaClass.getResourceAsStream("/$TRAY_ICON"))
-        stylesheets.add(TESLTracker::class.java.getResource("/fontstyle.css").toExternalForm())
+        FX.primaryStage.icons += TESLTracker.legendsIcon
         textArea = TextArea().apply {
             isEditable = false
             isWrapText = true
