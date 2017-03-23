@@ -15,7 +15,7 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Before
     fun setUp() {
-        App.referenceConfig = ReferenceConfig1366x768()
+        TESLTracker.referenceConfig = ReferenceConfig1366x768()
     }
 
     @Test

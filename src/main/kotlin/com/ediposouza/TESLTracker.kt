@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities
 /**
  * Created by ediposouza on 06/03/17.
  */
-class App : App(LoggerView::class) {
+class TESLTracker : App(LoggerView::class) {
 
     companion object {
 
@@ -48,7 +48,7 @@ class App : App(LoggerView::class) {
     val firebaseDB: Rest by inject()
     val arenaTierController: ArenaTierController by inject()
     val legendsIcon: InputStream by lazy {
-        javaClass.getResourceAsStream("/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png")
+        TESLTracker::class.java.getResourceAsStream("/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png")
     }
 
     var lastScreenshotDHash = ""

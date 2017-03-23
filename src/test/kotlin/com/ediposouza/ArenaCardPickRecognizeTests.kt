@@ -15,7 +15,7 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
 
     @Before
     fun setUp() {
-        App.referenceConfig = ReferenceConfig1366x768()
+        TESLTracker.referenceConfig = ReferenceConfig1366x768()
     }
 
     @Test
@@ -40,25 +40,25 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testArenaPick1024x768WithAlternativeReferenceConfig() {
-        App.referenceConfig = ReferenceConfig1024x768()
+        TESLTracker.referenceConfig = ReferenceConfig1024x768()
         recognizeArenaPick("Pick1024x768.png", "gardenerofswords", "elusiveschemer", "improvisedweapon")
     }
 
     @Test
     fun testArenaPick1280x768WithAlternativeReferenceConfig() {
-        App.referenceConfig = ReferenceConfig1024x768()
+        TESLTracker.referenceConfig = ReferenceConfig1024x768()
         recognizeArenaPick("Pick1280x768.png", "gardenerofswords", "elusiveschemer", "improvisedweapon")
     }
 
     @Test
     fun testArenaPick1360x768WithAlternativeReferenceConfig() {
-        App.referenceConfig = ReferenceConfig1024x768()
+        TESLTracker.referenceConfig = ReferenceConfig1024x768()
         recognizeArenaPick("Pick1360x768.png", "fharundefender", "treeminder", "execute")
     }
 
     @Test
     fun testArenaPick1366x768WithAlternativeReferenceConfig() {
-        App.referenceConfig = ReferenceConfig1024x768()
+        TESLTracker.referenceConfig = ReferenceConfig1024x768()
         recognizeArenaPick("Pick1366x768.png", "fifthlegiontrainer", "septimguardsman", "snowwolf")
     }
 

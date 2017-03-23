@@ -1,5 +1,6 @@
 package com.ediposouza.ui
 
+import com.ediposouza.TESLTracker
 import com.ediposouza.util.Logger
 import javafx.application.Platform
 import javafx.collections.FXCollections
@@ -29,7 +30,7 @@ class LoggerView : View("TES Legends Tracker Log") {
 
     init {
         FX.primaryStage.icons += Image(javaClass.getResourceAsStream("/$TRAY_ICON"))
-        stylesheets.add(javaClass.getResource("/fontstyle.css").toExternalForm())
+        stylesheets.add(TESLTracker::class.java.getResource("/fontstyle.css").toExternalForm())
         textArea = TextArea().apply {
             isEditable = false
             isWrapText = true

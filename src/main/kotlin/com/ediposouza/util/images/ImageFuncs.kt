@@ -1,6 +1,6 @@
 package com.ediposouza.util.images
 
-import com.ediposouza.App
+import com.ediposouza.TESLTracker
 import com.ediposouza.util.Logger
 import java.awt.image.BufferedImage
 import java.io.File
@@ -22,27 +22,27 @@ object ImageFuncs {
     }
 
     fun getScreenScaledPosition(referenceX: Int, referenceY: Int): Pair<Int, Int> {
-        val screenBounds = App.screenSize
+        val screenBounds = TESLTracker.screenSize
         return getScaledPosition(screenBounds.width.toInt(), screenBounds.height.toInt(), referenceX, referenceY)
     }
 
     fun getScreenScaledSize(referenceX: Int, referenceY: Int): Pair<Int, Int> {
-        val screenBounds = App.screenSize
+        val screenBounds = TESLTracker.screenSize
         return getScaledSize(screenBounds.height.toInt(), referenceX, referenceY)
     }
 
     fun getScaledPosition(screenWidth: Int, screenHeight: Int, referenceX: Int, referenceY: Int): Pair<Int, Int> {
-        val normalizedCardX = referenceX / App.referenceConfig.SCREEN_REFERENCE_WIDTH.toDouble()
-        val normalizedCardY = referenceY / App.referenceConfig.SCREEN_REFERENCE_HEIGHT.toDouble()
+        val normalizedCardX = referenceX / TESLTracker.referenceConfig.SCREEN_REFERENCE_WIDTH.toDouble()
+        val normalizedCardY = referenceY / TESLTracker.referenceConfig.SCREEN_REFERENCE_HEIGHT.toDouble()
 
-        val ratio = App.referenceConfig.SCREEN_REFERENCE_RATIO / (screenWidth.toDouble() / screenHeight)
+        val ratio = TESLTracker.referenceConfig.SCREEN_REFERENCE_RATIO / (screenWidth.toDouble() / screenHeight)
         val imageScaledPositionPickStartX = (screenWidth * ratio * normalizedCardX) + (screenWidth.toDouble() * (1 - ratio) / 2)
         val imageScaledPositionPickStartY = normalizedCardY * screenHeight
         return imageScaledPositionPickStartX.toInt() to imageScaledPositionPickStartY.toInt()
     }
 
     fun getScaledSize(imageHeight: Int, referenceX: Int, referenceY: Int): Pair<Int, Int> {
-        val scaleFactor = imageHeight.toDouble() / App.referenceConfig.SCREEN_REFERENCE_HEIGHT
+        val scaleFactor = imageHeight.toDouble() / TESLTracker.referenceConfig.SCREEN_REFERENCE_HEIGHT
         return (scaleFactor * referenceX).toInt() to (scaleFactor * referenceY).toInt()
     }
 

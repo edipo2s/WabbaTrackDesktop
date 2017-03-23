@@ -24,7 +24,7 @@ object ScreenshotHandlerArena {
         FX.eventbus.fire(ShowArenaTierEvent(arenaTier1Value, arenaTier2Value, arenaTier3Value))
     }
 
-    private fun recognizeArenaPick(image: BufferedImage, pick: Int): Pair<Int, List<Card>> {
+    private fun recognizeArenaPick(image: BufferedImage, pick: Int): Triple<String, Int, List<Card>> {
         with(image.getArenaCardCrop(pick)) {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
@@ -32,10 +32,10 @@ object ScreenshotHandlerArena {
                 return calcArenaValue(this, listOf())
             }
         }
-        return Pair(0, listOf())
+        return Triple("Unknown", 0, listOf())
     }
 
-    private fun calcArenaValue(card: Card, picksBefore: List<Card>): Pair<Int, List<Card>> {
+    private fun calcArenaValue(card: Card, picksBefore: List<Card>): Triple<String, Int, List<Card>> {
         val arenaTier: CardArenaTier = card.arenaTier
         val cardsSynergy = mutableListOf<Card>()
         val value = arenaTier.value
@@ -48,7 +48,7 @@ object ScreenshotHandlerArena {
                 cardsSynergy.add(draftedCard)
             }
         }
-        return Pair(value + totalValueExtra, cardsSynergy)
+        return Triple(card.name, value + totalValueExtra, cardsSynergy)
     }
 
     private fun calcCardSynergyPoints(arenaTierPlus: CardArenaTierPlus?, draftedCard: Card, reverseCalc: Boolean = false): Int {

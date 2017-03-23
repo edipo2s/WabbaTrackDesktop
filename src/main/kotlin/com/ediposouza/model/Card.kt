@@ -320,6 +320,10 @@ data class Card(
 
         const val ARENA_TIER_PLUS_VALUE_DELIMITER = "_"
 
+        val DUMMY = Card("Card", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
+                CardRarity.COMMON, false, 0, 0, 0, CardType.UNKNOWN, CardRace.ARGONIAN, listOf(), "", CardArenaTier.NONE,
+                null, false, "")
+
         fun fromJson(shortname: String, attr: CardAttribute, set: CardSet, json: JsonObject): Card {
             var clsAttr1 = attr
             var clsAttr2 = attr

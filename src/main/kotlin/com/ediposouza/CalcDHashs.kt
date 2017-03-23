@@ -43,12 +43,12 @@ object CalcDHashs {
     }
 
     fun getDHashFile(relativePath: String, cropFolder: String = "", cropFun: (BufferedImage) -> BufferedImage?) {
-        val file = File(javaClass.getResource(relativePath).toURI())
+        val file = File(TESLTracker::class.java.getResource(relativePath).toURI())
         calcImageFileDHash(file, cropFolder, cropFun)
     }
 
     fun getDHashFolderFiles(relativePath: String, cropFolder: String = "", cropFun: (BufferedImage) -> BufferedImage?) {
-        val folder = File(javaClass.getResource(relativePath).toURI())
+        val folder = File(TESLTracker::class.java.getResource(relativePath).toURI())
         getDHashFolderFiles(folder, folder.path, cropFolder, cropFun)
     }
 
