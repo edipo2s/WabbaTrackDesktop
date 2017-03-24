@@ -19,6 +19,7 @@ object ScreenshotProcessor {
         }
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
             Logger.i("\nGame Screen Detected!")
+            screenshot.saveCroppedImage()
             return true
         }
         //Arena screens check

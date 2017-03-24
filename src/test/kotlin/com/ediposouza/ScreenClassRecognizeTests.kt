@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage
 /**
  * Created by ediposouza on 06/03/17.
  */
-class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
+class ScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Before
     fun setUp() {
@@ -27,6 +27,7 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
     @Test
     fun testScreenGame() {
         recognizeScreen("ScreenGame.png", DHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
+        recognizeScreen("ScreenGame2.png", null, BufferedImage::getScreenGameCrop)
     }
 
     @Test
@@ -114,8 +115,9 @@ class ArenaScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     private fun recognizeScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
+        val screenSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_HIGH
         cropFun(getFileImage(testFileName))?.apply {
-            assertThat(recognizeImage(this, DHash.SCREENS_LIST)).isEqualTo(screen)
+            assertThat(recognizeImage(this, DHash.SCREENS_LIST, similarity = screenSimilarity)).isEqualTo(screen)
         }
     }
 

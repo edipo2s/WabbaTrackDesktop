@@ -64,7 +64,7 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
     }
 
     private fun recognizeArenaPick(testFileName: String, card1: String, card2: String, card3: String) {
-        val cardSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_HIGH
+        val cardSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW
         val croppedImage1 = getFileImage(testFileName).getArenaCardCrop(1)
         assertThat(recognizeImage(croppedImage1, DHashCards.LIST, similarity = cardSimilarity)).isEqualTo(card1)
         val croppedImage2 = getFileImage(testFileName).getArenaCardCrop(2)

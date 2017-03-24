@@ -28,11 +28,11 @@ object Recognizer {
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHashCards.LIST, Similarity.DHASH_DISTANCE_SIMILARITY_HIGH)
+        return recognizeImageInMap(image, DHashCards.LIST)
     }
 
     fun recognizeScreenImage(image: BufferedImage,
-                             similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_LOW): String? {
+                             similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_HIGH): String? {
         return recognizeImageInMap(image, DHash.SCREENS_LIST, similarity)
     }
 
@@ -52,10 +52,10 @@ object Recognizer {
         var cardShortName = ""
         var lessDistance = Int.MAX_VALUE
         dHashMap.forEach {
-            val dHashDistance = calcDHashDistance(dHash, it.value)
+            val dHashDistance = calcDHashDistance(dHash, it.key)
 //            Logger.d(" -- $dHashDistance from ${it.key}")
             if (dHashDistance < similarity && dHashDistance < lessDistance) {
-                cardShortName = it.key
+                cardShortName = it.value
                 lessDistance = dHashDistance
             }
         }
