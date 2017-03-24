@@ -17,6 +17,11 @@ class ArenaTierController : Controller() {
             card2ArenaTierStage.setPickValue(it.pick2ArenaTier)
             card3ArenaTierStage.setPickValue(it.pick3ArenaTier)
         }
+        subscribe<HideArenaTierEvent> {
+            card1ArenaTierStage.isVisible = false
+            card2ArenaTierStage.isVisible = false
+            card3ArenaTierStage.isVisible = false
+        }
     }
 
 }

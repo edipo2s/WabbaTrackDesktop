@@ -10,10 +10,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     // -- APP --
 
-    override val ARENA_PICK_VALUE_FIRST_X = 290
-    override val ARENA_PICK_VALUE_SECOND_X = 530
+    override val ARENA_PICK_VALUE_FIRST_X = 260
+    override val ARENA_PICK_VALUE_SECOND_X = 520
     override val ARENA_PICK_VALUE_THIRD_X = 770
-    override val ARENA_PICK_VALUE_Y = 420
+    override val ARENA_PICK_VALUE_Y = 435
     override val ARENA_PICK_VALUE_HEIGHT = 75
     override val ARENA_PICK_VALUE_WIDTH = 75
 

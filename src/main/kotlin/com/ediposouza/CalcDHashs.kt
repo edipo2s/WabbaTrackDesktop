@@ -13,7 +13,8 @@ import javax.imageio.ImageIO
  */
 object CalcDHashs {
 
-    val CALC_CARDS_DHASH = true
+    val CALC_CARDS_DHASH = false
+    val CALC_ARENA_PICKS_DHASH = false
 
     val CROP_FOLDER_ARENA = "Arena"
     val CROP_FOLDER_CARDS = "Cards"
@@ -32,7 +33,9 @@ object CalcDHashs {
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaClassSelect.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassSelectCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
-        getDHashFolderFiles("/Screens/ArenaPick", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        if (CALC_ARENA_PICKS_DHASH) {
+            getDHashFolderFiles("/Screens/ArenaPick", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
+        }
 
         Logger.d("--Arena Class Select--")
         getDHashFolderFiles("/Arena", CROP_FOLDER_ARENA, BufferedImage::getArenaClassSelectCrop)

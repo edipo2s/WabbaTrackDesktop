@@ -2,6 +2,7 @@ package com.ediposouza
 
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.ui.ArenaTierController
+import com.ediposouza.ui.HideArenaTierEvent
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
@@ -122,6 +123,7 @@ class TESLTracker : App(LoggerView::class) {
                 Logger.i("Elder scroll legends detected!")
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")
+                fire(HideArenaTierEvent())
             }
             Thread.sleep(DELAY_WINDOW_DETECTION)
         }

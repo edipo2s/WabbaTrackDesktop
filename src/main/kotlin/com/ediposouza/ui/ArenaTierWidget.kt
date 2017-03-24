@@ -10,11 +10,13 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.Label
+import javafx.scene.image.Image
 import javafx.scene.layout.Background
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.add
+import tornadofx.imageview
 import tornadofx.stackpane
 import tornadofx.vbox
 import java.awt.Window
@@ -33,6 +35,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         Label("").apply {
             alignment = Pos.CENTER
             font = Font.font(16.0)
+            padding = Insets(0.0, 2.0, 2.0, 2.0)
             textFill = Color.WHITE
         }
     }
@@ -49,7 +52,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     private val tierValueLabel by lazy {
         Label("0").apply {
             font = Font.font(42.0)
-            padding = Insets(0.0, 0.0, 5.0, 3.0)
+            padding = Insets(0.0, 0.0, 5.0, 4.0)
         }
     }
 
@@ -86,19 +89,19 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     private fun createFxScene(): Scene {
         val layout = VBox().apply {
             add(stackpane {
+                add(imageview {
+                    image = Image(TESLTracker::class.java.getResourceAsStream("/UI/arenaTierWidgetLayout.png"),
+                            tierValueSize.second.toDouble(), tierValueSize.second.toDouble(), true, true)
+                })
                 add(tierValueLabel)
-                minHeight = tierValueSize.second.toDouble()
-                minWidth = tierValueSize.first.toDouble()
-                style = "-fx-background-image: url(\"UI/arenaTierWidgetLayout.png\"); " +
-                        "-fx-background-size: ${tierValueSize.second.toDouble()},${tierValueSize.first.toDouble()}; " +
-                        "-fx-background-repeat: no-repeat;"
+                alignment = Pos.CENTER
             })
             add(vbox {
                 add(nameValueLabel)
                 add(synergyValueLabel)
                 alignment = Pos.CENTER
                 VBox.setMargin(this, Insets(2.0, 0.0, 0.0, 0.0))
-                style = "-fx-background-color: #00000088; " +
+                style = "-fx-background-color: #000000AA; " +
                         "-fx-background-radius: 5.0;"
             })
             background = Background.EMPTY
@@ -110,6 +113,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     }
 
     fun setPickValue(arenaTier: Triple<String, Int, List<Card>>) {
+        isVisible = true
         nameValueLabel.text = arenaTier.first
         with(synergyValueLabel) {
             if (arenaTier.third.isEmpty()) {

@@ -99,7 +99,7 @@ object DHash {
             "25019560292005f10438635c29c6309793678d09c60ea101300008000000" to "Scout",
             "5274a99204310258010c61442992318913654d18060c0100000000000000" to "Sorcerer",
             "25f419a585cc527a235de96a4929d2964364354c16080509010000000000" to "Spellword",
-            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "Warrior"
+            "22ed9394aab66d758913ab5649a0b088d3651512060c8100000000000000" to "Warrior"
     )
 
     val GAME_OPPONENT_CLASS_LIST = mapOf(
