@@ -2,6 +2,7 @@ package com.ediposouza.util
 
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
+import com.ediposouza.util.Recognizer.Similarity.Companion.DHASH_DISTANCE_SIMILARITY_SUPER_HIGH
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -13,36 +14,47 @@ object Recognizer {
 
     const val DHASH_SIZE = 16
     const val DHASH_MAX_DISTANCE = 60
-    const val DHASH_DISTANCE_TOLERANCE_SUPER_HIGH = DHASH_MAX_DISTANCE * 0.15
-    const val DHASH_DISTANCE_TOLERANCE_HIGH = DHASH_MAX_DISTANCE * 0.85
-    const val DHASH_DISTANCE_TOLERANCE_LOW = DHASH_MAX_DISTANCE * 0.5
 
-    fun recognizeCardImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHashCards.LIST, true)
+    class Similarity {
+
+        companion object {
+
+            const val DHASH_DISTANCE_SIMILARITY_SUPER_HIGH = DHASH_MAX_DISTANCE * 0.15
+            const val DHASH_DISTANCE_SIMILARITY_HIGH = DHASH_MAX_DISTANCE * 0.50
+            const val DHASH_DISTANCE_SIMILARITY_LOW = DHASH_MAX_DISTANCE * 0.85
+
+        }
+
     }
 
-    fun recognizeScreenImage(image: BufferedImage, highTolerance: Boolean = false): String? {
-        return recognizeImageInMap(image, DHash.SCREENS_LIST, highTolerance)
+    fun recognizeCardImage(image: BufferedImage): String? {
+        return recognizeImageInMap(image, DHashCards.LIST, Similarity.DHASH_DISTANCE_SIMILARITY_HIGH)
+    }
+
+    fun recognizeScreenImage(image: BufferedImage,
+                             similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_LOW): String? {
+        return recognizeImageInMap(image, DHash.SCREENS_LIST, similarity)
     }
 
     fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
         return recognizeImageInMap(image, DHash.CLASS_SELECTED_LIST)
     }
 
-    fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>, highTolerance: Boolean = false): String? {
-        val result = recognizeDHashInMap(calcDHash(image), dHashMap, highTolerance)
+    fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>,
+                            similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_LOW): String? {
+        val result = recognizeDHashInMap(calcDHash(image), dHashMap, similarity)
         Logger.d("${result.first} - ${result.second})")
         return result.first
     }
 
-    fun recognizeDHashInMap(dHash: String, dHashMap: Map<String, String>, highTolerance: Boolean = false): Pair<String?, Int> {
+    fun recognizeDHashInMap(dHash: String, dHashMap: Map<String, String>,
+                            similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_LOW): Pair<String?, Int> {
         var cardShortName = ""
         var lessDistance = Int.MAX_VALUE
         dHashMap.forEach {
             val dHashDistance = calcDHashDistance(dHash, it.value)
-            val tolerance = DHASH_DISTANCE_TOLERANCE_HIGH.takeIf { highTolerance } ?: DHASH_DISTANCE_TOLERANCE_LOW
 //            Logger.d(" -- $dHashDistance from ${it.key}")
-            if (dHashDistance < tolerance && dHashDistance < lessDistance) {
+            if (dHashDistance < similarity && dHashDistance < lessDistance) {
                 cardShortName = it.key
                 lessDistance = dHashDistance
             }
@@ -83,7 +95,7 @@ object Recognizer {
         }
         val calcDHashDistance = calcDHashDistance(screenshot1Hash, screenshot2Hash)
         Logger.d("Different distance: $calcDHashDistance")
-        return calcDHashDistance > DHASH_DISTANCE_TOLERANCE_SUPER_HIGH
+        return calcDHashDistance > DHASH_DISTANCE_SIMILARITY_SUPER_HIGH
     }
 
     private fun calcDHashDistance(s1: String, s2: String): Int {

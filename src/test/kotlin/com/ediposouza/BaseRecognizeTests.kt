@@ -19,7 +19,7 @@ abstract class BaseRecognizeTests {
     }
 
     protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false,
-                                 highTolerance: Boolean = false): String? {
+                                 similarity: Double = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
             File("src/test/resources/Crops/Tmp").apply {
@@ -29,7 +29,7 @@ abstract class BaseRecognizeTests {
             }
             ImageIO.write(image, "png", File("src/test/resources/Crops/Tmp/$tmpFileName"))
         }
-        return Recognizer.recognizeImageInMap(image, dHashMap, highTolerance)
+        return Recognizer.recognizeImageInMap(image, dHashMap, similarity)
     }
 
 }

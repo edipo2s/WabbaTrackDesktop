@@ -2,6 +2,7 @@ package com.ediposouza
 
 import com.ediposouza.data.DHashCards
 import com.ediposouza.extensions.getArenaCardCrop
+import com.ediposouza.util.Recognizer
 import com.ediposouza.util.images.ReferenceConfig1024x768
 import com.ediposouza.util.images.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
@@ -63,12 +64,13 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
     }
 
     private fun recognizeArenaPick(testFileName: String, card1: String, card2: String, card3: String) {
+        val cardSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_HIGH
         val croppedImage1 = getFileImage(testFileName).getArenaCardCrop(1)
-        assertThat(recognizeImage(croppedImage1, DHashCards.LIST, highTolerance = true)).isEqualTo(card1)
+        assertThat(recognizeImage(croppedImage1, DHashCards.LIST, similarity = cardSimilarity)).isEqualTo(card1)
         val croppedImage2 = getFileImage(testFileName).getArenaCardCrop(2)
-        assertThat(recognizeImage(croppedImage2, DHashCards.LIST, highTolerance = true)).isEqualTo(card2)
+        assertThat(recognizeImage(croppedImage2, DHashCards.LIST, similarity = cardSimilarity)).isEqualTo(card2)
         val croppedImage3 = getFileImage(testFileName).getArenaCardCrop(3)
-        assertThat(recognizeImage(croppedImage3, DHashCards.LIST, highTolerance = true)).isEqualTo(card3)
+        assertThat(recognizeImage(croppedImage3, DHashCards.LIST, similarity = cardSimilarity)).isEqualTo(card3)
     }
 
 }

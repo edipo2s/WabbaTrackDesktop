@@ -35,7 +35,8 @@ object ScreenshotProcessor {
             }
             return true
         }
-        if (screenshot.getScreenArenaPickCrop().matchScreenList(DHash.SCREENS_ARENA_PICK, true)) {
+        if (screenshot.getScreenArenaPickCrop().matchScreenList(DHash.SCREENS_ARENA_PICK,
+                Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_SUPER_HIGH)) {
             Logger.i("\nArena Pick Screen Detected!")
             ScreenshotHandlerArena.processArenaPickScreenshot(screenshot)
             return true
@@ -56,8 +57,9 @@ object ScreenshotProcessor {
         }
     }
 
-    private fun BufferedImage.matchScreenList(screens: List<String>, highTolerance: Boolean = false): Boolean {
-        val recognizedScreen = Recognizer.recognizeScreenImage(this, highTolerance)
+    private fun BufferedImage.matchScreenList(screens: List<String>,
+                                              similarity: Double = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW): Boolean {
+        val recognizedScreen = Recognizer.recognizeScreenImage(this, similarity)
         if (screens.contains(recognizedScreen) && lastScreenRecognized != recognizedScreen) {
             lastScreenRecognized = recognizedScreen!!
             return true
