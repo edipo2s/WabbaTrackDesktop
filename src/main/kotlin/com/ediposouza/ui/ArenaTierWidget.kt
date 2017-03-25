@@ -10,7 +10,9 @@ import javafx.embed.swing.JFXPanel
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
+import javafx.scene.control.ContextMenu
 import javafx.scene.control.Label
+import javafx.scene.control.MenuItem
 import javafx.scene.image.Image
 import javafx.scene.layout.Background
 import javafx.scene.layout.Region
@@ -56,6 +58,12 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
             padding = Insets(0.0, 0.0, 5.0, 4.0)
         }
     }
+
+    private val contextMenu = ContextMenu(MenuItem("Detect Again").apply {
+        setOnAction {
+            TESLTracker.redetectScreen()
+        }
+    })
 
     init {
         type = Window.Type.UTILITY
@@ -115,6 +123,11 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         return Scene(layout).apply {
             fill = Color.TRANSPARENT
             stylesheets.add(TESLTracker::class.java.getResource("/UI/arenaTierWidget.css").toExternalForm())
+            setOnMousePressed { me ->
+                if (me.isSecondaryButtonDown) {
+                    contextMenu.show(root, me.screenX, me.screenY)
+                }
+            }
         }
     }
 

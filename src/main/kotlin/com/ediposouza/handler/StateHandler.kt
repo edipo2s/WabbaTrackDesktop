@@ -16,6 +16,7 @@ object StateHandler {
 
         fun onResume()
         fun onPause()
+        fun hasValidState(): Boolean = true
 
     }
 

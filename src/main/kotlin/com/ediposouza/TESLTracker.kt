@@ -2,7 +2,7 @@ package com.ediposouza
 
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.ScreenHandler
-import com.ediposouza.ui.HideArenaTierEvent
+import com.ediposouza.handler.StateHandler
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.util.*
 import javafx.application.Platform
@@ -37,6 +37,12 @@ class TESLTracker : App(LoggerView::class) {
 
         val iconName = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"
         val legendsIcon: Image by lazy { Image(iconName) }
+
+        private var lastScreenshotDHash = ""
+
+        fun redetectScreen() {
+            lastScreenshotDHash = ""
+        }
     }
 
     val APP_NAME = "TES Legends Tracker"
@@ -47,8 +53,7 @@ class TESLTracker : App(LoggerView::class) {
     val firebaseDB: Rest by inject()
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
 
-    var lastScreenshotDHash = ""
-    var lastScreenshotDHashLogged = false
+    var waitingScreenshotChangeWasLogged = false
 
     init {
         firebaseDB.baseURI = "https://tes-legends-assistant.firebaseio.com"
@@ -138,15 +143,16 @@ class TESLTracker : App(LoggerView::class) {
             return false
         }
         val screenshotDHash = Recognizer.calcDHash(screenshot)
-        if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash)) {
+        if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash) &&
+                StateHandler.currentTESLState?.hasValidState() ?: true) {
             lastScreenshotDHash = screenshotDHash
-            lastScreenshotDHashLogged = false
+            waitingScreenshotChangeWasLogged = false
             if (!ScreenHandler.process(screenshot)) {
                 return isTESLegendsScreenActive()
             }
-        } else if (!lastScreenshotDHashLogged) {
+        } else if (!waitingScreenshotChangeWasLogged) {
             Logger.d("Waiting screen change..")
-            lastScreenshotDHashLogged = true
+            waitingScreenshotChangeWasLogged = true
         }
         return true
     }

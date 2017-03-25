@@ -79,6 +79,14 @@ object ArenaState : StateHandler.TESLState {
         GlobalScreen.unregisterNativeHook()
     }
 
+    override fun hasValidState(): Boolean {
+        if (lastArenaTierPicks == null) {
+            return true
+        }
+        return lastArenaTierPicks?.first != lastArenaTierPicks?.second ||
+                lastArenaTierPicks?.second != lastArenaTierPicks?.third
+    }
+
     fun resetState() {
         lastClassSelectViews = null
         pickNumber = 0

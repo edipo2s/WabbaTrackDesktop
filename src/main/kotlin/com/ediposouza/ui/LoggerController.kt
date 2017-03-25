@@ -1,5 +1,7 @@
 package com.ediposouza.ui
 
+import com.ediposouza.LogBreakLineEvent
+import com.ediposouza.LogEvent
 import com.ediposouza.util.Logger
 import tornadofx.Controller
 

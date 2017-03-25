@@ -1,4 +1,4 @@
-package com.ediposouza.ui
+package com.ediposouza
 
 import com.ediposouza.model.Card
 import com.ediposouza.util.Logger
