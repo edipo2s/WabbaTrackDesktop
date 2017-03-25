@@ -4,6 +4,7 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.extensions.saveCroppedImage
 import com.ediposouza.model.*
+import com.ediposouza.scope.ArenaState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage
@@ -25,10 +26,10 @@ object ArenaHandler {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
                 Logger.i("--$name: $arenaTier")
-                return calcArenaValue(this, listOf())
+                return calcArenaValue(this, ArenaState.picks.map { it.value })
             }
         }
-        return CardPick(Card.DUMMY, 0, listOf())
+        return CardPick(Card.DUMMY, 0, ArenaState.picks.map { it.value })
     }
 
     private fun calcArenaValue(card: Card, picksBefore: List<Card>): CardPick {

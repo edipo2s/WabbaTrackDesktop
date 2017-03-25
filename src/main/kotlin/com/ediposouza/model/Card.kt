@@ -328,7 +328,7 @@ data class Card(
 
         const val ARENA_TIER_PLUS_VALUE_DELIMITER = "_"
 
-        val DUMMY = Card("Unknow", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
+        val DUMMY = Card("Unknown", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
                 CardRarity.COMMON, false, 0, 0, 0, CardType.UNKNOWN, CardRace.ARGONIAN, listOf(), "", CardArenaTier.NONE,
                 null, false, "")
 
@@ -381,7 +381,7 @@ data class Card(
                     }
                 else -> arenaTierPlus.values.first()
             }
-            return CardArenaTierPlus(cardArenaTierPlusType, operator, value)
+            return CardArenaTierPlus(cardArenaTierPlusType, operator, value.replace("\"", ""))
         }
 
     }

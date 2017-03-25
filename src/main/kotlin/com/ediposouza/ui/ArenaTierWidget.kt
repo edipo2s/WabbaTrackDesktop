@@ -1,6 +1,7 @@
 package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.model.Card
 import com.ediposouza.model.CardArenaTier
 import com.ediposouza.model.CardPick
 import com.ediposouza.util.ImageFuncs
@@ -12,13 +13,11 @@ import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.layout.Background
+import javafx.scene.layout.Region
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
-import tornadofx.add
-import tornadofx.imageview
-import tornadofx.stackpane
-import tornadofx.vbox
+import tornadofx.*
 import java.awt.Dimension
 import java.awt.Window
 import javax.swing.JFrame
@@ -30,7 +29,8 @@ import javax.swing.SwingUtilities
  */
 class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
-    var tierValueSize = Dimension(68, 70)
+    private var tierValueSize = Dimension(68, 70)
+    private var cardSize = Dimension(200, 315)
 
     private val nameValueLabel by lazy {
         Label("").apply {
@@ -43,9 +43,9 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
     private val synergyValueLabel by lazy {
         Label("").apply {
-            alignment = Pos.CENTER
-            font = Font.font(12.0)
-            padding = Insets(0.0, 2.0, 2.0, 2.0)
+            alignment = Pos.TOP_LEFT
+            font = Font.font(1.0)
+            padding = Insets(0.0, 3.0, 2.0, 3.0)
             textFill = Color.WHITE
         }
     }
@@ -72,6 +72,8 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
                 2 -> tierValueSecondPos.x
                 else -> tierValueThirdPos.x
             }, tierValueFirstPos.y)
+
+            cardSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_SELECT_WIDTH, ARENA_PICK_SELECT_HEIGHT)
         }
 
         val fxPanel = JFXPanel()
@@ -90,6 +92,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     private fun createFxScene(): Scene {
         val layout = VBox().apply {
             add(stackpane {
+                add(pane { minWidth = cardSize.width.toDouble() })
                 add(imageview {
                     image = Image(TESLTracker::class.java.getResourceAsStream("/UI/arenaTierWidgetLayout.png"),
                             tierValueSize.width.toDouble(), tierValueSize.height.toDouble(), true, true)
@@ -104,7 +107,9 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
                 VBox.setMargin(this, Insets(2.0, 0.0, 0.0, 0.0))
                 style = "-fx-background-color: #000000AA; " +
                         "-fx-background-radius: 5.0;"
+                maxWidth = Region.USE_PREF_SIZE
             })
+            alignment = Pos.TOP_CENTER
             background = Background.EMPTY
         }
         return Scene(layout).apply {
@@ -117,10 +122,8 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         isVisible = true
         nameValueLabel.text = arenaTier.card.name
         with(synergyValueLabel) {
-            if (arenaTier.synergy.isEmpty()) {
-                font = Font.font(1.0)
-            }
-            text = " Synergy with: " + arenaTier.synergy.map { "\n  ${it.name}" }.joinToString { it }
+            style = "-fx-font-size: ${1.takeIf { arenaTier.synergy.isEmpty() } ?: 12};"
+            text = "Synergy:" + arenaTier.synergy.sortedBy(Card::name).map { "\n  ${it.name}" }.joinToString { it }
         }
         with(tierValueLabel) {
             text = "${arenaTier.value}"
