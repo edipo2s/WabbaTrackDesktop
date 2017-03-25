@@ -22,6 +22,7 @@ import java.awt.SystemTray
 import java.awt.TrayIcon
 import java.awt.image.BufferedImage
 import java.io.InputStream
+import java.net.URLDecoder
 import java.util.concurrent.CompletableFuture
 import javax.swing.SwingUtilities
 
@@ -36,6 +37,7 @@ class TESLTracker : App(LoggerView::class) {
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
 
         val iconName = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"
+        val jarPath = URLDecoder.decode(TESLTracker::class.java.protectionDomain.codeSource.location.file, "UTF-8")
         val legendsIcon: Image by lazy { Image(iconName) }
 
         private var lastScreenshotDHash = ""

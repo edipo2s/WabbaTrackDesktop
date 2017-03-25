@@ -26,10 +26,10 @@ object ArenaHandler {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
                 Logger.i("--$name: $arenaTier")
-                return calcArenaValue(this, ArenaState.picks.map { it.value })
+                return calcArenaValue(this, ArenaState.picks)
             }
         }
-        return CardPick(Card.DUMMY, 0, ArenaState.picks.map { it.value })
+        return CardPick(Card.DUMMY, 0, ArenaState.picks)
     }
 
     private fun calcArenaValue(card: Card, picksBefore: List<Card>): CardPick {
