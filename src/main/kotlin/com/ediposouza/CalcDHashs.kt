@@ -1,9 +1,9 @@
 package com.ediposouza
 
 import com.ediposouza.extensions.*
+import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
-import com.ediposouza.util.images.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO

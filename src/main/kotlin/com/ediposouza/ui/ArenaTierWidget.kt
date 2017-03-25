@@ -1,9 +1,9 @@
 package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
-import com.ediposouza.model.Card
 import com.ediposouza.model.CardArenaTier
-import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.model.CardPick
+import com.ediposouza.util.ImageFuncs
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
 import javafx.geometry.Insets
@@ -19,6 +19,7 @@ import tornadofx.add
 import tornadofx.imageview
 import tornadofx.stackpane
 import tornadofx.vbox
+import java.awt.Dimension
 import java.awt.Window
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
@@ -29,7 +30,7 @@ import javax.swing.SwingUtilities
  */
 class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
-    var tierValueSize = Pair(68, 70)
+    var tierValueSize = Dimension(68, 70)
 
     private val nameValueLabel by lazy {
         Label("").apply {
@@ -62,15 +63,15 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         isAlwaysOnTop = true
         background = java.awt.Color(0, 0, 0, 0)
         with(TESLTracker.referenceConfig) {
-            val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_FIRST_X, ARENA_PICK_VALUE_Y)
-            val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_SECOND_X, ARENA_PICK_VALUE_Y)
-            val tierValueThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_VALUE_THIRD_X, ARENA_PICK_VALUE_Y)
-            tierValueSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_VALUE_WIDTH, ARENA_PICK_VALUE_HEIGHT)
+            val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_FIRST_X, ARENA_PICK_NUMBER_Y)
+            val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_SECOND_X, ARENA_PICK_NUMBER_Y)
+            val tierValueThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_THIRD_X, ARENA_PICK_NUMBER_Y)
+            tierValueSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_NUMBER_WIDTH, ARENA_PICK_NUMBER_HEIGHT)
             setLocation(when (pickNumber) {
-                1 -> tierValueFirstPos.first
-                2 -> tierValueSecondPos.first
-                else -> tierValueThirdPos.first
-            }, tierValueFirstPos.second)
+                1 -> tierValueFirstPos.x
+                2 -> tierValueSecondPos.x
+                else -> tierValueThirdPos.x
+            }, tierValueFirstPos.y)
         }
 
         val fxPanel = JFXPanel()
@@ -91,7 +92,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
             add(stackpane {
                 add(imageview {
                     image = Image(TESLTracker::class.java.getResourceAsStream("/UI/arenaTierWidgetLayout.png"),
-                            tierValueSize.second.toDouble(), tierValueSize.second.toDouble(), true, true)
+                            tierValueSize.width.toDouble(), tierValueSize.height.toDouble(), true, true)
                 })
                 add(tierValueLabel)
                 alignment = Pos.CENTER
@@ -112,18 +113,18 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         }
     }
 
-    fun setPickValue(arenaTier: Triple<String, Int, List<Card>>) {
+    fun setPickValue(arenaTier: CardPick) {
         isVisible = true
-        nameValueLabel.text = arenaTier.first
+        nameValueLabel.text = arenaTier.card.name
         with(synergyValueLabel) {
-            if (arenaTier.third.isEmpty()) {
+            if (arenaTier.synergy.isEmpty()) {
                 font = Font.font(1.0)
             }
-            text = " Synergy with: " + arenaTier.third.map { "\n  ${it.name}" }.joinToString { it }
+            text = " Synergy with: " + arenaTier.synergy.map { "\n  ${it.name}" }.joinToString { it }
         }
         with(tierValueLabel) {
-            text = "${arenaTier.second}"
-            textFill = Color.web(when (arenaTier.second) {
+            text = "${arenaTier.value}"
+            textFill = Color.web(when (arenaTier.value) {
                 in 0..CardArenaTier.AVERAGE.value.minus(1) -> "#F44336"
                 in CardArenaTier.AVERAGE.value..CardArenaTier.EXCELLENT.value.minus(1) -> "#BDBDBD"
                 else -> "#4DB6AC"

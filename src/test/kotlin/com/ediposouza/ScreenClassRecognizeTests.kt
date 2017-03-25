@@ -3,7 +3,7 @@ package com.ediposouza
 import com.ediposouza.data.DHash
 import com.ediposouza.extensions.*
 import com.ediposouza.util.Recognizer
-import com.ediposouza.util.images.ReferenceConfig1366x768
+import com.ediposouza.util.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

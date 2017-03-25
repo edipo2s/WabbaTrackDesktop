@@ -1,4 +1,4 @@
-package com.ediposouza.util.images
+package com.ediposouza.util
 
 /**
  * Created by ediposouza on 16/03/17.
@@ -10,12 +10,19 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     // -- APP --
 
-    override val ARENA_PICK_VALUE_FIRST_X = 260
-    override val ARENA_PICK_VALUE_SECOND_X = 520
-    override val ARENA_PICK_VALUE_THIRD_X = 770
-    override val ARENA_PICK_VALUE_Y = 435
-    override val ARENA_PICK_VALUE_HEIGHT = 75
-    override val ARENA_PICK_VALUE_WIDTH = 75
+    override val ARENA_PICK_SELECT_FIRST_X = 235
+    override val ARENA_PICK_SELECT_SECOND_X = 460
+    override val ARENA_PICK_SELECT_THIRD_X = 690
+    override val ARENA_PICK_SELECT_Y = 100
+    override val ARENA_PICK_SELECT_HEIGHT = 315
+    override val ARENA_PICK_SELECT_WIDTH = 200
+
+    override val ARENA_PICK_NUMBER_FIRST_X = 260
+    override val ARENA_PICK_NUMBER_SECOND_X = 520
+    override val ARENA_PICK_NUMBER_THIRD_X = 770
+    override val ARENA_PICK_NUMBER_Y = 435
+    override val ARENA_PICK_NUMBER_HEIGHT = 75
+    override val ARENA_PICK_NUMBER_WIDTH = 75
 
     override val FULL_CARD_HEIGHT = 275
     override val FULL_CARD_WIDTH = 212

@@ -1,4 +1,4 @@
-package com.ediposouza.util.images
+package com.ediposouza.util
 
 /**
  * Created by ediposouza on 16/03/17.
@@ -13,12 +13,19 @@ abstract class ReferenceConfig {
 
     // -- APP --
 
-    open val ARENA_PICK_VALUE_HEIGHT = 0
-    open val ARENA_PICK_VALUE_WIDTH = 0
-    open val ARENA_PICK_VALUE_FIRST_X = 0
-    open val ARENA_PICK_VALUE_SECOND_X = 0
-    open val ARENA_PICK_VALUE_THIRD_X = 0
-    open val ARENA_PICK_VALUE_Y = 0
+    open val ARENA_PICK_SELECT_HEIGHT = 0
+    open val ARENA_PICK_SELECT_WIDTH = 0
+    open val ARENA_PICK_SELECT_FIRST_X = 0
+    open val ARENA_PICK_SELECT_SECOND_X = 0
+    open val ARENA_PICK_SELECT_THIRD_X = 0
+    open val ARENA_PICK_SELECT_Y = 0
+
+    open val ARENA_PICK_NUMBER_HEIGHT = 0
+    open val ARENA_PICK_NUMBER_WIDTH = 0
+    open val ARENA_PICK_NUMBER_FIRST_X = 0
+    open val ARENA_PICK_NUMBER_SECOND_X = 0
+    open val ARENA_PICK_NUMBER_THIRD_X = 0
+    open val ARENA_PICK_NUMBER_Y = 0
 
     open val FULL_CARD_HEIGHT = 0
     open val FULL_CARD_WIDTH = 0

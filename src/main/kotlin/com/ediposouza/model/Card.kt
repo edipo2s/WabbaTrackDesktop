@@ -293,6 +293,14 @@ data class CardSlot(
 
 )
 
+data class CardPick(
+
+        val card: Card,
+        val value: Int,
+        val synergy: List<Card>
+
+)
+
 data class Card(
 
         val name: String,
@@ -320,7 +328,7 @@ data class Card(
 
         const val ARENA_TIER_PLUS_VALUE_DELIMITER = "_"
 
-        val DUMMY = Card("Card", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
+        val DUMMY = Card("Unknow", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
                 CardRarity.COMMON, false, 0, 0, 0, CardType.UNKNOWN, CardRace.ARGONIAN, listOf(), "", CardArenaTier.NONE,
                 null, false, "")
 

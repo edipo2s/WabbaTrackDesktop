@@ -1,15 +1,10 @@
 package com.ediposouza
 
 import com.ediposouza.data.TESLTrackerData
-import com.ediposouza.ui.ArenaTierController
+import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.ui.HideArenaTierEvent
 import com.ediposouza.ui.LoggerView
-import com.ediposouza.util.Logger
-import com.ediposouza.util.Recognizer
-import com.ediposouza.util.ScreenFuncs
-import com.ediposouza.util.ScreenshotProcessor
-import com.ediposouza.util.images.ReferenceConfig
-import com.ediposouza.util.images.ReferenceConfig1366x768
+import com.ediposouza.util.*
 import javafx.application.Platform
 import javafx.geometry.Rectangle2D
 import javafx.scene.control.Alert
@@ -50,7 +45,6 @@ class TESLTracker : App(LoggerView::class) {
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val firebaseDB: Rest by inject()
-    val arenaTierController: ArenaTierController by inject()
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
 
     var lastScreenshotDHash = ""
@@ -58,7 +52,6 @@ class TESLTracker : App(LoggerView::class) {
 
     init {
         firebaseDB.baseURI = "https://tes-legends-assistant.firebaseio.com"
-        arenaTierController.config
     }
 
     override fun start(stage: Stage) {
@@ -133,7 +126,7 @@ class TESLTracker : App(LoggerView::class) {
         Logger.i("Start screenshot game screens..")
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {
-                ScreenshotProcessor.lastScreenRecognized = ""
+                ScreenHandler.lastScreenRecognized = ""
                 break
             }
             Thread.sleep(DELAY_ELDER_SCROLL_SCREENSHOT)
@@ -148,7 +141,7 @@ class TESLTracker : App(LoggerView::class) {
         if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash)) {
             lastScreenshotDHash = screenshotDHash
             lastScreenshotDHashLogged = false
-            if (!ScreenshotProcessor.process(screenshot)) {
+            if (!ScreenHandler.process(screenshot)) {
                 return isTESLegendsScreenActive()
             }
         } else if (!lastScreenshotDHashLogged) {

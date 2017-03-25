@@ -1,7 +1,7 @@
 package com.ediposouza.extensions
 
 import com.ediposouza.TESLTracker
-import com.ediposouza.util.images.ImageFuncs
+import com.ediposouza.util.ImageFuncs
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -108,5 +108,5 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
 private fun BufferedImage.crop(cropX: Int, cropY: Int, cropWidth: Int, cropHeight: Int): BufferedImage {
     val pickPosition = ImageFuncs.getScaledPosition(width, height, cropX, cropY)
     val pickSize = ImageFuncs.getScaledSize(height, cropWidth, cropHeight)
-    return getSubimage(pickPosition.first, pickPosition.second, pickSize.first, pickSize.second)
+    return getSubimage(pickPosition.x, pickPosition.y, pickSize.width, pickSize.height)
 }

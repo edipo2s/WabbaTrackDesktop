@@ -1,30 +1,26 @@
-package com.ediposouza.util
+package com.ediposouza.handler
 
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.extensions.saveCroppedImage
 import com.ediposouza.model.*
-import com.ediposouza.ui.ShowArenaTierEvent
-import tornadofx.FX
+import com.ediposouza.util.Logger
+import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage
 
 /**
  * Created by Edipo on 18/03/2017.
  */
-object ScreenshotHandlerArena {
+object ArenaHandler {
 
-    fun processArenaClassSelectScreenshot(className: String, screenshot: BufferedImage) {
-
-    }
-
-    fun processArenaPickScreenshot(screenshot: BufferedImage) {
+    fun processArenaPickScreenshot(screenshot: BufferedImage): Triple<CardPick, CardPick, CardPick> {
         val arenaTier1Value = recognizeArenaPick(screenshot, 1)
         val arenaTier2Value = recognizeArenaPick(screenshot, 2)
         val arenaTier3Value = recognizeArenaPick(screenshot, 3)
-        FX.eventbus.fire(ShowArenaTierEvent(arenaTier1Value, arenaTier2Value, arenaTier3Value))
+        return Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value)
     }
 
-    private fun recognizeArenaPick(image: BufferedImage, pick: Int): Triple<String, Int, List<Card>> {
+    private fun recognizeArenaPick(image: BufferedImage, pick: Int): CardPick {
         with(image.getArenaCardCrop(pick)) {
             saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
@@ -32,10 +28,10 @@ object ScreenshotHandlerArena {
                 return calcArenaValue(this, listOf())
             }
         }
-        return Triple("Unknown", 0, listOf())
+        return CardPick(Card.DUMMY, 0, listOf())
     }
 
-    private fun calcArenaValue(card: Card, picksBefore: List<Card>): Triple<String, Int, List<Card>> {
+    private fun calcArenaValue(card: Card, picksBefore: List<Card>): CardPick {
         val arenaTier: CardArenaTier = card.arenaTier
         val cardsSynergy = mutableListOf<Card>()
         val value = arenaTier.value
@@ -48,7 +44,7 @@ object ScreenshotHandlerArena {
                 cardsSynergy.add(draftedCard)
             }
         }
-        return Triple(card.name, value + totalValueExtra, cardsSynergy)
+        return CardPick(card, value + totalValueExtra, cardsSynergy)
     }
 
     private fun calcCardSynergyPoints(arenaTierPlus: CardArenaTierPlus?, draftedCard: Card, reverseCalc: Boolean = false): Int {

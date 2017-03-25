@@ -1,5 +1,6 @@
 package com.ediposouza.util
 
+import com.ediposouza.ui.LogBreakLineEvent
 import com.ediposouza.ui.LogEvent
 import tornadofx.FX
 
@@ -15,15 +16,24 @@ object Logger {
         ERROR("e")
     }
 
-    fun d(text: String) {
+    fun d(text: String, breakLine: Boolean = false) {
+        if (breakLine) {
+            FX.eventbus.fire(LogBreakLineEvent())
+        }
         print(text, Level.DEBUG)
     }
 
-    fun i(text: String) {
+    fun i(text: String, breakLine: Boolean = false) {
+        if (breakLine) {
+            FX.eventbus.fire(LogBreakLineEvent())
+        }
         print(text, Level.INFO)
     }
 
-    fun e(text: String) {
+    fun e(text: String, breakLine: Boolean = false) {
+        if (breakLine) {
+            FX.eventbus.fire(LogBreakLineEvent())
+        }
         print(text, Level.ERROR)
     }
 

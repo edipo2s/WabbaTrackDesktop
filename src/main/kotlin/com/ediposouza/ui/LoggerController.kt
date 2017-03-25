@@ -16,6 +16,9 @@ class LoggerController : Controller() {
         subscribe<LogEvent> {
             logText(it.text, it.level)
         }
+        subscribe<LogBreakLineEvent> {
+            loggerView.textArea.appendText("\n")
+        }
     }
 
     fun logText(text: String, level: Logger.Level) {
