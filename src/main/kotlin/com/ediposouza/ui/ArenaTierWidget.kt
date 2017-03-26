@@ -4,6 +4,7 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardArenaTier
 import com.ediposouza.model.CardPick
+import com.ediposouza.model.CardSlot
 import com.ediposouza.scope.ArenaState
 import com.ediposouza.util.ImageFuncs
 import javafx.application.Platform
@@ -26,14 +27,13 @@ import java.awt.Window
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
-
 /**
  * Created by Edipo on 20/03/2017.
  */
 class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
-    private var tierValueSize = Dimension(68, 70)
-    private var cardSize = Dimension(200, 315)
+    private lateinit var cardSize: Dimension
+    private lateinit var tierValueSize: Dimension
 
     private val nameValueLabel by lazy {
         Label("").apply {
@@ -140,7 +140,11 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         nameValueLabel.text = arenaTier.card.name
         with(synergyValueLabel) {
             style = "-fx-font-size: ${1.takeIf { arenaTier.synergy.isEmpty() } ?: 12};"
-            text = "Synergy:" + arenaTier.synergy.sortedBy(Card::name).map { "\n  ${it.name}" }.joinToString { it }
+            text = "Synergy:" + arenaTier.synergy.groupBy(Card::shortName)
+                    .map { CardSlot(it.value.first(), it.value.size) }
+                    .map { (card, qtd) -> "\n ${card.name}" + ("".takeIf { qtd == 1 } ?: " x$qtd") }
+                    .sorted()
+                    .joinToString { it }
         }
         with(tierValueLabel) {
             text = "${arenaTier.value}"

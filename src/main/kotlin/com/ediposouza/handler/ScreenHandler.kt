@@ -3,6 +3,7 @@ package com.ediposouza.handler
 import com.ediposouza.data.DHash
 import com.ediposouza.extensions.*
 import com.ediposouza.scope.ArenaState
+import com.ediposouza.scope.GameState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage
@@ -23,7 +24,7 @@ object ScreenHandler {
         }
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
             Logger.i("Game Screen Detected!", true)
-            StateHandler.currentTESLState = null
+            StateHandler.currentTESLState = GameState
             return true
         }
         //Arena screens check

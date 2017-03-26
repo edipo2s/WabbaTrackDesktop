@@ -5,6 +5,7 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardPick
+import com.ediposouza.model.CardSlot
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
@@ -60,6 +61,14 @@ object ArenaState : StateHandler.TESLState {
     val picks = mutableListOf<Card>()
 
     var finishPicks = false
+        set(value) {
+            field = value
+            if (value) {
+                GameState.setDeckCardsSlot(picks
+                        .groupBy(Card::shortName)
+                        .map { CardSlot(it.value.first(), it.value.size) })
+            }
+        }
 
     val mouseListener = object : NativeMouseListener {
         override fun nativeMousePressed(p0: NativeMouseEvent?) {
@@ -103,7 +112,7 @@ object ArenaState : StateHandler.TESLState {
                 lastArenaTierPicks?.second != lastArenaTierPicks?.third
     }
 
-    fun resetState() {
+    override fun resetState() {
         lastClassSelectViews = null
         pickNumber = 0
         picks.clear()

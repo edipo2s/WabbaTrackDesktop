@@ -3,6 +3,10 @@ package com.ediposouza
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
+import com.ediposouza.model.Card
+import com.ediposouza.model.CardSlot
+import com.ediposouza.scope.ArenaState
+import com.ediposouza.scope.GameState
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.util.*
 import javafx.application.Platform
@@ -89,6 +93,17 @@ class TESLTracker : App(LoggerView::class) {
                     addActionListener {
                         Platform.runLater {
                             FX.primaryStage.show()
+                        }
+                    }
+                })
+                add(MenuItem("Test").apply {
+                    addActionListener {
+                        Platform.runLater {
+                            val cardsSlot = ArenaState.picks.groupBy(Card::shortName)
+                                    .map { CardSlot(it.value.first(), it.value.size) }
+                            StateHandler.currentTESLState = GameState.apply {
+                                setDeckCardsSlot(cardsSlot)
+                            }
                         }
                     }
                 })

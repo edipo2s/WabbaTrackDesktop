@@ -26,6 +26,13 @@ fun BufferedImage.getCardCrop(): BufferedImage? {
     }
 }
 
+fun BufferedImage.getCardForSlotCrop(): BufferedImage? {
+    with(TESLTracker.referenceConfig) {
+        return getSubimage(FULL_CARD_DECK_IMAGE_X, FULL_CARD_DECK_IMAGE_Y,
+                FULL_CARD_DECK_IMAGE_WIDTH, FULL_CARD_DECK_IMAGE_HEIGHT)
+    }
+}
+
 // -- Screen Crops --
 
 fun BufferedImage.getScreenMainCrop(): BufferedImage {

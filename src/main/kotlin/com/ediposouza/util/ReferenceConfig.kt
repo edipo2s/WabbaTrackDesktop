@@ -27,10 +27,21 @@ abstract class ReferenceConfig {
     open val ARENA_PICK_NUMBER_THIRD_X = 0
     open val ARENA_PICK_NUMBER_Y = 0
 
+    open val DECK_TRACKER_HEIGHT = 0
+    open val DECK_TRACKER_WIDTH = 0
+    open val DECK_TRACKER_X = 0
+    open val DECK_TRACKER_Y = 0
+    open val DECK_TRACKER_CARD_HEIGHT = 0
+    open val DECK_TRACKER_CARD_WIDTH = 0
+
     open val FULL_CARD_HEIGHT = 0
     open val FULL_CARD_WIDTH = 0
-    open val FULL_CARD_X = 0
     open val FULL_CARD_Y = 0
+    open val FULL_CARD_X = 0
+    open val FULL_CARD_DECK_IMAGE_X = 0
+    open val FULL_CARD_DECK_IMAGE_Y = 0
+    open val FULL_CARD_DECK_IMAGE_HEIGHT = 0
+    open val FULL_CARD_DECK_IMAGE_WIDTH = 0
 
     // -- Screens --
 
