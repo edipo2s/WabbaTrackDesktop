@@ -94,7 +94,7 @@ object Recognizer {
             return true
         }
         val calcDHashDistance = calcDHashDistance(screenshot1Hash, screenshot2Hash)
-        Logger.d("Different distance: $calcDHashDistance")
+//        Logger.d("Different distance: $calcDHashDistance")
         return calcDHashDistance > DHASH_DISTANCE_SIMILARITY_SUPER_HIGH
     }
 

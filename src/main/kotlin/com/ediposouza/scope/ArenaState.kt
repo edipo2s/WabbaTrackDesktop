@@ -20,6 +20,7 @@ import java.awt.Rectangle
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.util.logging.Level
 
 /**
  * Created by ediposouza on 24/03/17.
@@ -58,6 +59,8 @@ object ArenaState : StateHandler.TESLState {
 
     val picks = mutableListOf<Card>()
 
+    var finishPicks = false
+
     val mouseListener = object : NativeMouseListener {
         override fun nativeMousePressed(p0: NativeMouseEvent?) {
         }
@@ -79,25 +82,16 @@ object ArenaState : StateHandler.TESLState {
     }
 
     override fun onResume() {
-        if (pickNumber > 0) {
-            card1ArenaTierStage.isVisible = true
-            card2ArenaTierStage.isVisible = true
-            card3ArenaTierStage.isVisible = true
-            try {
-                GlobalScreen.registerNativeHook()
-                GlobalScreen.addNativeMouseListener(mouseListener)
-            } catch (ex: NativeHookException) {
-                System.err.println("There was a problem registering the native hook.")
-            }
+        if (pickNumber > 0 && !finishPicks) {
+            showPicksTier()
+        }
+        if (finishPicks) {
+            hidePicksTier()
         }
     }
 
     override fun onPause() {
-        card1ArenaTierStage.isVisible = false
-        card2ArenaTierStage.isVisible = false
-        card3ArenaTierStage.isVisible = false
-        GlobalScreen.removeNativeMouseListener(mouseListener)
-        GlobalScreen.unregisterNativeHook()
+        hidePicksTier()
         saveArenaState()
     }
 
@@ -113,6 +107,7 @@ object ArenaState : StateHandler.TESLState {
         lastClassSelectViews = null
         pickNumber = 0
         picks.clear()
+        finishPicks = false
         saveArenaState()
     }
 
@@ -128,13 +123,37 @@ object ArenaState : StateHandler.TESLState {
         }
     }
 
-    fun showTierPicks(cardsPick: Triple<CardPick, CardPick, CardPick>) {
+    fun setTierPicks(cardsPick: Triple<CardPick, CardPick, CardPick>) {
         lastArenaTierPicks = cardsPick
         Platform.runLater {
             card1ArenaTierStage.setPickValue(cardsPick.first)
             card2ArenaTierStage.setPickValue(cardsPick.second)
             card3ArenaTierStage.setPickValue(cardsPick.third)
         }
+    }
+
+    private fun showPicksTier() {
+        card1ArenaTierStage.isVisible = true
+        card2ArenaTierStage.isVisible = true
+        card3ArenaTierStage.isVisible = true
+        try {
+            GlobalScreen.registerNativeHook()
+            GlobalScreen.addNativeMouseListener(mouseListener)
+            java.util.logging.Logger.getLogger(GlobalScreen::class.java.`package`.name).apply {
+                level = Level.WARNING
+                useParentHandlers = false
+            }
+        } catch (ex: NativeHookException) {
+            System.err.println("There was a problem registering the native hook.")
+        }
+    }
+
+    private fun hidePicksTier() {
+        card1ArenaTierStage.isVisible = false
+        card2ArenaTierStage.isVisible = false
+        card3ArenaTierStage.isVisible = false
+        GlobalScreen.removeNativeMouseListener(mouseListener)
+        GlobalScreen.unregisterNativeHook()
     }
 
     private fun takeLastCardPicked(mousePos: Point) {

@@ -123,7 +123,7 @@ class TESLTracker : App(LoggerView::class) {
                 Logger.i("Elder scroll legends detected!")
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")
-                fire(HideArenaTierEvent())
+                StateHandler.currentTESLState?.onPause()
             }
             Thread.sleep(DELAY_WINDOW_DETECTION)
         }
@@ -145,15 +145,15 @@ class TESLTracker : App(LoggerView::class) {
             return false
         }
         val screenshotDHash = Recognizer.calcDHash(screenshot)
-        if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash) &&
-                StateHandler.currentTESLState?.hasValidState() ?: true) {
+        if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash) ||
+                !(StateHandler.currentTESLState?.hasValidState() ?: false)) {
             lastScreenshotDHash = screenshotDHash
             waitingScreenshotChangeWasLogged = false
             if (!ScreenHandler.process(screenshot)) {
                 return isTESLegendsScreenActive()
             }
         } else if (!waitingScreenshotChangeWasLogged) {
-            Logger.d("Waiting screen change..")
+            Logger.i("Waiting screen change..")
             waitingScreenshotChangeWasLogged = true
         }
         return true

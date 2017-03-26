@@ -7,6 +7,7 @@ import com.ediposouza.model.*
 import com.ediposouza.scope.ArenaState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
+import com.ediposouza.util.ScreenFuncs
 import java.awt.image.BufferedImage
 
 /**
@@ -14,11 +15,22 @@ import java.awt.image.BufferedImage
  */
 object ArenaHandler {
 
-    fun processArenaPickScreenshot(screenshot: BufferedImage): Triple<CardPick, CardPick, CardPick> {
-        val arenaTier1Value = recognizeArenaPick(screenshot, 1)
-        val arenaTier2Value = recognizeArenaPick(screenshot, 2)
-        val arenaTier3Value = recognizeArenaPick(screenshot, 3)
-        return Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value)
+    fun processArenaPick(retryNumber: Int = 0) {
+        ScreenFuncs.takeScreenshot()?.apply {
+            val arenaTier1Value = recognizeArenaPick(this, 1)
+            val arenaTier2Value = recognizeArenaPick(this, 2)
+            val arenaTier3Value = recognizeArenaPick(this, 3)
+            if (arenaTier1Value.card != arenaTier2Value.card && arenaTier1Value.card != arenaTier3Value.card &&
+                    arenaTier2Value.card != arenaTier3Value.card) {
+                ArenaState.setTierPicks(Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value))
+            } else {
+                Thread.sleep(1000L)
+                Logger.e("Duplicate pick, retrying detection")
+                if (retryNumber < 3) {
+                    processArenaPick(retryNumber + 1)
+                }
+            }
+        }
     }
 
     private fun recognizeArenaPick(image: BufferedImage, pick: Int): CardPick {

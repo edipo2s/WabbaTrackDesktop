@@ -4,6 +4,7 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardArenaTier
 import com.ediposouza.model.CardPick
+import com.ediposouza.scope.ArenaState
 import com.ediposouza.util.ImageFuncs
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
@@ -61,6 +62,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
     private val contextMenu = ContextMenu(MenuItem("Detect Again").apply {
         setOnAction {
+            ArenaState.onPause()
             TESLTracker.redetectScreen()
         }
     })
@@ -116,9 +118,11 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
                 style = "-fx-background-color: #000000AA; " +
                         "-fx-background-radius: 5.0;"
                 maxWidth = Region.USE_PREF_SIZE
+                minHeight = Region.USE_PREF_SIZE
             })
             alignment = Pos.TOP_CENTER
             background = Background.EMPTY
+            minHeight = Region.USE_PREF_SIZE
         }
         return Scene(layout).apply {
             fill = Color.TRANSPARENT

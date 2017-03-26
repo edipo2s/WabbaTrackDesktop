@@ -50,13 +50,15 @@ object ScreenHandler {
             Logger.i("Arena Pick Screen Detected!", true)
             StateHandler.currentTESLState = ArenaState.apply {
                 pickNumber = DHash.SCREENS_ARENA_PICK.indexOf(lastScreenRecognized) + 1
-                showTierPicks(ArenaHandler.processArenaPickScreenshot(screenshot))
+                ArenaHandler.processArenaPick()
             }
             return true
         }
         if (screenshot.getScreenArenaDashboardCrop().matchScreen(DHash.SCREEN_ARENA_DASHBOARD)) {
             Logger.i("Arena Dashboard Screen Detected!", true)
-            StateHandler.currentTESLState = ArenaState
+            StateHandler.currentTESLState = ArenaState.apply {
+                finishPicks = true
+            }
             return true
         }
         return false
