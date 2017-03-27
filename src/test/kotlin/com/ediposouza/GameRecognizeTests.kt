@@ -1,7 +1,11 @@
 package com.ediposouza
 
 import com.ediposouza.data.DHash
+import com.ediposouza.data.DHashCards
+import com.ediposouza.extensions.getGameCardDrawCrop
 import com.ediposouza.extensions.getGameOpponentClassCrop
+import com.ediposouza.extensions.getGamePlayerClassCrop
+import com.ediposouza.util.Recognizer
 import com.ediposouza.util.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -19,22 +23,48 @@ class GameRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testGameOpponentClass() {
-        recognize("Game/OpponentArcher.png", "Archer", BufferedImage::getGameOpponentClassCrop)
-        recognize("Game/OpponentAssassin.png", "Assassin", BufferedImage::getGameOpponentClassCrop)
-//        recognize("Game/OpponentBattlemag.png", "Battlemage", BufferedImage::getGameOpponentClassCrop)
-//        recognize("Game/OpponentCrusader.png", "Crusader", BufferedImage::getGameOpponentClassCrop)
-//        recognize("Game/OpponentMage.png", "Mage", BufferedImage::getGameOpponentClassCrop)
-        recognize("Game/OpponentMonk.png", "Monk", BufferedImage::getGameOpponentClassCrop)
-        recognize("Game/OpponentScout.png", "Scout", BufferedImage::getGameOpponentClassCrop)
-//        recognize("Game/OpponentSorcerer.png", "Sorcerer", BufferedImage::getGameOpponentClassCrop)
-        recognize("Game/OpponentSpellword.png", "Spellword", BufferedImage::getGameOpponentClassCrop)
-//        recognize("Game/OpponentWarrior.png", "Warrior", BufferedImage::getGameOpponentClassCrop)
+    fun testGameCardDrawClass() {
+        val cardSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW
+        val croppedImage = getFileImage("Game/CardDraw.png").getGameCardDrawCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST, similarity = cardSimilarity)).isEqualTo("quinrawlburglar")
     }
 
-    private fun recognize(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
+    @Test
+    fun testGameOpponentClass() {
+        recognizeOpponent("Game/OpponentArcher.png", "Archer", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentAssassin.png", "Assassin", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentBattlemage.png", "Battlemage", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentCrusader.png", "Crusader", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentMage.png", "Mage", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentMonk.png", "Monk", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentScout.png", "Scout", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentSorcerer.png", "Sorcerer", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentSpellword.png", "Spellword", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentWarrior.png", "Warrior", BufferedImage::getGameOpponentClassCrop)
+    }
+
+    @Test
+    fun testGamePlayerClass() {
+        recognizPlayer("Game/PlayerArcher.png", "Archer", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerAssassin.png", "Assassin", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerBattlemage.png", "Battlemage", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerCrusader.png", "Crusader", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerMage.png", "Mage", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerMonk.png", "Monk", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerScout.png", "Scout", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerSorcerer.png", "Sorcerer", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerSpellword.png", "Spellword", BufferedImage::getGamePlayerClassCrop)
+        recognizPlayer("Game/PlayerWarrior.png", "Warrior", BufferedImage::getGamePlayerClassCrop)
+    }
+
+    private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
         val croppedImage = crop(getFileImage(testFileName))
         assertThat(recognizeImage(croppedImage, DHash.GAME_OPPONENT_CLASS_LIST)).isEqualTo(result)
+    }
+
+    private fun recognizPlayer(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
+        val croppedImage = crop(getFileImage(testFileName))
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_CLASS_LIST)).isEqualTo(result)
     }
 
 }

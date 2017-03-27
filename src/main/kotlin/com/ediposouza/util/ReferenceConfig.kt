@@ -77,10 +77,45 @@ abstract class ReferenceConfig {
 
     // -- Game --
 
-    open val GAME_PLAYER_RING_HEIGHT = 0
-    open val GAME_PLAYER_RING_WIDTH = 0
-    open val GAME_PLAYER_RING_X = 0
-    open val GAME_PLAYER_RING_Y = 0
+    open val GAME_WIN_HEIGHT = 0
+    open val GAME_WIN_WIDTH = 0
+    open val GAME_WIN_X = 0
+    open val GAME_WIN_Y = 0
+
+    open val GAME_WIN2_HEIGHT = 0
+    open val GAME_WIN2_WIDTH = 0
+    open val GAME_WIN2_X = 0
+    open val GAME_WIN2_Y = 0
+
+    open val GAME_LOSS_HEIGHT = 0
+    open val GAME_LOSS_WIDTH = 0
+    open val GAME_LOSS_X = 0
+    open val GAME_LOSS_Y = 0
+
+    open val GAME_LOSS2_HEIGHT = 0
+    open val GAME_LOSS2_WIDTH = 0
+    open val GAME_LOSS2_X = 0
+    open val GAME_LOSS2_Y = 0
+
+    open val GAME_YOUR_TURN_HEIGHT = 0
+    open val GAME_YOUR_TURN_WIDTH = 0
+    open val GAME_YOUR_TURN_X = 0
+    open val GAME_YOUR_TURN_Y = 0
+
+    open val GAME_CARD_DRAW_HEIGHT = 0
+    open val GAME_CARD_DRAW_WIDTH = 0
+    open val GAME_CARD_DRAW_X = 0
+    open val GAME_CARD_DRAW_Y = 0
+
+    open val GAME_PLAYER_FIRST_HEIGHT = 0
+    open val GAME_PLAYER_FIRST_WIDTH = 0
+    open val GAME_PLAYER_FIRST_X = 0
+    open val GAME_PLAYER_FIRST_Y = 0
+
+    open val GAME_PLAYER_SECOND_HEIGHT = 0
+    open val GAME_PLAYER_SECOND_WIDTH = 0
+    open val GAME_PLAYER_SECOND_X = 0
+    open val GAME_PLAYER_SECOND_Y = 0
 
     open val GAME_PLAYER_CLASS_HEIGHT = 0
     open val GAME_PLAYER_CLASS_WIDTH = 0

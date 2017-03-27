@@ -41,7 +41,16 @@ object CalcDHashs {
         getDHashFolderFiles("/Arena", CROP_FOLDER_ARENA, BufferedImage::getArenaClassSelectCrop)
 
         Logger.d("--Game--")
-        getDHashFolderFiles("/Game", CROP_FOLDER_GAME, BufferedImage::getGameOpponentClassCrop)
+        getDHashFile("/Game/PlayFirst.png", CROP_FOLDER_GAME, BufferedImage::getGamePlayerFirstCrop)
+        getDHashFile("/Game/PlaySecond.png", CROP_FOLDER_GAME, BufferedImage::getGamePlayerSecondCrop)
+        getDHashFile("/Game/Win.png", CROP_FOLDER_GAME, BufferedImage::getGameWinCrop)
+        getDHashFile("/Game/Win2.png", CROP_FOLDER_GAME, BufferedImage::getGameWin2Crop)
+        getDHashFile("/Game/Loss.png", CROP_FOLDER_GAME, BufferedImage::getGameLossCrop)
+        getDHashFile("/Game/Loss2.png", CROP_FOLDER_GAME, BufferedImage::getGameLoss2Crop)
+        getDHashFile("/Game/YourTurn.png", CROP_FOLDER_GAME, BufferedImage::getGameYourTurnCrop)
+        getDHashFile("/Game/CardDraw.png", CROP_FOLDER_GAME, BufferedImage::getGameCardDrawCrop)
+        getDHashFolderFiles("/Game/PlayerClass", CROP_FOLDER_GAME, BufferedImage::getGamePlayerClassCrop)
+        getDHashFolderFiles("/Game/OpponentClass", CROP_FOLDER_GAME, BufferedImage::getGameOpponentClassCrop)
     }
 
     fun getDHashFile(relativePath: String, cropFolder: String = "", cropFun: (BufferedImage) -> BufferedImage?) {

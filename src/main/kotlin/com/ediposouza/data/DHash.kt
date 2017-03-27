@@ -102,17 +102,42 @@ object DHash {
             "22ed9394aab66d758913ab5649a0b088d3651512060c8100000000000000" to "Warrior"
     )
 
+//    -- Game--
+
+    val GAME_ITEMS_LIST = mapOf(
+            "805e202f9cd9c331b194744315db61d614e15a64ad621b6905a6027813b4" to "Ring",
+            "ce81f3a1a918b95d3ece1bce4635830e047583e4802060a4402082400a41" to "Win",
+            "fc9a275d82030c4019961638238270671057083f000a500e0f93bb89a440" to "Win2",
+            "b119a80cf404f4083dc40c22071bc38de109f010dc185c88378917ca0fc8" to "Loss",
+            "1276c05fa84f8cb50533a92199c84ea922585199c804ea81cc10a2241648" to "Loss2",
+            "6f803fc01be00ff007e8127588ba4435a23a501f6b2ebb8655500a000580" to "YourTurn"
+    )
+
+    val GAME_PLAYER_CLASS_LIST = mapOf(
+            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "",
+            "a43640129c58394b696262af4997a44a6b05a5d292a9585a72782865c3aa" to "Archer",
+            "a4b640529c58394b6bc2622f4897a44a6b25a5ca52a9585a72782865c3aa" to "Assassin",
+            "a43640129c58394b696262ae19960c4a070583d289a9595a72782865c3aa" to "Battlemage",
+            "a43640129c58394b6962e2ae39960c4a1b0585d284a95d5a72782825c3aa" to "Crusader",
+            "a43640129c58394b6bc2e22e38960c4a1b2585ca44a95d5a72782825c3aa" to "Mage",
+            "a43640129c58394b6bc2623f480fa40a6b05a5d612ad585a72782865c3aa" to "Monk",
+            "a43640129858394beb00234e29a70c524b25add1d2a8595a72782865c3aa" to "Scout",
+            "a43640129c58394bebc0222e28970c4a4b25adca52a9595a72782865c3aa" to "Sorcerer",
+            "a43640129c58394bebc0223e280f0c0a4b05add612ad595a72782865c3aa" to "Spellword",
+            "a43640129c58394be96022ae29970c4a4b05add292a9595a72782865c3aa" to "Warrior"
+    )
+
     val GAME_OPPONENT_CLASS_LIST = mapOf(
             "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "",
             "959888281aaa9988043391d07a6a19958c4212a9494644452529c1420942" to "Archer",
             "959888281aaa9988053391947a0a19858c5212a549474445652941420942" to "Assassin",
-            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "Battlemage",
-            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "Crusader",
-            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "Mage",
+            "959888281aaa9989843731d19a6a0995844212a9454645452569c1420942" to "Battlemage",
+            "959888281aaa9989043731d01a6a1995884206a9424645452529c1420942" to "Crusader",
+            "959888281aaa9989053731941a0a1985885206a542474545652941420942" to "Mage",
             "959888281aaa9988053390147a1a198d8c4612aa49474445252941420942" to "Monk",
             "959888281aaa990905b591d51a5a09b9ac5215a949440445252941420942" to "Scout",
-            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "Sorcerer",
+            "959888281aaa9989053591951a0a0985ac5215a549474445652941420942" to "Sorcerer",
             "959888281aaa9989053590151a1a098dac4615aa49474445252941420942" to "Spellword",
-            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" to "Warrior"
+            "959888281aaa9989043591d11a6a0995ac4215a9494644452529c1420942" to "Warrior"
     )
 }

@@ -74,9 +74,51 @@ fun BufferedImage.getScreenArenaDashboardCrop(): BufferedImage {
 
 // -- Game Crops --
 
-fun BufferedImage.getGamePlayerRingCrop(): BufferedImage {
+fun BufferedImage.getGameWinCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
-        return crop(GAME_PLAYER_RING_X, GAME_PLAYER_RING_Y, GAME_PLAYER_RING_WIDTH, GAME_PLAYER_RING_HEIGHT)
+        return crop(GAME_WIN_X, GAME_WIN_Y, GAME_WIN_WIDTH, GAME_WIN_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGameWin2Crop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_WIN2_X, GAME_WIN2_Y, GAME_WIN2_WIDTH, GAME_WIN2_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGameLossCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_LOSS_X, GAME_LOSS_Y, GAME_LOSS_WIDTH, GAME_LOSS_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGameLoss2Crop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_LOSS2_X, GAME_LOSS2_Y, GAME_LOSS2_WIDTH, GAME_LOSS2_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGameYourTurnCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_YOUR_TURN_X, GAME_YOUR_TURN_Y, GAME_YOUR_TURN_WIDTH, GAME_YOUR_TURN_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_CARD_DRAW_X, GAME_CARD_DRAW_Y, GAME_CARD_DRAW_WIDTH, GAME_CARD_DRAW_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGamePlayerFirstCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_PLAYER_FIRST_X, GAME_PLAYER_FIRST_Y, GAME_PLAYER_FIRST_WIDTH, GAME_PLAYER_FIRST_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGamePlayerSecondCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_PLAYER_SECOND_X, GAME_PLAYER_SECOND_Y, GAME_PLAYER_SECOND_WIDTH, GAME_PLAYER_SECOND_HEIGHT)
     }
 }
 

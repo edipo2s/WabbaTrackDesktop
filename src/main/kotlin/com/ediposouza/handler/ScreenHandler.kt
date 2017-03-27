@@ -25,6 +25,7 @@ object ScreenHandler {
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
             Logger.i("Game Screen Detected!", true)
             StateHandler.currentTESLState = GameState
+            GameHandler.processGame()
             return true
         }
         //Arena screens check

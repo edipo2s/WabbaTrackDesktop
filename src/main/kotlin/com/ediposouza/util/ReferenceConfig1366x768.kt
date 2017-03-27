@@ -74,10 +74,45 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     // -- Game --  
 
-    override val GAME_PLAYER_RING_HEIGHT = 100
-    override val GAME_PLAYER_RING_WIDTH = 55
-    override val GAME_PLAYER_RING_X = 960
-    override val GAME_PLAYER_RING_Y = 515
+    override val GAME_WIN_HEIGHT = 70
+    override val GAME_WIN_WIDTH = 65
+    override val GAME_WIN_X = 650
+    override val GAME_WIN_Y = 60
+
+    override val GAME_WIN2_HEIGHT = 400
+    override val GAME_WIN2_WIDTH = 400
+    override val GAME_WIN2_X = 500
+    override val GAME_WIN2_Y = 150
+
+    override val GAME_LOSS_HEIGHT = 70
+    override val GAME_LOSS_WIDTH = 75
+    override val GAME_LOSS_X = 650
+    override val GAME_LOSS_Y = 560
+
+    override val GAME_LOSS2_HEIGHT = 300
+    override val GAME_LOSS2_WIDTH = 300
+    override val GAME_LOSS2_X = 550
+    override val GAME_LOSS2_Y = 250
+
+    override val GAME_YOUR_TURN_HEIGHT = 35
+    override val GAME_YOUR_TURN_WIDTH = 470
+    override val GAME_YOUR_TURN_X = 450
+    override val GAME_YOUR_TURN_Y = 300
+
+    override val GAME_CARD_DRAW_HEIGHT = 160
+    override val GAME_CARD_DRAW_WIDTH = 120
+    override val GAME_CARD_DRAW_X = 1003
+    override val GAME_CARD_DRAW_Y = 360
+
+    override val GAME_PLAYER_FIRST_HEIGHT = 80
+    override val GAME_PLAYER_FIRST_WIDTH = 65
+    override val GAME_PLAYER_FIRST_X = 960
+    override val GAME_PLAYER_FIRST_Y = 535
+
+    override val GAME_PLAYER_SECOND_HEIGHT = 80
+    override val GAME_PLAYER_SECOND_WIDTH = 70
+    override val GAME_PLAYER_SECOND_X = 910
+    override val GAME_PLAYER_SECOND_Y = 100
 
     override val GAME_PLAYER_CLASS_HEIGHT = 35
     override val GAME_PLAYER_CLASS_WIDTH = 70
