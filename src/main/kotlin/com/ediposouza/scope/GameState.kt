@@ -1,8 +1,11 @@
 package com.ediposouza.scope
 
+import com.ediposouza.handler.GameHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.CardSlot
 import com.ediposouza.ui.DeckTrackerWidget
+import com.ediposouza.util.Logger
+import com.ediposouza.util.ScreenFuncs
 import javafx.application.Platform
 
 /**
@@ -13,16 +16,31 @@ object GameState : StateHandler.TESLState {
     private val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
 
+    var threadRunning: Boolean = false
+
     init {
 
     }
 
     override fun onResume() {
-        showDeckTracker()
+//        showDeckTracker()
+        Logger.i("GameState onResume")
+        threadRunning = true
+        Thread(Runnable {
+            while (threadRunning) {
+                Logger.i("GameState screenshot")
+                ScreenFuncs.takeScreenshot()?.apply {
+                    GameHandler.processGame(this)
+                }
+                Thread.sleep(1000)
+            }
+        }).start()
     }
 
     override fun onPause() {
-        hideDeckTracker()
+//        hideDeckTracker()
+        Logger.i("GameState onPause")
+        threadRunning = false
     }
 
     override fun resetState() {

@@ -96,6 +96,7 @@ object DHashCards {
             "b85adb983bb4bd1e47a5e3dad318943c7dcfa232cda881542229b476a658" to "sentinelbattlemace",
             "12b5315baa479b159d5230552b2a5658229b148d6ec4aa64abb9c63a6839" to "shornhelmchampion",
             "c695d0212ba1d5d32983154a86aca8a5f008bf3a899489b906e130736044" to "skywatchvindicator",
+            "c477931fcb4dd197d2a2416078c8293806aa0095243a399b6621732d208d" to "sowerofrevenge",
             "a09aa94b91b3aa95cdaa8aabca5442655298e8e1c8ec94706c18221f5183" to "thornhistmage",
             "0059a0219581886254084fc43a31a508e1704e592d8509460d53f6302a11" to "tyr",
             "e5125aa24a4a42f7c5d319bbc4b2c6c5b1e4ec32438dabc09c35351f2205" to "angrygrahl",

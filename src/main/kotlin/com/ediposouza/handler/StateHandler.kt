@@ -7,9 +7,11 @@ object StateHandler {
 
     var currentTESLState: TESLState? = null
         set(value) {
-            field?.onPause()
-            field = value
-            field?.onResume()
+            if (field != value) {
+                field?.onPause()
+                field = value
+                field?.onResume()
+            }
         }
 
     interface TESLState {

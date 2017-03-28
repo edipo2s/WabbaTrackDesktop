@@ -16,6 +16,7 @@ object ScreenHandler {
     var lastScreenRecognized = ""
 
     fun process(screenshot: BufferedImage): Boolean {
+        Logger.i("Checking game screen")
         //Screens check
         if (screenshot.getScreenMainCrop().matchScreen(DHash.SCREEN_MAIN)) {
             Logger.i("Main Screen Detected!", true)
@@ -25,7 +26,6 @@ object ScreenHandler {
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
             Logger.i("Game Screen Detected!", true)
             StateHandler.currentTESLState = GameState
-            GameHandler.processGame()
             return true
         }
         //Arena screens check
@@ -67,6 +67,7 @@ object ScreenHandler {
     }
 
     private fun BufferedImage.matchScreen(screen: String): Boolean {
+        saveCroppedImage()
         if (Recognizer.recognizeScreenImage(this) == screen && lastScreenRecognized != screen) {
             lastScreenRecognized = screen
             return true
