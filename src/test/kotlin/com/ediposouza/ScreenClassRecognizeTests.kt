@@ -2,7 +2,7 @@ package com.ediposouza
 
 import com.ediposouza.data.DHash
 import com.ediposouza.extensions.*
-import com.ediposouza.util.Recognizer
+import com.ediposouza.util.BaseRecognizeTests
 import com.ediposouza.util.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -115,16 +115,14 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     private fun recognizeScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
-        val screenSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_HIGH
         cropFun(getFileImage(testFileName))?.apply {
-            assertThat(recognizeImage(this, DHash.SCREENS_LIST, similarity = screenSimilarity)).isEqualTo(screen)
+            assertThat(recognizeImage(this, DHash.SCREENS_LIST)).isEqualTo(screen)
         }
     }
 
     private fun recognizePickScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
         cropFun(getFileImage(testFileName))?.apply {
-            val pickSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_SUPER_HIGH
-            assertThat(recognizeImage(this, DHash.SCREENS_LIST, similarity = pickSimilarity)).isEqualTo(screen)
+            assertThat(recognizeImage(this, DHash.SCREENS_LIST)).isEqualTo(screen)
         }
     }
 

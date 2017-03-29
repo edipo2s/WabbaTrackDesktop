@@ -159,7 +159,7 @@ class TESLTracker : App(LoggerView::class) {
         if (screenshot == null) {
             return false
         }
-        val screenshotDHash = Recognizer.calcDHash(screenshot)
+        val screenshotDHash = Recognizer.calcPHash(screenshot)
         if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash) ||
                 !(StateHandler.currentTESLState?.hasValidState() ?: false)) {
             lastScreenshotDHash = screenshotDHash
@@ -174,6 +174,6 @@ class TESLTracker : App(LoggerView::class) {
         return true
     }
 
-    private fun isTESLegendsScreenActive() = ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
+    private fun isTESLegendsScreenActive() = !ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
 
 }

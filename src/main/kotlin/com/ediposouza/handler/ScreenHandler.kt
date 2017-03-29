@@ -16,7 +16,7 @@ object ScreenHandler {
     var lastScreenRecognized = ""
 
     fun process(screenshot: BufferedImage): Boolean {
-        Logger.i("Checking game screen")
+//        Logger.i("Checking game screen")
         //Screens check
         if (screenshot.getScreenMainCrop().matchScreen(DHash.SCREEN_MAIN)) {
             Logger.i("Main Screen Detected!", true)
@@ -47,8 +47,7 @@ object ScreenHandler {
             }
             return true
         }
-        if (screenshot.getScreenArenaPickCrop().matchScreenList(DHash.SCREENS_ARENA_PICK,
-                Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_SUPER_HIGH)) {
+        if (screenshot.getScreenArenaPickCrop().matchScreenList(DHash.SCREENS_ARENA_PICK)) {
             Logger.i("Arena Pick Screen Detected!", true)
             StateHandler.currentTESLState = ArenaState.apply {
                 pickNumber = DHash.SCREENS_ARENA_PICK.indexOf(lastScreenRecognized) + 1
@@ -76,9 +75,8 @@ object ScreenHandler {
         }
     }
 
-    private fun BufferedImage.matchScreenList(screens: List<String>,
-                                              similarity: Double = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW): Boolean {
-        val recognizedScreen = Recognizer.recognizeScreenImage(this, similarity)
+    private fun BufferedImage.matchScreenList(screens: List<String>): Boolean {
+        val recognizedScreen = Recognizer.recognizeScreenImage(this)
         if (screens.contains(recognizedScreen) && lastScreenRecognized != recognizedScreen) {
             lastScreenRecognized = recognizedScreen!!
             return true

@@ -2,7 +2,6 @@ package com.ediposouza.util
 
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
-import com.ediposouza.util.Recognizer.Similarity.Companion.DHASH_DISTANCE_SIMILARITY_SUPER_HIGH
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -12,93 +11,50 @@ import java.awt.image.ColorConvertOp
  */
 object Recognizer {
 
-    const val DHASH_SIZE = 16
-    const val DHASH_MAX_DISTANCE = 60
+    private const val PHASH_SIZE = 32
+    private const val PHASH_SMALLER_SIZE = 8
+    private const val PHASH_SIMILARITY_THRESHOLD = 10
 
-    class Similarity {
+    var c: Array<Double> = Array(PHASH_SIZE, { 0.0 })
 
-        companion object {
-
-            const val DHASH_DISTANCE_SIMILARITY_SUPER_HIGH = DHASH_MAX_DISTANCE * 0.15
-            const val DHASH_DISTANCE_SIMILARITY_HIGH = DHASH_MAX_DISTANCE * 0.50
-            const val DHASH_DISTANCE_SIMILARITY_LOW = DHASH_MAX_DISTANCE * 0.85
-
+    init {
+        for (i in 1..PHASH_SIZE - 1) {
+            c[i] = 1.0
         }
-
+        c[0] = 1 / Math.sqrt(2.0)
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
         return recognizeImageInMap(image, DHashCards.LIST)
     }
 
-    fun recognizeScreenImage(image: BufferedImage,
-                             similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_HIGH): String? {
-        return recognizeImageInMap(image, DHash.SCREENS_LIST, similarity)
+    fun recognizeScreenImage(image: BufferedImage): String? {
+        return recognizeImageInMap(image, DHash.SCREENS_LIST)
     }
 
     fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
         return recognizeImageInMap(image, DHash.CLASS_SELECTED_LIST)
     }
 
-    fun recognizeImageInMap(image: BufferedImage, dHashMap: Map<String, String>,
-                            similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_LOW): String? {
-        val result = recognizeDHashInMap(calcDHash(image), dHashMap, similarity)
-        Logger.d("${result.first} - ${result.second})")
-        return result.first
-    }
-
-    fun recognizeDHashInMap(dHash: String, dHashMap: Map<String, String>,
-                            similarity: Double = Similarity.DHASH_DISTANCE_SIMILARITY_LOW): Pair<String?, Int> {
-        var cardShortName = ""
-        var lessDistance = Int.MAX_VALUE
-        dHashMap.forEach {
-            val dHashDistance = calcDHashDistance(dHash, it.key)
-//            Logger.d(" -- $dHashDistance from ${it.key}")
-            if (dHashDistance < similarity && dHashDistance < lessDistance) {
-                cardShortName = it.value
-                lessDistance = dHashDistance
-            }
-        }
-        return cardShortName.takeIf(String::isNotEmpty) to lessDistance
-    }
-
-    fun calcDHash(image: BufferedImage): String {
-        val grayImage = toGrayscale(getScaledImage(image))
-        val difference = mutableListOf<Boolean>().apply {
-            for (x in 0..DHASH_SIZE - 1) {
-                for (y in 0..DHASH_SIZE - 2) {
-                    val px = grayImage.getRGB(y, x)
-                    val py = grayImage.getRGB(y + 1, x)
-                    add(px > py)
-                }
-            }
-        }
-
-        var decimalValue = 0
-        var result = ""
-        for (i in 0..difference.size - 1) {
-            if (difference[i]) {
-                decimalValue += Math.pow(2.0, i.rem(8.0)).toInt()
-            }
-            if (i.rem(8.0) == 7.0) {
-                val hex = String.format("%02x", decimalValue)
-                result = String.format("%s%s", result, hex)
-                decimalValue = 0
-            }
-        }
-        return result
+    fun recognizeImageInMap(image: BufferedImage, hashMap: Map<String, String>): String? {
+        val pHash = calcPHash(image)
+        val pHashDistances = hashMap
+                .map { it.value to calcHashDistance(pHash, it.key) }
+                .filter { it.second < PHASH_SIMILARITY_THRESHOLD }
+                .sortedBy { it.second }
+        return pHashDistances.minBy { it.second }?.first
     }
 
     fun isScreenshotDifferent(screenshot1Hash: String, screenshot2Hash: String): Boolean {
         if (screenshot1Hash.length != screenshot2Hash.length) {
             return true
         }
-        val calcDHashDistance = calcDHashDistance(screenshot1Hash, screenshot2Hash)
-//        Logger.d("Different distance: $calcDHashDistance")
-        return calcDHashDistance > DHASH_DISTANCE_SIMILARITY_SUPER_HIGH
+        val calcDHashDistance = calcHashDistance(screenshot1Hash, screenshot2Hash)
+//        Logger.d("Different distance: $calcHashDistance")
+        return calcDHashDistance > PHASH_SIMILARITY_THRESHOLD
     }
 
-    private fun calcDHashDistance(s1: String, s2: String): Int {
+    private fun calcHashDistance(s1: String, s2: String): Int {
         if (s1.length != s2.length) {
             Logger.d("Different sizes: ${s1.length}, ${s2.length}")
             throw IllegalArgumentException()
@@ -106,9 +62,9 @@ object Recognizer {
         return (0..s1.length - 1).count { s1[it] != s2[it] }
     }
 
-    fun getScaledImage(image: BufferedImage): BufferedImage {
-        val tmp = image.getScaledInstance(DHASH_SIZE, DHASH_SIZE, BufferedImage.SCALE_FAST)
-        val scaledImage = BufferedImage(DHASH_SIZE, DHASH_SIZE, BufferedImage.TYPE_INT_RGB)
+    fun getScaledImage(image: BufferedImage, size: Int): BufferedImage {
+        val tmp = image.getScaledInstance(size, size, BufferedImage.SCALE_FAST)
+        val scaledImage = BufferedImage(size, size, BufferedImage.TYPE_INT_RGB)
         scaledImage.graphics.drawImage(tmp, 0, 0, null)
         return scaledImage
     }
@@ -116,6 +72,97 @@ object Recognizer {
     fun toGrayscale(image: BufferedImage): BufferedImage {
         val cs = ColorSpace.getInstance(ColorSpace.CS_GRAY)
         return ColorConvertOp(cs, null).filter(image, null)
+    }
+
+//    -- PHash --
+
+    fun calcPHash(image: BufferedImage): String {
+
+        /* 1. Reduce size.
+         * Like Average Hash, pHash starts with a small image.
+         * However, the image is larger than 8x8; 32x32 is a good size.
+         * This is really done to simplify the DCT computation and not
+         * because it is needed to reduce the high frequencies.
+         */
+        /* 2. Reduce color.
+         * The image is reduced to a grayscale just to further simplify
+         * the number of computations.
+         */
+        var hash = ""
+        val img = toGrayscale(getScaledImage(image, PHASH_SIZE))
+        val vals = Array(img.width, { Array(img.height, { 0.0 }) })
+        for (x in 0..img.width - 1) {
+            for (y in 0..img.height - 1) {
+                vals[x][y] = img.getRGB(x, y).toDouble()
+            }
+        }
+
+        /* 3. Compute the DCT.
+         * The DCT separates the image into a collection of frequencies
+         * and scalars. While JPEG uses an 8x8 DCT, this algorithm uses
+         * a 32x32 DCT.
+         */
+        val start = System.currentTimeMillis()
+        val dctVals = applyDCT(vals)
+//        Logger.d("${System.currentTimeMillis() - start}")
+
+        /* 4. Reduce the DCT.
+         * This is the magic step. While the DCT is 32x32, just keep the
+         * top-left 8x8. Those represent the lowest frequencies in the
+         * picture.
+         */
+        /* 5. Compute the average value.
+         * Like the Average Hash, compute the mean DCT value (using only
+         * the 8x8 DCT low-frequency values and excluding the first term
+         * since the DC coefficient can be significantly different from
+         * the other values and will throw off the average).
+         */
+        var total = 0.0
+        for (x in 0..PHASH_SMALLER_SIZE - 1) {
+            for (y in 0..PHASH_SMALLER_SIZE - 1) {
+                total += dctVals[x][y]
+            }
+        }
+        total -= dctVals[0][0]
+        val avg = total / ((PHASH_SMALLER_SIZE * PHASH_SMALLER_SIZE) - 1.0)
+
+        /* 6. Further reduce the DCT.
+         * This is the magic step. Set the 64 hash bits to 0 or 1
+         * depending on whether each of the 64 DCT values is above or
+         * below the average value. The result doesn't tell us the
+         * actual low frequencies; it just tells us the very-rough
+         * relative scale of the frequencies to the mean. The result
+         * will not vary as long as the overall structure of the image
+         * remains the same; this can survive gamma and color histogram
+         * adjustments without a problem.
+         */
+        for (x in 0..PHASH_SMALLER_SIZE - 1) {
+            for (y in 0..PHASH_SMALLER_SIZE - 1) {
+                if (x != 0 && y != 0) {
+                    hash += "1".takeIf { dctVals[x][y] > avg } ?: "0"
+                }
+            }
+        }
+        return hash
+    }
+
+    fun applyDCT(f: Array<Array<Double>>): Array<Array<Double>> {
+        val N = PHASH_SIZE
+        val F = Array(N, { Array(N, { 0.0 }) })
+        for (u in 0..N - 1) {
+            for (v in 0..N - 1) {
+                var sum = 0.0
+                for (i in 0..N - 1) {
+                    for (j in 0..N - 1) {
+                        sum += Math.cos(((2 * i + 1) / (2.0 * N)) * u * Math.PI) *
+                                Math.cos(((2 * j + 1) / (2.0 * N)) * v * Math.PI) * (f[i][j])
+                    }
+                }
+                sum *= ((c[u] * c[v]) / 4.0)
+                F[u][v] = sum
+            }
+        }
+        return F
     }
 
 }

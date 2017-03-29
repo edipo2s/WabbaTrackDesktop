@@ -13,8 +13,8 @@ import javax.imageio.ImageIO
  */
 object CalcDHashs {
 
-    val CALC_CARDS_DHASH = false
-    val CALC_ARENA_PICKS_DHASH = false
+    val CALC_CARDS_HASH = false
+    val CALC_ARENA_PICKS_HASH = true
 
     val CROP_FOLDER_ARENA = "Arena"
     val CROP_FOLDER_CARDS = "Cards"
@@ -23,7 +23,7 @@ object CalcDHashs {
 
     @JvmStatic fun main(args: Array<String>) {
         Logger.d("--Cards--")
-        if (CALC_CARDS_DHASH) {
+        if (CALC_CARDS_HASH) {
             getDHashFolderFiles("/Cards", CROP_FOLDER_CARDS, BufferedImage::getCardCrop)
         }
 
@@ -33,7 +33,7 @@ object CalcDHashs {
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaClassSelect.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassSelectCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
-        if (CALC_ARENA_PICKS_DHASH) {
+        if (CALC_ARENA_PICKS_HASH) {
             getDHashFolderFiles("/Screens/ArenaPick", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
         }
 
@@ -92,7 +92,7 @@ object CalcDHashs {
             }
         }
         val imageShortName = imageName.substring(0, imageName.indexOf("."))
-        Logger.d("\"${Recognizer.calcDHash(image)}\" to \"$imageShortName\",")
+        Logger.d("\"${Recognizer.calcPHash(image)}\" to \"$imageShortName\",")
         ImageIO.write(image, "png", File("$cropFolderPath/$imageShortName.png"))
     }
 

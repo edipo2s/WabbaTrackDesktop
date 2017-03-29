@@ -28,11 +28,11 @@ object GameState : StateHandler.TESLState {
         threadRunning = true
         Thread(Runnable {
             while (threadRunning) {
-                Logger.i("GameState screenshot")
+//                Logger.i("GameState screenshot")
                 ScreenFuncs.takeScreenshot()?.apply {
                     GameHandler.processGame(this)
                 }
-                Thread.sleep(1000)
+                Thread.sleep(500)
             }
         }).start()
     }

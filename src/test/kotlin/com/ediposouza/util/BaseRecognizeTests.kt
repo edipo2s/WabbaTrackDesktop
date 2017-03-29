@@ -1,7 +1,6 @@
-package com.ediposouza
+package com.ediposouza.util
 
-import com.ediposouza.util.Logger
-import com.ediposouza.util.Recognizer
+import com.ediposouza.TESLTracker
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -18,8 +17,7 @@ abstract class BaseRecognizeTests {
         return image
     }
 
-    protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false,
-                                 similarity: Double = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW): String? {
+    protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
             File("src/test/resources/Crops/Tmp").apply {
@@ -29,7 +27,7 @@ abstract class BaseRecognizeTests {
             }
             ImageIO.write(image, "png", File("src/test/resources/Crops/Tmp/$tmpFileName"))
         }
-        return Recognizer.recognizeImageInMap(image, dHashMap, similarity)
+        return Recognizer.recognizeImageInMap(image, dHashMap)
     }
 
 }

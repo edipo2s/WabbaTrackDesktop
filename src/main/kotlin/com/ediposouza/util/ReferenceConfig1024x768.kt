@@ -23,7 +23,7 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val ARENA_PICK_CARD_WIDTH = 118
     override val ARENA_PICK_CARD_START_Y = 152
     override val ARENA_PICK_CARD_FIRST_X = 113
-    override val ARENA_PICK_CARD_SECOND_X = 343
+    override val ARENA_PICK_CARD_SECOND_X = 341
     override val ARENA_PICK_CARD_THIRD_X = 570
 
 }

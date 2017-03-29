@@ -5,6 +5,7 @@ import com.ediposouza.data.DHashCards
 import com.ediposouza.extensions.getGameCardDrawCrop
 import com.ediposouza.extensions.getGameOpponentClassCrop
 import com.ediposouza.extensions.getGamePlayerClassCrop
+import com.ediposouza.util.BaseRecognizeTests
 import com.ediposouza.util.Recognizer
 import com.ediposouza.util.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
@@ -23,10 +24,15 @@ class GameRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testGameCardDrawClass() {
-        val cardSimilarity = Recognizer.Similarity.DHASH_DISTANCE_SIMILARITY_LOW
+    fun testGameCardDrawPHashWithDHash() {
+        val croppedImage = getFileImage("Game/CardDraw2.png").getGameCardDrawCrop()
+        Recognizer.recognizeCardImage(croppedImage)
+    }
+
+    @Test
+    fun testGameCardDraw() {
         val croppedImage = getFileImage("Game/CardDraw.png").getGameCardDrawCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, similarity = cardSimilarity)).isEqualTo("quinrawlburglar")
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("quinrawlburglar")
     }
 
     @Test

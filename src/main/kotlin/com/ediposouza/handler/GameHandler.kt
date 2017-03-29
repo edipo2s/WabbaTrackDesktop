@@ -12,17 +12,17 @@ import java.awt.image.BufferedImage
  */
 object GameHandler {
 
-    var lastCropDHash = ""
+    var lastCardDraw = ""
 
     fun processGame(screenshot: BufferedImage) {
         screenshot.getGameCardDrawCrop().apply {
-            if (Recognizer.calcDHash(this) != lastCropDHash) {
-                saveCroppedImage()
-                TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
+            saveCroppedImage()
+            TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
+                if (name != lastCardDraw) {
+                    lastCardDraw = name
                     Logger.i("--$name draw!")
                 }
             }
         }
     }
-
 }
