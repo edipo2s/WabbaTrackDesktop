@@ -32,6 +32,10 @@ object Recognizer {
         return recognizeImageInMap(image, DHash.SCREENS_LIST)
     }
 
+    fun recognizeScreenPickImage(image: BufferedImage): String? {
+        return recognizeImageInMap(image, DHash.SCREENS_PICK_LIST)
+    }
+
     fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
         return recognizeImageInMap(image, DHash.CLASS_SELECTED_LIST)
     }
@@ -42,6 +46,7 @@ object Recognizer {
                 .map { it.value to calcHashDistance(pHash, it.key) }
                 .filter { it.second < PHASH_SIMILARITY_THRESHOLD }
                 .sortedBy { it.second }
+//        pHashDistances.forEach { Logger.d("${it.second} - ${it.first}") }
         return pHashDistances.minBy { it.second }?.first
     }
 

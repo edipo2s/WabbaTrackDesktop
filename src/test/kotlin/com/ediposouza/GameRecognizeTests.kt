@@ -51,16 +51,16 @@ class GameRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testGamePlayerClass() {
-        recognizPlayer("Game/PlayerArcher.png", "Archer", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerAssassin.png", "Assassin", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerBattlemage.png", "Battlemage", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerCrusader.png", "Crusader", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerMage.png", "Mage", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerMonk.png", "Monk", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerScout.png", "Scout", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerSorcerer.png", "Sorcerer", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerSpellword.png", "Spellword", BufferedImage::getGamePlayerClassCrop)
-        recognizPlayer("Game/PlayerWarrior.png", "Warrior", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerArcher.png", "Archer", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerAssassin.png", "Assassin", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerBattlemage.png", "Battlemage", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerCrusader.png", "Crusader", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerMage.png", "Mage", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerMonk.png", "Monk", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerScout.png", "Scout", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerSorcerer.png", "Sorcerer", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerSpellword.png", "Spellword", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerWarrior.png", "Warrior", BufferedImage::getGamePlayerClassCrop)
     }
 
     private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
@@ -68,7 +68,7 @@ class GameRecognizeTests : BaseRecognizeTests() {
         assertThat(recognizeImage(croppedImage, DHash.GAME_OPPONENT_CLASS_LIST)).isEqualTo(result)
     }
 
-    private fun recognizPlayer(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
+    private fun recognizePlayer(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
         val croppedImage = crop(getFileImage(testFileName))
         assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_CLASS_LIST)).isEqualTo(result)
     }

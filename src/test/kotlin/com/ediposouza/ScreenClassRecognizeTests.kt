@@ -122,7 +122,7 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
 
     private fun recognizePickScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
         cropFun(getFileImage(testFileName))?.apply {
-            assertThat(recognizeImage(this, DHash.SCREENS_LIST)).isEqualTo(screen)
+            assertThat(recognizeImage(this, DHash.SCREENS_PICK_LIST)).isEqualTo(screen)
         }
     }
 

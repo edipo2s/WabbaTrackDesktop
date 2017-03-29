@@ -47,7 +47,7 @@ object ScreenHandler {
             }
             return true
         }
-        if (screenshot.getScreenArenaPickCrop().matchScreenList(DHash.SCREENS_ARENA_PICK)) {
+        if (screenshot.getScreenArenaPickCrop().matchScreenPickList(DHash.SCREENS_ARENA_PICK)) {
             Logger.i("Arena Pick Screen Detected!", true)
             StateHandler.currentTESLState = ArenaState.apply {
                 pickNumber = DHash.SCREENS_ARENA_PICK.indexOf(lastScreenRecognized) + 1
@@ -75,8 +75,8 @@ object ScreenHandler {
         }
     }
 
-    private fun BufferedImage.matchScreenList(screens: List<String>): Boolean {
-        val recognizedScreen = Recognizer.recognizeScreenImage(this)
+    private fun BufferedImage.matchScreenPickList(screens: List<String>): Boolean {
+        val recognizedScreen = Recognizer.recognizeScreenPickImage(this)
         if (screens.contains(recognizedScreen) && lastScreenRecognized != recognizedScreen) {
             lastScreenRecognized = recognizedScreen!!
             return true
