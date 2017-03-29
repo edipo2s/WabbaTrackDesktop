@@ -37,8 +37,8 @@ object Logger {
         print(text, Level.ERROR)
     }
 
-    fun e(exception: Exception) {
-        print(exception.message ?: "", Level.ERROR)
+    fun e(exception: Exception?) {
+        print(exception?.message ?: "", Level.ERROR)
     }
 
     private fun print(text: String, level: Level) {

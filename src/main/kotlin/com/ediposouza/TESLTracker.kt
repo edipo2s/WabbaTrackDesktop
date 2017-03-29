@@ -18,7 +18,6 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
 import tornadofx.FX
-import tornadofx.Rest
 import tornadofx.alert
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -56,14 +55,9 @@ class TESLTracker : App(LoggerView::class) {
     val DELAY_ELDER_SCROLL_SCREENSHOT = 2_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
-    val firebaseDB: Rest by inject()
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
 
     var waitingScreenshotChangeWasLogged = false
-
-    init {
-        firebaseDB.baseURI = "https://tes-legends-assistant.firebaseio.com"
-    }
 
     override fun start(stage: Stage) {
         super.start(stage.apply {
@@ -78,7 +72,7 @@ class TESLTracker : App(LoggerView::class) {
         stage.close()
         configureSystemTrayIcon()
         CompletableFuture.runAsync {
-            TESLTrackerData.updateCardDB(firebaseDB)
+            TESLTrackerData.updateCardDB()
             startElderScrollDetection()
         }
     }
@@ -89,6 +83,11 @@ class TESLTracker : App(LoggerView::class) {
         }
         trayicon(legendsIconStream, APP_NAME, false, true) {
             popupMenu = PopupMenu().apply {
+                add(MenuItem("Login").apply {
+                    addActionListener {
+
+                    }
+                })
                 add(MenuItem("Show Log").apply {
                     addActionListener {
                         Platform.runLater {

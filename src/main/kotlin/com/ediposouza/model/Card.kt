@@ -1,11 +1,5 @@
 package com.ediposouza.model
 
-import com.ediposouza.extensions.jsonBool
-import com.ediposouza.extensions.jsonString
-import com.ediposouza.extensions.toIntSafely
-import com.ediposouza.util.Logger
-import javax.json.JsonObject
-
 /**
  * Created by Edipo on 19/03/2017.
  */
@@ -326,63 +320,9 @@ data class Card(
 ) {
     companion object {
 
-        const val ARENA_TIER_PLUS_VALUE_DELIMITER = "_"
-
         val DUMMY = Card("Unknown", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
                 CardRarity.COMMON, false, 0, 0, 0, CardType.UNKNOWN, CardRace.ARGONIAN, listOf(), "", CardArenaTier.NONE,
                 null, false, "")
-
-        fun fromJson(shortname: String, attr: CardAttribute, set: CardSet, json: JsonObject): Card {
-            var clsAttr1 = attr
-            var clsAttr2 = attr
-            try {
-                with(json) {
-                    if (attr == CardAttribute.DUAL) {
-                        clsAttr1 = CardAttribute.valueOf(jsonString("attr1").trim().toUpperCase())
-                        clsAttr2 = CardAttribute.valueOf(jsonString("attr2").trim().toUpperCase())
-                    }
-                    return Card(jsonString("name"), shortname, set, attr, clsAttr1, clsAttr2, CardRarity.of(jsonString("rarity")),
-                            jsonBool("unique"), jsonString("cost").toIntSafely(), jsonString("attack").toIntSafely(),
-                            jsonString("health").toIntSafely(), CardType.of(jsonString("type")), CardRace.of(jsonString("race")),
-                            jsonString("keyword").split(",")
-                                    .filter { it.trim().isNotEmpty() }
-                                    .mapTo(arrayListOf<CardKeyword>()) {
-                                        CardKeyword.of(it)
-                                    },
-                            jsonString("text"), CardArenaTier.of(jsonString("arenaTier")),
-                            getCardArenaTierPlus(json.getJsonObject("arenaTierPlus")), jsonBool("evolves"), jsonString("season"))
-                }
-            } catch (e: Exception) {
-                Logger.e(e)
-                return getDefaultCard()
-            }
-        }
-
-        fun getDefaultCard(): Card {
-            return Card("", "", CardSet.CORE, CardAttribute.STRENGTH, CardAttribute.STRENGTH, CardAttribute.STRENGTH,
-                    CardRarity.COMMON, false, 0, 0, 0, CardType.ACTION, CardRace.ARGONIAN, listOf(), "",
-                    CardArenaTier.NONE, null, false, "")
-        }
-
-        private fun getCardArenaTierPlus(arenaTierPlusJson: JsonObject?): CardArenaTierPlus? {
-            val arenaTierPlus: Map<String, String> = arenaTierPlusJson?.mapValues { it.value.toString() } ?: mapOf()
-            if (arenaTierPlus.keys.isEmpty()) {
-                return null
-            }
-            val cardArenaTierPlusType = CardArenaTierPlusType.of(arenaTierPlus.keys.first())
-            var operator: CardArenaTierPlusOperator? = null
-            val value = when (cardArenaTierPlusType) {
-                CardArenaTierPlusType.ATTACK,
-                CardArenaTierPlusType.COST,
-                CardArenaTierPlusType.HEALTH ->
-                    with(arenaTierPlus.values.first().split(ARENA_TIER_PLUS_VALUE_DELIMITER)) {
-                        operator = CardArenaTierPlusOperator.of(get(0))
-                        get(1)
-                    }
-                else -> arenaTierPlus.values.first()
-            }
-            return CardArenaTierPlus(cardArenaTierPlusType, operator, value.replace("\"", ""))
-        }
 
     }
 }
