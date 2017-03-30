@@ -31,14 +31,13 @@ object CalcDHashs {
         getDHashFile("/Screens/Main.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainCrop)
         getDHashFile("/Screens/Game.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenGameCrop)
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
-        getDHashFile("/Screens/ArenaClassSelect.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassSelectCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
         if (CALC_ARENA_PICKS_HASH) {
             getDHashFolderFiles("/Screens/ArenaPick", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickCrop)
         }
 
         Logger.d("--Arena Class Select--")
-        getDHashFolderFiles("/Arena", CROP_FOLDER_ARENA, BufferedImage::getArenaClassSelectCrop)
+        getDHashFolderFiles("/ArenaClass", CROP_FOLDER_ARENA, BufferedImage::getArenaPickClassCrop)
 
         Logger.d("--Game--")
         getDHashFile("/Game/PlayFirst.png", CROP_FOLDER_GAME, BufferedImage::getGamePlayerFirstCrop)

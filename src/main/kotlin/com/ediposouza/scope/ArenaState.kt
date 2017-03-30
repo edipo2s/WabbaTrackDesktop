@@ -2,6 +2,7 @@ package com.ediposouza.scope
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.handler.ArenaHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardPick
@@ -9,6 +10,7 @@ import com.ediposouza.model.CardSlot
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
+import com.ediposouza.util.ScreenFuncs
 import com.google.gson.Gson
 import javafx.application.Platform
 import org.jnativehook.GlobalScreen
@@ -41,10 +43,12 @@ object ArenaState : StateHandler.TESLState {
         }
     }
 
-    var lastClassSelectViews: String? = null
+    var classSelect: String? = null
         set(value) {
             field = value
-            Logger.d("LastClassSelectViews: $value")
+            if (value != null) {
+                Logger.i("classSelect: $value")
+            }
         }
 
     var lastArenaTierPicks: Triple<CardPick, CardPick, CardPick>? = null
@@ -55,7 +59,12 @@ object ArenaState : StateHandler.TESLState {
     var pickNumber: Int = 0
         set(value) {
             field = value
-            Logger.d("PickNumber: $pickNumber")
+            if (value > 0) {
+                Logger.d("PickNumber: $pickNumber")
+            }
+            if (value == 1) {
+                classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
+            }
         }
 
     val picks = mutableListOf<Card>()
@@ -91,6 +100,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     override fun onResume() {
+        Logger.i("ArenaState onResume")
         if (pickNumber > 0 && !finishPicks) {
             showPicksTier()
         }
@@ -100,6 +110,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     override fun onPause() {
+        Logger.i("ArenaState onPause")
         hidePicksTier()
         saveArenaState()
     }
@@ -113,7 +124,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     override fun resetState() {
-        lastClassSelectViews = null
+        classSelect = null
         pickNumber = 0
         picks.clear()
         finishPicks = false

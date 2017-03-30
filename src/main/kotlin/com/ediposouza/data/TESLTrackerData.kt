@@ -1,9 +1,6 @@
 package com.ediposouza.data
 
-import com.ediposouza.model.Card
-import com.ediposouza.model.CardAttribute
-import com.ediposouza.model.CardSet
-import com.ediposouza.model.FirebaseParsers
+import com.ediposouza.model.*
 import com.ediposouza.util.Logger
 import com.firebase.client.DataSnapshot
 import com.firebase.client.Firebase
@@ -18,6 +15,8 @@ object TESLTrackerData {
     val firebase by lazy { Firebase("https://tes-legends-assistant.firebaseio.com/") }
 
     val cards = mutableListOf<Card>()
+    var cardsAllClass = listOf<String>()
+    var cardsByClass = mapOf<String, List<String>>()
 
     fun updateCardDB() {
         cards.clear()
@@ -37,6 +36,13 @@ object TESLTrackerData {
                 cards.groupBy { it.set.name }.forEach { set, cards ->
                     Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
                 }
+                cardsAllClass = cards.map(Card::shortName)
+                cardsByClass = DeckClass.values().map { deckCls ->
+                    deckCls.name.toLowerCase() to cards.filter {
+                        it.dualAttr1 == deckCls.attr1 || it.dualAttr1 == deckCls.attr2 ||
+                                it.dualAttr2 == deckCls.attr1 || it.dualAttr2 == deckCls.attr2
+                    }.map(Card::shortName)
+                }.toMap()
             }
 
             override fun onCancelled(error: FirebaseError?) {
@@ -47,6 +53,10 @@ object TESLTrackerData {
 
     fun getCard(shortName: String?): Card? {
         return cards.find { it.shortName == shortName }
+    }
+
+    fun getCardFromClass(cls: String?): List<String> {
+        return cardsByClass[cls?.toLowerCase()] ?: cardsAllClass
     }
 
 }

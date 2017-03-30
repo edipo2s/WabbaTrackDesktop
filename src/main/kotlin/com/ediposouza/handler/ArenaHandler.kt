@@ -1,8 +1,9 @@
 package com.ediposouza.handler
 
+import com.ediposouza.data.DHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
-import com.ediposouza.extensions.saveCroppedImage
+import com.ediposouza.extensions.getArenaPickClassCrop
 import com.ediposouza.model.*
 import com.ediposouza.scope.ArenaState
 import com.ediposouza.util.Logger
@@ -14,6 +15,13 @@ import java.awt.image.BufferedImage
  * Created by Edipo on 18/03/2017.
  */
 object ArenaHandler {
+
+    fun processArenaClass(screenshot: BufferedImage?): String? {
+        screenshot?.getArenaPickClassCrop()?.apply {
+            return Recognizer.recognizeImageInMap(this, DHash.CLASS_PICK_LIST)
+        }
+        return null
+    }
 
     fun processArenaPick(retryNumber: Int = 0) {
         ScreenFuncs.takeScreenshot()?.apply {
@@ -35,7 +43,6 @@ object ArenaHandler {
 
     private fun recognizeArenaPick(image: BufferedImage, pick: Int): CardPick {
         with(image.getArenaCardCrop(pick)) {
-            saveCroppedImage()
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
                 Logger.i("--$name: $arenaTier")
                 return calcArenaValue(this, ArenaState.picks)

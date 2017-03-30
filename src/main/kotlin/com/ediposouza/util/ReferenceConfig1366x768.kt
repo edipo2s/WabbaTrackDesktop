@@ -57,11 +57,6 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_ARENA_CLASSES_X = 500
     override val SCREEN_ARENA_CLASSES_Y = 60
 
-    override val SCREEN_ARENA_CLASS_SELECT_HEIGHT = 65
-    override val SCREEN_ARENA_CLASS_SELECT_WIDTH = 85
-    override val SCREEN_ARENA_CLASS_SELECT_X = 640
-    override val SCREEN_ARENA_CLASS_SELECT_Y = 650
-
     override val SCREEN_ARENA_PICK_HEIGHT = 30
     override val SCREEN_ARENA_PICK_WIDTH = 25
     override val SCREEN_ARENA_PICK_X = 1215
@@ -126,10 +121,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     // -- Arena --
 
-    override val ARENA_CLASS_SELECT_HEIGHT = 70
-    override val ARENA_CLASS_SELECT_WIDTH = 100
-    override val ARENA_CLASS_SELECT_X = 455
-    override val ARENA_CLASS_SELECT_Y = 500
+    override val ARENA_PICK_CLASS_HEIGHT = 45
+    override val ARENA_PICK_CLASS_WIDTH = 180
+    override val ARENA_PICK_CLASS_X = 1140
+    override val ARENA_PICK_CLASS_Y = 20
 
     override val ARENA_PICK_CARD_HEIGHT = 155
     override val ARENA_PICK_CARD_WIDTH = 118

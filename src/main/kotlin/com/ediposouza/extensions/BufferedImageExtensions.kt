@@ -53,13 +53,6 @@ fun BufferedImage.getScreenArenaClassesCrop(): BufferedImage {
     }
 }
 
-fun BufferedImage.getScreenArenaClassSelectCrop(): BufferedImage {
-    with(TESLTracker.referenceConfig) {
-        return crop(SCREEN_ARENA_CLASS_SELECT_X, SCREEN_ARENA_CLASS_SELECT_Y,
-                SCREEN_ARENA_CLASS_SELECT_WIDTH, SCREEN_ARENA_CLASS_SELECT_HEIGHT)
-    }
-}
-
 fun BufferedImage.getScreenArenaPickCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(SCREEN_ARENA_PICK_X, SCREEN_ARENA_PICK_Y, SCREEN_ARENA_PICK_WIDTH, SCREEN_ARENA_PICK_HEIGHT)
@@ -136,9 +129,9 @@ fun BufferedImage.getGameOpponentClassCrop(): BufferedImage {
 
 // -- Arena Crops --
 
-fun BufferedImage.getArenaClassSelectCrop(): BufferedImage {
+fun BufferedImage.getArenaPickClassCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
-        return crop(ARENA_CLASS_SELECT_X, ARENA_CLASS_SELECT_Y, ARENA_CLASS_SELECT_WIDTH, ARENA_CLASS_SELECT_HEIGHT)
+        return crop(ARENA_PICK_CLASS_X, ARENA_PICK_CLASS_Y, ARENA_PICK_CLASS_WIDTH, ARENA_PICK_CLASS_HEIGHT)
     }
 }
 

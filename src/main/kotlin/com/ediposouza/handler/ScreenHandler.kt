@@ -36,17 +36,6 @@ object ScreenHandler {
             }
             return true
         }
-        if (screenshot.getScreenArenaClassSelectCrop().matchScreen(DHash.SCREEN_ARENA_CLASS_SELECT)) {
-            Logger.i("Arena Class Select Screen Detected!", true)
-            StateHandler.currentTESLState = ArenaState.apply {
-                Recognizer.recognizeArenaClassSelectImage(screenshot.getArenaClassSelectCrop())?.apply {
-                    Logger.i("Arena Class ${this} Detected!", true)
-                    lastClassSelectViews = this
-                    return true
-                }
-            }
-            return true
-        }
         if (screenshot.getScreenArenaPickCrop().matchScreenPickList(DHash.SCREENS_ARENA_PICK)) {
             Logger.i("Arena Pick Screen Detected!", true)
             StateHandler.currentTESLState = ArenaState.apply {

@@ -36,8 +36,17 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testScreenArenaClassSelect() {
-        recognizeScreen("ArenaClass/ClassCrusader.png", DHash.SCREEN_ARENA_CLASS_SELECT, BufferedImage::getScreenArenaClassSelectCrop)
+    fun testArenaPickClass() {
+        recognizeArenaPickClass("ArenaClass/PickArcher.png", "Archer")
+        recognizeArenaPickClass("ArenaClass/PickAssassin.png", "Assassin")
+        recognizeArenaPickClass("ArenaClass/PickBattlemage.png", "Battlemage")
+        recognizeArenaPickClass("ArenaClass/PickCrusader.png", "Crusader")
+        recognizeArenaPickClass("ArenaClass/PickMage.png", "Mage")
+        recognizeArenaPickClass("ArenaClass/PickMonk.png", "Monk")
+        recognizeArenaPickClass("ArenaClass/PickScout.png", "Scout")
+        recognizeArenaPickClass("ArenaClass/PickSorcerer.png", "Sorcerer")
+        recognizeArenaPickClass("ArenaClass/PickSpellsword.png", "Spellsword")
+        recognizeArenaPickClass("ArenaClass/PickWarrior.png", "Warrior")
     }
 
     @Test
@@ -84,36 +93,6 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
         recognizeScreen("ScreenArenaDash.png", DHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
     }
 
-    @Test
-    fun testArenaClassSelectedAssassin() {
-        recognizeArenaClassSelected("ArenaClass/ClassAssassin.png", "Assassin")
-    }
-
-    @Test
-    fun testArenaClassSelectedCrusader() {
-        recognizeArenaClassSelected("ArenaClass/ClassCrusader.png", "Crusader")
-    }
-
-    @Test
-    fun testArenaClassSelectedMage() {
-        recognizeArenaClassSelected("ArenaClass/ClassMage.png", "Mage")
-    }
-
-    @Test
-    fun testArenaClassSelectedScout() {
-        recognizeArenaClassSelected("ArenaClass/ClassScout.png", "Scout")
-    }
-
-    @Test
-    fun testArenaClassSelectedSorcerer() {
-        recognizeArenaClassSelected("ArenaClass/ClassSorcerer.png", "Sorcerer")
-    }
-
-    @Test
-    fun testArenaClassSelectedSpellword() {
-        recognizeArenaClassSelected("ArenaClass/ClassSpellword.png", "Spellword")
-    }
-
     private fun recognizeScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
         cropFun(getFileImage(testFileName))?.apply {
             assertThat(recognizeImage(this, DHash.SCREENS_LIST)).isEqualTo(screen)
@@ -126,9 +105,10 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
         }
     }
 
-    private fun recognizeArenaClassSelected(testFileName: String, cls: String) {
-        val croppedImage = getFileImage(testFileName).getArenaClassSelectCrop()
-        assertThat(recognizeImage(croppedImage, DHash.CLASS_SELECTED_LIST)).isEqualTo(cls)
+    private fun recognizeArenaPickClass(testFileName: String, cls: String) {
+        val croppedImage = getFileImage(testFileName).getArenaPickClassCrop()
+        croppedImage.saveCroppedImage()
+        assertThat(recognizeImage(croppedImage, DHash.CLASS_PICK_LIST)).isEqualTo(cls)
     }
 
 }

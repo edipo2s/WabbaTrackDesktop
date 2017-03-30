@@ -2,6 +2,8 @@ package com.ediposouza.util
 
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
+import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.scope.ArenaState
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -14,6 +16,7 @@ object Recognizer {
     private const val PHASH_SIZE = 32
     private const val PHASH_SMALLER_SIZE = 8
     private const val PHASH_SIMILARITY_THRESHOLD = 10
+    private const val PHASH_SIMILARITY_HIGH_THRESHOLD = 3
 
     var c: Array<Double> = Array(PHASH_SIZE, { 0.0 })
 
@@ -25,7 +28,14 @@ object Recognizer {
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHashCards.LIST)
+        if (ArenaState.classSelect != null) {
+            val cardsFromClass = TESLTrackerData.getCardFromClass(ArenaState.classSelect)
+            val classPHash = DHashCards.LIST.filter { cardsFromClass.contains(it.value) }
+            Logger.d("Filtering dhash by ${ArenaState.classSelect} class with ${classPHash.size} cards")
+            return recognizeImageInMap(image, classPHash)
+        } else {
+            return recognizeImageInMap(image, DHashCards.LIST)
+        }
     }
 
     fun recognizeScreenImage(image: BufferedImage): String? {
@@ -34,10 +44,6 @@ object Recognizer {
 
     fun recognizeScreenPickImage(image: BufferedImage): String? {
         return recognizeImageInMap(image, DHash.SCREENS_PICK_LIST)
-    }
-
-    fun recognizeArenaClassSelectImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHash.CLASS_SELECTED_LIST)
     }
 
     fun recognizeImageInMap(image: BufferedImage, hashMap: Map<String, String>): String? {
@@ -54,9 +60,9 @@ object Recognizer {
         if (screenshot1Hash.length != screenshot2Hash.length) {
             return true
         }
-        val calcDHashDistance = calcHashDistance(screenshot1Hash, screenshot2Hash)
-//        Logger.d("Different distance: $calcHashDistance")
-        return calcDHashDistance > PHASH_SIMILARITY_THRESHOLD
+        val screenshotDistance = calcHashDistance(screenshot1Hash, screenshot2Hash)
+//        Logger.d("Different distance: $screenshotDistance")
+        return screenshotDistance > PHASH_SIMILARITY_HIGH_THRESHOLD
     }
 
     private fun calcHashDistance(s1: String, s2: String): Int {

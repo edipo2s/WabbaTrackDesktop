@@ -47,12 +47,13 @@ class TESLTracker : App(LoggerView::class) {
 
         fun redetectScreen() {
             lastScreenshotDHash = ""
+            ScreenHandler.lastScreenRecognized = ""
         }
     }
 
     val APP_NAME = "TES Legends Tracker"
     val DELAY_WINDOW_DETECTION = 5_000L
-    val DELAY_ELDER_SCROLL_SCREENSHOT = 2_000L
+    val DELAY_ELDER_SCROLL_SCREENSHOT = 1_000L
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
@@ -173,6 +174,6 @@ class TESLTracker : App(LoggerView::class) {
         return true
     }
 
-    private fun isTESLegendsScreenActive() = !ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
+    private fun isTESLegendsScreenActive() = ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
 
 }
