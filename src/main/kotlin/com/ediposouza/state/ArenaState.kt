@@ -1,4 +1,4 @@
-package com.ediposouza.scope
+package com.ediposouza.state
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerData

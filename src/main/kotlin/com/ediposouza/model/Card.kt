@@ -283,7 +283,8 @@ data class CardBasicInfo(
 data class CardSlot(
 
         val card: Card,
-        val qtd: Int
+        val qtd: Int,
+        var currentQtd: Int = qtd
 
 )
 

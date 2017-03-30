@@ -5,7 +5,7 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.extensions.getArenaPickClassCrop
 import com.ediposouza.model.*
-import com.ediposouza.scope.ArenaState
+import com.ediposouza.state.ArenaState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import com.ediposouza.util.ScreenFuncs

@@ -2,8 +2,8 @@ package com.ediposouza.handler
 
 import com.ediposouza.data.DHash
 import com.ediposouza.extensions.*
-import com.ediposouza.scope.ArenaState
-import com.ediposouza.scope.GameState
+import com.ediposouza.state.ArenaState
+import com.ediposouza.state.GameState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage

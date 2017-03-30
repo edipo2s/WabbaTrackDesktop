@@ -1,4 +1,4 @@
-package com.ediposouza.scope
+package com.ediposouza.state
 
 import com.ediposouza.handler.GameHandler
 import com.ediposouza.handler.StateHandler
@@ -15,7 +15,7 @@ import javafx.application.Platform
  */
 object GameState : StateHandler.TESLState, Runnable {
 
-    private val deckTracker by lazy { DeckTrackerWidget() }
+    val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
 
     var threadRunning: Boolean = false
@@ -60,7 +60,10 @@ object GameState : StateHandler.TESLState, Runnable {
                 if (opponentDeckClass == null) {
                     opponentDeckClass = GameHandler.processOpponentDeckClass(this)
                 }
-                lastCardDraw = GameHandler.processCardDraw(this)
+                GameHandler.processCardDraw(this)?.apply {
+                    lastCardDraw = this
+                    deckTracker.trackCardDraw(this)
+                }
                 GameHandler.processMatchEnd(this)?.let { win ->
                     val result = "Win".takeIf { win } ?: "Loss"
                     Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
@@ -78,11 +81,13 @@ object GameState : StateHandler.TESLState, Runnable {
     }
 
     private fun showDeckTracker() {
-//        deckTracker.isVisible = true
+        if (deckCardsSlot.isNotEmpty()) {
+            deckTracker.isVisible = true
+        }
     }
 
     private fun hideDeckTracker() {
-//        deckTracker.isVisible = false
+        deckTracker.isVisible = false
     }
 
 }

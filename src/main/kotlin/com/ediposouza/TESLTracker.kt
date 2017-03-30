@@ -5,8 +5,8 @@ import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardSlot
-import com.ediposouza.scope.ArenaState
-import com.ediposouza.scope.GameState
+import com.ediposouza.state.ArenaState
+import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.util.*
 import javafx.application.Platform
@@ -19,10 +19,7 @@ import javafx.stage.StageStyle
 import tornadofx.App
 import tornadofx.FX
 import tornadofx.alert
-import java.awt.MenuItem
-import java.awt.PopupMenu
-import java.awt.SystemTray
-import java.awt.TrayIcon
+import java.awt.*
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.net.URLDecoder
@@ -35,6 +32,8 @@ import javax.swing.SwingUtilities
 class TESLTracker : App(LoggerView::class) {
 
     companion object {
+
+        val SHOW_TEST_MENU = true
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
@@ -95,17 +94,6 @@ class TESLTracker : App(LoggerView::class) {
                         }
                     }
                 })
-                add(MenuItem("Test").apply {
-                    addActionListener {
-                        Platform.runLater {
-                            val cardsSlot = ArenaState.picks.groupBy(Card::shortName)
-                                    .map { CardSlot(it.value.first(), it.value.size) }
-                            StateHandler.currentTESLState = GameState.apply {
-                                setDeckCardsSlot(cardsSlot)
-                            }
-                        }
-                    }
-                })
                 add(MenuItem("About").apply {
                     addActionListener {
                         Platform.runLater {
@@ -119,6 +107,28 @@ class TESLTracker : App(LoggerView::class) {
                         System.exit(0)
                     }
                 })
+                if (SHOW_TEST_MENU) {
+                    add(Menu("Test").apply {
+                        add(MenuItem("Show Deck Test").apply {
+                            addActionListener {
+                                Platform.runLater {
+                                    val cardsSlot = ArenaState.picks.groupBy(Card::shortName)
+                                            .map { CardSlot(it.value.first(), it.value.size) }
+                                    StateHandler.currentTESLState = GameState.apply {
+                                        setDeckCardsSlot(cardsSlot)
+                                    }
+                                }
+                            }
+                        })
+                        add(MenuItem("Draw Test").apply {
+                            addActionListener {
+                                Platform.runLater {
+                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("baronoftear")!!)
+                                }
+                            }
+                        })
+                    })
+                }
             }
             SwingUtilities.invokeLater {
                 displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)

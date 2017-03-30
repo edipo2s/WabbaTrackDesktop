@@ -3,6 +3,7 @@ package com.ediposouza.ui
 import com.ediposouza.TESLTracker
 import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.makeDraggable
+import com.ediposouza.model.Card
 import com.ediposouza.model.CardSlot
 import com.ediposouza.util.ImageFuncs
 import javafx.application.Platform
@@ -13,15 +14,16 @@ import javafx.embed.swing.SwingFXUtils
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
+import javafx.scene.SnapshotParameters
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
 import tornadofx.*
 import java.awt.Dimension
 import java.awt.Window
@@ -63,6 +65,18 @@ class DeckTrackerWidget : JFrame() {
 
     }
 
+    fun trackCardDraw(card: Card) {
+        with(deckCardsSlot) {
+            find { it.card == card }?.apply {
+                indexOf(this).takeIf { it >= 0 }?.let {
+                    set(it, this.apply {
+                        currentQtd -= 1
+                    })
+                }
+            }
+        }
+    }
+
     private fun createFxScene(): Scene {
         with(TESLTracker.referenceConfig) {
             val cellSize = ImageFuncs.getScreenScaledSize(DECK_TRACKER_CARD_WIDTH, DECK_TRACKER_CARD_HEIGHT)
@@ -90,7 +104,6 @@ class DeckTrackerWidget : JFrame() {
                             prefHeight = cellSize.height.toDouble() + 1
                         }
                     }
-                    addEventFilter(MouseEvent.MOUSE_PRESSED) { event -> event?.consume() }
                     makeDraggable(this@DeckTrackerWidget)
                 })
                 background = Background.EMPTY
@@ -131,9 +144,21 @@ class DeckTrackerWidget : JFrame() {
                             val cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
                             image = SwingFXUtils.toFXImage(cardFullImage?.getCardForSlotCrop(), null)
                             fitHeight = cardSize.height.toDouble()
-                            fitWidth = cardSize.width.toDouble() * 3 / 4
+                            fitWidth = cardSize.width.toDouble() * 0.8
+                            clip = Rectangle(fitWidth, fitHeight).apply {
+                                arcWidth = 20.0
+                                arcHeight = 20.0
+                            }
+                            SnapshotParameters().apply {
+                                fill = Color.TRANSPARENT
+                                val roundedImage = snapshot(this, null)
+                                clip = null
+                                effect = DropShadow(20.0, Color.BLACK)
+                                image = roundedImage
+                            }
+                            opacity = 1.0.takeIf { item.currentQtd > 0 } ?: 0.3
                         }
-                        padding = Insets(0.0, 0.0, 0.0, cardSize.width / 4.0)
+                        padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.2)
                         style = "-fx-background-color: linear-gradient(to right, ${item.card.attr.colorHex}, #000000AA); " +
                                 "-fx-background-radius: 25.0;"
                     })
@@ -146,7 +171,11 @@ class DeckTrackerWidget : JFrame() {
                         }
                         center = label {
                             text = item.card.name
-                            textFill = Color.WHITE
+                            textFill = when {
+                                item.currentQtd > 0 && item.currentQtd < item.qtd -> Color.YELLOW
+                                item.currentQtd <= 0 -> Color.LIGHTGRAY
+                                else -> Color.WHITE
+                            }
                             effect = DropShadow(5.0, Color.BLACK)
                             padding = Insets(0.0, 0.0, 0.0, 3.0)
                             minWidth = cardSize.width * 0.9
@@ -156,7 +185,7 @@ class DeckTrackerWidget : JFrame() {
                             alignment = Pos.CENTER
                             textFill = Color.WHITE
                             effect = DropShadow(5.0, Color.BLACK)
-                            val cardQtd = item.qtd
+                            val cardQtd = item.currentQtd
                             if (cardQtd > 1) {
                                 text = "$cardQtd"
                             }

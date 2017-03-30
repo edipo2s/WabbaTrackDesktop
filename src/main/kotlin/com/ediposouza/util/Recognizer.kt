@@ -3,7 +3,7 @@ package com.ediposouza.util
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
 import com.ediposouza.data.TESLTrackerData
-import com.ediposouza.scope.ArenaState
+import com.ediposouza.state.ArenaState
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp

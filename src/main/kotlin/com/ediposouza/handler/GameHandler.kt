@@ -5,8 +5,8 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.*
 import com.ediposouza.model.Card
 import com.ediposouza.model.DeckClass
-import com.ediposouza.scope.GameState
-import com.ediposouza.scope.GameState.playerDeckClass
+import com.ediposouza.state.GameState
+import com.ediposouza.state.GameState.playerDeckClass
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage
