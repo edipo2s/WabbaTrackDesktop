@@ -123,14 +123,19 @@ class DeckTrackerWidget : JFrame() {
             super.updateItem(item, empty)
             if (item != null) {
                 graphic = StackPane().apply {
-                    add(imageview {
-                        val cardSetName = item.card.set.name.toLowerCase().capitalize()
-                        val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
-                        val cardImagePath = "/Cards/$cardSetName/$cardAttrName/${item.card.shortName}.png"
-                        val cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
-                        image = SwingFXUtils.toFXImage(cardFullImage?.getCardForSlotCrop(), null)
-                        fitHeight = cardSize.height.toDouble()
-                        fitWidth = cardSize.width.toDouble()
+                    add(stackpane {
+                        imageview {
+                            val cardSetName = item.card.set.name.toLowerCase().capitalize()
+                            val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
+                            val cardImagePath = "/Cards/$cardSetName/$cardAttrName/${item.card.shortName}.png"
+                            val cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
+                            image = SwingFXUtils.toFXImage(cardFullImage?.getCardForSlotCrop(), null)
+                            fitHeight = cardSize.height.toDouble()
+                            fitWidth = cardSize.width.toDouble() * 3 / 4
+                        }
+                        padding = Insets(0.0, 0.0, 0.0, cardSize.width / 4.0)
+                        style = "-fx-background-color: linear-gradient(to right, ${item.card.attr.colorHex}, #000000AA); " +
+                                "-fx-background-radius: 25.0;"
                     })
                     add(borderpane {
                         left = imageview {

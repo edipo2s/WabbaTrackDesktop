@@ -26,15 +26,15 @@ enum class CardSet(val db: String) {
 
 }
 
-enum class CardAttribute(val isBasic: Boolean = true) {
+enum class CardAttribute(val colorHex: String, val isBasic: Boolean = true) {
 
-    STRENGTH(),
-    INTELLIGENCE(),
-    WILLPOWER(),
-    AGILITY(),
-    ENDURANCE(),
-    NEUTRAL(false),
-    DUAL(false);
+    STRENGTH("#FFCDD2"),
+    INTELLIGENCE("#BBDEFB"),
+    WILLPOWER("#FFF9C4"),
+    AGILITY("#C8E6C9"),
+    ENDURANCE("#E1BEE7"),
+    NEUTRAL("#F5F5F5", false),
+    DUAL("#B2DFDB", false);
 
     companion object {
 
