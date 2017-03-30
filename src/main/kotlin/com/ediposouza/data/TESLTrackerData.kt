@@ -21,6 +21,7 @@ object TESLTrackerData {
     fun updateCardDB() {
         cards.clear()
         Logger.d("Updating cards database")
+        firebase.app.goOnline()
         firebase.child("cards").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(ds: DataSnapshot?) {
                 cards.clear()
@@ -43,10 +44,12 @@ object TESLTrackerData {
                                 it.dualAttr2 == deckCls.attr1 || it.dualAttr2 == deckCls.attr2
                     }.map(Card::shortName)
                 }.toMap()
+                firebase.app.goOffline()
             }
 
             override fun onCancelled(error: FirebaseError?) {
                 Logger.e(error?.toException())
+                firebase.app.goOffline()
             }
         })
     }
@@ -55,8 +58,8 @@ object TESLTrackerData {
         return cards.find { it.shortName == shortName }
     }
 
-    fun getCardFromClass(cls: String?): List<String> {
-        return cardsByClass[cls?.toLowerCase()] ?: cardsAllClass
+    fun getCardFromClass(deckClass: DeckClass): List<String> {
+        return cardsByClass[deckClass.name.toLowerCase()] ?: cardsAllClass
     }
 
 }

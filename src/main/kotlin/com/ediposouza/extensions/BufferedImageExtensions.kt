@@ -10,6 +10,8 @@ import javax.imageio.ImageIO
  * Created by Edipo on 19/03/2017.
  */
 
+val SAVE_CROP_IMAGES = false
+
 fun BufferedImage.saveCroppedImage() {
     val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
     File("src/main/resources/Crops/Tmp").apply {
@@ -22,14 +24,14 @@ fun BufferedImage.saveCroppedImage() {
 
 fun BufferedImage.getCardCrop(): BufferedImage? {
     with(TESLTracker.referenceConfig) {
-        return getSubimage(FULL_CARD_X, FULL_CARD_Y, FULL_CARD_WIDTH, FULL_CARD_HEIGHT)
+        return getSubimage(FULL_CARD_X, FULL_CARD_Y, FULL_CARD_WIDTH, FULL_CARD_HEIGHT).apply { if (SAVE_CROP_IMAGES) saveCroppedImage() }
     }
 }
 
 fun BufferedImage.getCardForSlotCrop(): BufferedImage? {
     with(TESLTracker.referenceConfig) {
         return getSubimage(FULL_CARD_DECK_IMAGE_X, FULL_CARD_DECK_IMAGE_Y,
-                FULL_CARD_DECK_IMAGE_WIDTH, FULL_CARD_DECK_IMAGE_HEIGHT)
+                FULL_CARD_DECK_IMAGE_WIDTH, FULL_CARD_DECK_IMAGE_HEIGHT).apply { if (SAVE_CROP_IMAGES) saveCroppedImage() }
     }
 }
 
@@ -150,5 +152,5 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
 private fun BufferedImage.crop(cropX: Int, cropY: Int, cropWidth: Int, cropHeight: Int): BufferedImage {
     val pickPosition = ImageFuncs.getScaledPosition(width, height, cropX, cropY)
     val pickSize = ImageFuncs.getScaledSize(height, cropWidth, cropHeight)
-    return getSubimage(pickPosition.x, pickPosition.y, pickSize.width, pickSize.height)
+    return getSubimage(pickPosition.x, pickPosition.y, pickSize.width, pickSize.height).apply { if (SAVE_CROP_IMAGES) saveCroppedImage() }
 }

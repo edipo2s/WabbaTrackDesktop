@@ -15,7 +15,7 @@ object Recognizer {
 
     private const val PHASH_SIZE = 32
     private const val PHASH_SMALLER_SIZE = 8
-    private const val PHASH_SIMILARITY_THRESHOLD = 10
+    private const val PHASH_SIMILARITY_THRESHOLD = 12
     private const val PHASH_SIMILARITY_HIGH_THRESHOLD = 3
 
     var c: Array<Double> = Array(PHASH_SIZE, { 0.0 })
@@ -28,14 +28,12 @@ object Recognizer {
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        if (ArenaState.classSelect != null) {
-            val cardsFromClass = TESLTrackerData.getCardFromClass(ArenaState.classSelect)
+        return ArenaState.classSelect?.let {
+            val cardsFromClass = TESLTrackerData.getCardFromClass(it)
             val classPHash = DHashCards.LIST.filter { cardsFromClass.contains(it.value) }
             Logger.d("Filtering dhash by ${ArenaState.classSelect} class with ${classPHash.size} cards")
-            return recognizeImageInMap(image, classPHash)
-        } else {
-            return recognizeImageInMap(image, DHashCards.LIST)
-        }
+            recognizeImageInMap(image, classPHash)
+        } ?: recognizeImageInMap(image, DHashCards.LIST)
     }
 
     fun recognizeScreenImage(image: BufferedImage): String? {

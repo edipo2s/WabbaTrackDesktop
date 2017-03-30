@@ -24,8 +24,8 @@ enum class DeckClass(val attr1: CardAttribute, val attr2: CardAttribute = CardAt
 
     companion object {
 
-        fun of(value: String): DeckClass {
-            val name = value.trim().toUpperCase().replace(" ", "_")
+        fun of(value: String?): DeckClass {
+            val name = value?.trim()?.toUpperCase()?.replace(" ", "_") ?: ""
             return if (values().map { it.name }.contains(name)) valueOf(name) else NEUTRAL
         }
 

@@ -7,6 +7,7 @@ import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardPick
 import com.ediposouza.model.CardSlot
+import com.ediposouza.model.DeckClass
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
@@ -43,7 +44,7 @@ object ArenaState : StateHandler.TESLState {
         }
     }
 
-    var classSelect: String? = null
+    var classSelect: DeckClass? = null
         set(value) {
             field = value
             if (value != null) {

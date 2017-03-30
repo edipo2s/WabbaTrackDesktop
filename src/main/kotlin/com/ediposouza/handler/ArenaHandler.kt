@@ -16,9 +16,9 @@ import java.awt.image.BufferedImage
  */
 object ArenaHandler {
 
-    fun processArenaClass(screenshot: BufferedImage?): String? {
+    fun processArenaClass(screenshot: BufferedImage?): DeckClass? {
         screenshot?.getArenaPickClassCrop()?.apply {
-            return Recognizer.recognizeImageInMap(this, DHash.CLASS_PICK_LIST)
+            return DeckClass.of(Recognizer.recognizeImageInMap(this, DHash.CLASS_PICK_LIST))
         }
         return null
     }

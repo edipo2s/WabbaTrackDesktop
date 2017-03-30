@@ -73,7 +73,6 @@ class TESLTracker : App(LoggerView::class) {
         stage.close()
         configureSystemTrayIcon()
         CompletableFuture.runAsync {
-            TESLTrackerData.updateCardDB()
             startElderScrollDetection()
         }
     }
@@ -145,6 +144,7 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     private fun startElderScrollRecognition() {
+        TESLTrackerData.updateCardDB()
         Logger.i("Start screenshot game screens..")
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {
