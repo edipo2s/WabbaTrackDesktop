@@ -29,13 +29,13 @@ object ScreenHandler {
             return true
         }
         //Arena screens check
-        if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
-            Logger.i("Arena Classes Screen Detected!", true)
-            StateHandler.currentTESLState = ArenaState.apply {
-                resetState()
-            }
-            return true
-        }
+//        if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
+//            Logger.i("Arena Classes Screen Detected!", true)
+//            StateHandler.currentTESLState = ArenaState.apply {
+//                resetState()
+//            }
+//            return true
+//        }
         if (screenshot.getScreenArenaPickCrop().matchScreenPickList(DHash.SCREENS_ARENA_PICK)) {
             Logger.i("Arena Pick Screen Detected!", true)
             StateHandler.currentTESLState = ArenaState.apply {

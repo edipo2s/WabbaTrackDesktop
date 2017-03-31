@@ -53,7 +53,7 @@ abstract class FirebaseParsers {
             }
             val cardArenaTierPlusType = CardArenaTierPlusType.of(arenaTierPlus.keys.first())
             var operator: CardArenaTierPlusOperator? = null
-            var value = when (cardArenaTierPlusType) {
+            val value = when (cardArenaTierPlusType) {
                 CardArenaTierPlusType.ATTACK,
                 CardArenaTierPlusType.COST,
                 CardArenaTierPlusType.HEALTH ->

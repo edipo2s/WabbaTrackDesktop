@@ -6,7 +6,6 @@ import com.ediposouza.extensions.*
 import com.ediposouza.model.Card
 import com.ediposouza.model.DeckClass
 import com.ediposouza.state.GameState
-import com.ediposouza.state.GameState.playerDeckClass
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage
@@ -32,7 +31,7 @@ object GameHandler {
         return screenshot.getGamePlayerClassCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_CLASS_LIST)?.let {
                 DeckClass.of(it).apply {
-                    Logger.i("--PlayerDeckClass: $playerDeckClass!")
+                    Logger.i("--PlayerDeckClass: $it!")
                 }
             }
         }
@@ -42,7 +41,7 @@ object GameHandler {
         return screenshot.getGameOpponentClassCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_OPPONENT_CLASS_LIST)?.let {
                 DeckClass.of(it).apply {
-                    Logger.i("--OpponentDeckClass: $playerDeckClass!")
+                    Logger.i("--OpponentDeckClass: $it!")
                 }
             }
         }

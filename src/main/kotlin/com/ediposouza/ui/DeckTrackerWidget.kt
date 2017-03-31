@@ -15,8 +15,10 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.SnapshotParameters
+import javafx.scene.control.ContextMenu
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
+import javafx.scene.control.MenuItem
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
 import javafx.scene.layout.Background
@@ -40,6 +42,12 @@ class DeckTrackerWidget : JFrame() {
     private lateinit var deckTrackerSize: Dimension
     private lateinit var deckTitle: Label
 
+    private val contextMenu = ContextMenu(MenuItem("Hide").apply {
+        setOnAction {
+            this@DeckTrackerWidget.isVisible = false
+        }
+    })
+
     init {
         type = Window.Type.UTILITY
         isUndecorated = true
@@ -48,7 +56,8 @@ class DeckTrackerWidget : JFrame() {
         with(TESLTracker.referenceConfig) {
             val deckTrackerPos = ImageFuncs.getScreenScaledPosition(DECK_TRACKER_X, DECK_TRACKER_Y)
             setLocation(deckTrackerPos.x, deckTrackerPos.y)
-            deckTrackerSize = ImageFuncs.getScreenScaledSize(DECK_TRACKER_WIDTH, DECK_TRACKER_HEIGHT)
+            val screenHeightUseful = TESLTracker.screenSize.height.toInt()
+            deckTrackerSize = Dimension(ImageFuncs.getScreenScaledSize(DECK_TRACKER_WIDTH, 0).width, screenHeightUseful)
             size = deckTrackerSize
         }
 
@@ -66,12 +75,14 @@ class DeckTrackerWidget : JFrame() {
     }
 
     fun trackCardDraw(card: Card) {
-        with(deckCardsSlot) {
-            find { it.card == card }?.apply {
-                indexOf(this).takeIf { it >= 0 }?.let {
-                    set(it, this.apply {
-                        currentQtd -= 1
-                    })
+        Platform.runLater {
+            with(deckCardsSlot) {
+                find { it.card == card }?.apply {
+                    indexOf(this).takeIf { it >= 0 }?.let {
+                        set(it, this.apply {
+                            currentQtd -= 1
+                        })
+                    }
                 }
             }
         }
@@ -106,12 +117,18 @@ class DeckTrackerWidget : JFrame() {
                     }
                     makeDraggable(this@DeckTrackerWidget)
                 })
+//                style = "-fx-background-color: #00FF00; "
                 background = Background.EMPTY
             }
 
             return Scene(layout).apply {
                 fill = Color.TRANSPARENT
                 stylesheets.add(TESLTracker::class.java.getResource("/UI/deckTrackerWidget.css").toExternalForm())
+                setOnMousePressed { me ->
+                    if (me.isSecondaryButtonDown) {
+                        contextMenu.show(root, me.screenX, me.screenY)
+                    }
+                }
             }
         }
     }

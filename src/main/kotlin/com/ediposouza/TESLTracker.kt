@@ -71,6 +71,7 @@ class TESLTracker : App(LoggerView::class) {
 
         stage.close()
         configureSystemTrayIcon()
+        TESLTrackerData.cards
         CompletableFuture.runAsync {
             startElderScrollDetection()
         }
@@ -91,6 +92,13 @@ class TESLTracker : App(LoggerView::class) {
                     addActionListener {
                         Platform.runLater {
                             FX.primaryStage.show()
+                        }
+                    }
+                })
+                add(MenuItem("Show Deck Tracker").apply {
+                    addActionListener {
+                        Platform.runLater {
+                            GameState.deckTracker.isVisible = true
                         }
                     }
                 })
@@ -145,6 +153,7 @@ class TESLTracker : App(LoggerView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
+                StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")
                 StateHandler.currentTESLState?.onPause()
@@ -175,7 +184,7 @@ class TESLTracker : App(LoggerView::class) {
             lastScreenshotDHash = screenshotDHash
             waitingScreenshotChangeWasLogged = false
             if (!ScreenHandler.process(screenshot)) {
-                return isTESLegendsScreenActive()
+                return isTESLegendsScreenActive() || isTESLegendsTrackerWindow() || isTESLegendsTrackerPopupWindow()
             }
         } else if (!waitingScreenshotChangeWasLogged) {
             Logger.i("Waiting screen change..")
@@ -185,5 +194,9 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     private fun isTESLegendsScreenActive() = ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
+
+    private fun isTESLegendsTrackerWindow() = ScreenFuncs.getActiveWindowTitle().contains(APP_NAME)
+
+    private fun isTESLegendsTrackerPopupWindow() = ScreenFuncs.getActiveWindowTitle().isEmpty()
 
 }

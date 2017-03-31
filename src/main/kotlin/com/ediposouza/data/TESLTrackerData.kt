@@ -1,11 +1,17 @@
 package com.ediposouza.data
 
+import com.ediposouza.TESLTracker
 import com.ediposouza.model.*
 import com.ediposouza.util.Logger
 import com.firebase.client.DataSnapshot
 import com.firebase.client.Firebase
 import com.firebase.client.FirebaseError
 import com.firebase.client.ValueEventListener
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 
 /**
  * Created by Edipo on 19/03/2017.
@@ -14,12 +20,30 @@ object TESLTrackerData {
 
     val firebase by lazy { Firebase("https://tes-legends-assistant.firebaseio.com/") }
 
-    val cards = mutableListOf<Card>()
+    private val cardsDBFile by lazy {
+        File("${TESLTracker.jarPath}/data").let {
+            if (!it.exists()) {
+                it.mkdirs()
+            }
+            File(it, "cardsDB.json")
+        }
+    }
+
+    var cards = mutableListOf<Card>()
     var cardsAllClass = listOf<String>()
     var cardsByClass = mapOf<String, List<String>>()
 
+    init {
+        if (cardsDBFile.exists()) {
+            val listCardType = object : TypeToken<ArrayList<Card>>() {}.type
+            cards = Gson().fromJson(FileReader(cardsDBFile).readText(), listCardType)
+            cards.groupBy { it.set.name }.forEach { set, cards ->
+                Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
+            }
+        }
+    }
+
     fun updateCardDB() {
-        cards.clear()
         Logger.d("Updating cards database")
         firebase.app.goOnline()
         firebase.child("cards").addListenerForSingleValueEvent(object : ValueEventListener {
@@ -45,6 +69,7 @@ object TESLTrackerData {
                     }.map(Card::shortName)
                 }.toMap()
                 firebase.app.goOffline()
+                saveCardsDB()
             }
 
             override fun onCancelled(error: FirebaseError?) {
@@ -60,6 +85,18 @@ object TESLTrackerData {
 
     fun getCardFromClass(deckClass: DeckClass): List<String> {
         return cardsByClass[deckClass.name.toLowerCase()] ?: cardsAllClass
+    }
+
+    private fun saveCardsDB() {
+        try {
+            val cardsJson = Gson().toJson(cards)
+            FileWriter(cardsDBFile).apply {
+                write(cardsJson)
+                flush()
+            }
+        } catch (e: Exception) {
+            Logger.e(e)
+        }
     }
 
 }

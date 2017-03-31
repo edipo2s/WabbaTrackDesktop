@@ -60,11 +60,12 @@ object ArenaState : StateHandler.TESLState {
     var pickNumber: Int = 0
         set(value) {
             field = value
-            if (value > 0) {
-                Logger.d("PickNumber: $pickNumber")
-            }
-            if (value == 1) {
-                classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
+            when {
+                value > 0 -> Logger.d("PickNumber: $pickNumber")
+                value == 1 -> {
+                    resetState()
+                    classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
+                }
             }
         }
 
@@ -96,7 +97,9 @@ object ArenaState : StateHandler.TESLState {
     init {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
+            Logger.i("Read $cards")
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
+            Logger.i("Restored ${picks.size} picks")
         }
     }
 
@@ -112,8 +115,8 @@ object ArenaState : StateHandler.TESLState {
 
     override fun onPause() {
         Logger.i("ArenaState onPause")
-        hidePicksTier()
         saveArenaState()
+        hidePicksTier()
     }
 
     override fun hasValidState(): Boolean {
@@ -126,9 +129,8 @@ object ArenaState : StateHandler.TESLState {
 
     override fun resetState() {
         classSelect = null
-        pickNumber = 0
-        picks.clear()
         finishPicks = false
+        picks.clear()
         saveArenaState()
     }
 

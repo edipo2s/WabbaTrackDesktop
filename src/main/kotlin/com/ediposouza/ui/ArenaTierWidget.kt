@@ -5,7 +5,6 @@ import com.ediposouza.model.Card
 import com.ediposouza.model.CardArenaTier
 import com.ediposouza.model.CardPick
 import com.ediposouza.model.CardSlot
-import com.ediposouza.state.ArenaState
 import com.ediposouza.util.ImageFuncs
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
@@ -62,7 +61,6 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
     private val contextMenu = ContextMenu(MenuItem("Detect Again").apply {
         setOnAction {
-            ArenaState.onPause()
             TESLTracker.redetectScreen()
         }
     })

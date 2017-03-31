@@ -15,7 +15,7 @@ object Recognizer {
 
     private const val PHASH_SIZE = 32
     private const val PHASH_SMALLER_SIZE = 8
-    private const val PHASH_SIMILARITY_THRESHOLD = 12
+    private const val PHASH_SIMILARITY_THRESHOLD = 10
     private const val PHASH_SIMILARITY_HIGH_THRESHOLD = 3
 
     var c: Array<Double> = Array(PHASH_SIZE, { 0.0 })
