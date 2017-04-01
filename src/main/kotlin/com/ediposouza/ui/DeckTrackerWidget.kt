@@ -6,6 +6,7 @@ import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardSlot
+import com.ediposouza.model.DeckClass
 import com.ediposouza.util.ImageFuncs
 import javafx.application.Platform
 import javafx.collections.FXCollections
@@ -17,10 +18,12 @@ import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.SnapshotParameters
 import javafx.scene.control.ContextMenu
+import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.MenuItem
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
@@ -40,13 +43,41 @@ class DeckTrackerWidget : JFrame() {
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
     private lateinit var deckTrackerSize: Dimension
 
-    private val contextMenu = ContextMenu(MenuItem("Hide").apply {
+    val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
+    val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.png") }
+
+    val contextMenu = ContextMenu(MenuItem("Hide").apply {
         setOnAction {
             this@DeckTrackerWidget.isVisible = false
         }
     })
 
-    val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
+    val deckCoverName by lazy {
+        Label().apply {
+            textFill = Color.WHITE
+            effect = DropShadow(5.0, Color.BLACK)
+        }
+    }
+
+    val deckCoverPane by lazy {
+        BorderPane().apply {
+            left = deckCoverName.apply {
+                padding = Insets(2.0, 0.0, 0.0, 4.0)
+            }
+            right = ImageView().apply {
+                image = Image(configIconStream)
+                padding = Insets(0.0, 0.0, 0.0, 2.0)
+                setOnMousePressed { me ->
+                    if (me.isPrimaryButtonDown) {
+                        contextMenu.show(this, me.screenX, me.screenY)
+                    }
+                }
+            }
+            background = Background(BackgroundImage(Image(defaultDeckCoverStream), BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
+            makeDraggable(this@DeckTrackerWidget)
+        }
+    }
 
     init {
         type = Window.Type.UTILITY
@@ -79,22 +110,9 @@ class DeckTrackerWidget : JFrame() {
         with(TESLTracker.referenceConfig) {
             val cellSize = ImageFuncs.getScreenScaledSize(DECK_TRACKER_CARD_WIDTH, DECK_TRACKER_CARD_HEIGHT)
             val layout = VBox().apply {
-                add(borderpane {
-                    right = imageview {
-                        image = Image(configIconStream)
-                        padding = Insets(0.0, 0.0, 0.0, 2.0)
-                        setOnMousePressed { me ->
-                            if (me.isPrimaryButtonDown) {
-                                contextMenu.show(this, me.screenX, me.screenY)
-                            }
-                        }
-                    }
-                    background = Background(BackgroundImage(Image(TESLTracker::class.java.getResourceAsStream("/UI/Class/PickArcher.png")),
-                            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT))
+                add(deckCoverPane.apply {
                     maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
                     minHeight = cellSize.height * 1.5
-                    makeDraggable(this@DeckTrackerWidget)
                 })
                 add(listview<CardSlot> {
                     items = deckCardsSlot
@@ -129,6 +147,11 @@ class DeckTrackerWidget : JFrame() {
                 addAll(cardsSlot.sortedBy { it.card.name }.sortedBy { it.card.cost })
             }
         }
+        val coverFileName = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
+        val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${coverFileName ?: "Default"}.png")
+        deckCoverName.text = coverFileName?.name?.toLowerCase()?.capitalize() ?: ""
+        deckCoverPane.background = Background(BackgroundImage(Image(deckCoverStream), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
     }
 
     fun trackCardDraw(card: Card) {

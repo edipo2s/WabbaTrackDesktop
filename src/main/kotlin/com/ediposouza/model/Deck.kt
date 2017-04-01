@@ -29,8 +29,8 @@ enum class DeckClass(val attr1: CardAttribute, val attr2: CardAttribute = CardAt
             return if (values().map { it.name }.contains(name)) valueOf(name) else NEUTRAL
         }
 
-        fun getClass(attr1: CardAttribute, attr2: CardAttribute): DeckClass {
-            return getClasses(listOf(attr1, attr2)).first()
+        fun getClass(attr1: CardAttribute, attr2: CardAttribute): DeckClass? {
+            return getClasses(listOf(attr1, attr2)).firstOrNull()
         }
 
         fun getClasses(attr: List<CardAttribute>): List<DeckClass> {
