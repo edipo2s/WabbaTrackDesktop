@@ -4,6 +4,7 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.Card
+import com.ediposouza.model.CardPick
 import com.ediposouza.model.CardSlot
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
@@ -52,7 +53,7 @@ class TESLTracker : App(LoggerView::class) {
 
     val APP_NAME = "TES Legends Tracker"
     val DELAY_WINDOW_DETECTION = 5_000L
-    val DELAY_ELDER_SCROLL_SCREENSHOT = 1_000L
+    val ELDER_SCROLL_SPS = 1    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
@@ -117,6 +118,22 @@ class TESLTracker : App(LoggerView::class) {
                 })
                 if (SHOW_TEST_MENU) {
                     add(Menu("Test").apply {
+                        add(MenuItem("Show Arena Tier Test").apply {
+                            addActionListener {
+                                Platform.runLater {
+                                    ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf()),
+                                            CardPick(Card.DUMMY, 20, listOf()), CardPick(Card.DUMMY, 20, listOf())))
+                                }
+                            }
+                        })
+                        add(MenuItem("Show Arena Tier with Synergy Test").apply {
+                            addActionListener {
+                                Platform.runLater {
+                                    ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf(Card.DUMMY, Card.DUMMY)),
+                                            CardPick(Card.DUMMY, 20, listOf(Card.DUMMY)), CardPick(Card.DUMMY, 20, listOf(Card.DUMMY))))
+                                }
+                            }
+                        })
                         add(MenuItem("Show Deck Test").apply {
                             addActionListener {
                                 Platform.runLater {
@@ -170,7 +187,7 @@ class TESLTracker : App(LoggerView::class) {
                 ScreenHandler.lastScreenRecognized = ""
                 break
             }
-            Thread.sleep(DELAY_ELDER_SCROLL_SCREENSHOT)
+            Thread.sleep(1000L / ELDER_SCROLL_SPS)
         }
     }
 

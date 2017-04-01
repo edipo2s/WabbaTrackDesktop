@@ -24,11 +24,11 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val ARENA_PICK_NUMBER_HEIGHT = 75
     override val ARENA_PICK_NUMBER_WIDTH = 75
 
-    override val DECK_TRACKER_WIDTH = 220
-    override val DECK_TRACKER_X = 1200
+    override val DECK_TRACKER_WIDTH = 270
+    override val DECK_TRACKER_X = 1100
     override val DECK_TRACKER_Y = 50
     override val DECK_TRACKER_CARD_HEIGHT = 30
-    override val DECK_TRACKER_CARD_WIDTH = 130
+    override val DECK_TRACKER_CARD_WIDTH = 170
 
     override val FULL_CARD_HEIGHT = 275
     override val FULL_CARD_WIDTH = 212

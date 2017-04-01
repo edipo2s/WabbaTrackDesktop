@@ -1,6 +1,7 @@
 package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.model.Card
@@ -16,7 +17,6 @@ import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.SnapshotParameters
 import javafx.scene.control.ContextMenu
-import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.MenuItem
 import javafx.scene.effect.DropShadow
@@ -30,6 +30,7 @@ import tornadofx.*
 import java.awt.Dimension
 import java.awt.Window
 import java.io.File
+import java.io.InputStream
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
@@ -40,7 +41,6 @@ class DeckTrackerWidget : JFrame() {
 
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
     private lateinit var deckTrackerSize: Dimension
-    private lateinit var deckTitle: Label
 
     private val contextMenu = ContextMenu(MenuItem("Hide").apply {
         setOnAction {
@@ -48,11 +48,14 @@ class DeckTrackerWidget : JFrame() {
         }
     })
 
+    val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
+
     init {
         type = Window.Type.UTILITY
         isUndecorated = true
         isAlwaysOnTop = true
         background = java.awt.Color(0, 0, 0, 0)
+
         with(TESLTracker.referenceConfig) {
             val deckTrackerPos = ImageFuncs.getScreenScaledPosition(DECK_TRACKER_X, DECK_TRACKER_Y)
             setLocation(deckTrackerPos.x, deckTrackerPos.y)
@@ -61,14 +64,14 @@ class DeckTrackerWidget : JFrame() {
             size = deckTrackerSize
         }
 
-        val fxPanel = JFXPanel()
-        contentPane.add(fxPanel)
-
-        Platform.runLater {
-            fxPanel.scene = createFxScene()
-            SwingUtilities.invokeLater {
-                pack()
-                isVisible = true
+        JFXPanel().apply {
+            contentPane.add(this)
+            Platform.runLater {
+                scene = createFxScene()
+                SwingUtilities.invokeLater {
+                    pack()
+                    isVisible = true
+                }
             }
         }
 
@@ -91,18 +94,29 @@ class DeckTrackerWidget : JFrame() {
     private fun createFxScene(): Scene {
         with(TESLTracker.referenceConfig) {
             val cellSize = ImageFuncs.getScreenScaledSize(DECK_TRACKER_CARD_WIDTH, DECK_TRACKER_CARD_HEIGHT)
+//            val settingsButton = ImageView().apply {
+//                image = Image(configIconStream)
+//            }
             val layout = VBox().apply {
-                deckTitle = label {
-                    alignment = Pos.TOP_CENTER
-                    textFill = Color.WHITE
-                    effect = DropShadow(5.0, Color.BLACK)
-                    text = "Arena Deck"
-                    style = "-fx-background-color: #000000AA; " +
-                            "-fx-background-radius: 25.0;"
-                    prefWidth = cellSize.width.toDouble() + cellSize.height * 1.5
-                    makeDraggable(this@DeckTrackerWidget)
-                }
-                add(deckTitle)
+                add(hbox {
+                    add(imageview {
+                        image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Class/PickArcher.png"))
+                        fitWidth = cellSize.width.toDouble() + cellSize.height * 1.5
+                        makeDraggable(this@DeckTrackerWidget)
+                    })
+                    add(imageview {
+                        image = Image(configIconStream)
+                        padding = Insets(0.0, 0.0, 0.0, 2.0)
+                        setOnMousePressed { me ->
+                            if (me.isPrimaryButtonDown) {
+                                contextMenu.show(this, me.screenX, me.screenY)
+                            }
+                        }
+                    })
+//                    add(settingsButton.apply {
+//                        padding = Insets(0.0, 0.0, 0.0, 2.0)
+//                    })
+                })
                 add(listview<CardSlot> {
                     items = deckCardsSlot
                     background = Background.EMPTY
@@ -116,28 +130,41 @@ class DeckTrackerWidget : JFrame() {
                         }
                     }
                     makeDraggable(this@DeckTrackerWidget)
+//                    style = "-fx-background-color: #00FF00; "
                 })
-//                style = "-fx-background-color: #00FF00; "
                 background = Background.EMPTY
             }
 
             return Scene(layout).apply {
                 fill = Color.TRANSPARENT
                 stylesheets.add(TESLTracker::class.java.getResource("/UI/deckTrackerWidget.css").toExternalForm())
-                setOnMousePressed { me ->
-                    if (me.isSecondaryButtonDown) {
-                        contextMenu.show(root, me.screenX, me.screenY)
-                    }
-                }
+//                setOnMousePressed { me ->
+//                    if (me.isPrimaryButtonDown) {
+//                        with(settingsButton.localToScreen(settingsButton.boundsInLocal)){
+//                            val sbX = minX - location.x
+//                            val sbY = minY - location.y
+//                            if (Rectangle(sbX, sbY, sbX + width, sbY + height).contains(me.screenX - location.x, me.screenY - location.y)) {
+//                                contextMenu.show(root, me.screenX, me.screenY)
+//                            }
+//                        }
+//                    }
+//                }
+//                setOnMousePressed { me ->
+//                    if (me.isPrimaryButtonDown) {
+//                        contextMenu.show(root, me.screenX, me.screenY)
+//                    }
+//                }
             }
         }
     }
 
-    fun setDeckCardsSlot(deckCardsSlot: List<CardSlot>) {
+    fun setDeckCardsSlot(cardsSlot: List<CardSlot>) {
         isVisible = true
-        this.deckCardsSlot.apply {
+        deckCardsSlot.apply {
             clear()
-            addAll(deckCardsSlot)
+            if (TESLTrackerData.cards.size > 0) {
+                addAll(cardsSlot)
+            }
         }
     }
 

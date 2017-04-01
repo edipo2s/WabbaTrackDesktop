@@ -15,6 +15,8 @@ import javafx.application.Platform
  */
 object GameState : StateHandler.TESLState, Runnable {
 
+    val GAME_RECOGNIZER_SPS = 4    //Screenshot Per Second
+
     val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
 
@@ -71,7 +73,7 @@ object GameState : StateHandler.TESLState, Runnable {
                     threadRunning = false
                 }
             }
-            Thread.sleep(500)
+            Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
         }
     }
 

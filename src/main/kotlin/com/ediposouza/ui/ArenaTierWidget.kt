@@ -70,6 +70,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         isUndecorated = true
         isAlwaysOnTop = true
         background = java.awt.Color(0, 0, 0, 0)
+
         with(TESLTracker.referenceConfig) {
             val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_FIRST_X, ARENA_PICK_NUMBER_Y)
             val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_SECOND_X, ARENA_PICK_NUMBER_Y)
@@ -84,14 +85,14 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
             cardSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_SELECT_WIDTH, ARENA_PICK_SELECT_HEIGHT)
         }
 
-        val fxPanel = JFXPanel()
-        contentPane.add(fxPanel)
-
-        Platform.runLater {
-            fxPanel.scene = createFxScene()
-            SwingUtilities.invokeLater {
-                pack()
-                isVisible = true
+        JFXPanel().apply {
+            contentPane.add(this)
+            Platform.runLater {
+                scene = createFxScene()
+                SwingUtilities.invokeLater {
+                    pack()
+                    isVisible = true
+                }
             }
         }
 
@@ -120,7 +121,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
             })
             alignment = Pos.TOP_CENTER
             background = Background.EMPTY
-            minHeight = Region.USE_PREF_SIZE
+            prefHeight = TESLTracker.screenSize.height / 2
         }
         return Scene(layout).apply {
             fill = Color.TRANSPARENT
