@@ -204,7 +204,7 @@ class TESLTracker : App(LoggerView::class) {
                 return isTESLegendsScreenActive() || isTESLegendsTrackerWindow() || isTESLegendsTrackerPopupWindow()
             }
         } else if (!waitingScreenshotChangeWasLogged) {
-            Logger.i("Waiting screen change..")
+            Logger.d("Waiting screen change..")
             waitingScreenshotChangeWasLogged = true
         }
         return true

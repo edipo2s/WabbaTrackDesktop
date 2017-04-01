@@ -21,9 +21,7 @@ import javafx.scene.control.ListCell
 import javafx.scene.control.MenuItem
 import javafx.scene.effect.DropShadow
 import javafx.scene.image.Image
-import javafx.scene.layout.Background
-import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import tornadofx.*
@@ -77,34 +75,12 @@ class DeckTrackerWidget : JFrame() {
 
     }
 
-    fun trackCardDraw(card: Card) {
-        Platform.runLater {
-            with(deckCardsSlot) {
-                find { it.card == card }?.apply {
-                    indexOf(this).takeIf { it >= 0 }?.let {
-                        set(it, this.apply {
-                            currentQtd -= 1
-                        })
-                    }
-                }
-            }
-        }
-    }
-
     private fun createFxScene(): Scene {
         with(TESLTracker.referenceConfig) {
             val cellSize = ImageFuncs.getScreenScaledSize(DECK_TRACKER_CARD_WIDTH, DECK_TRACKER_CARD_HEIGHT)
-//            val settingsButton = ImageView().apply {
-//                image = Image(configIconStream)
-//            }
             val layout = VBox().apply {
-                add(hbox {
-                    add(imageview {
-                        image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Class/PickArcher.png"))
-                        fitWidth = cellSize.width.toDouble() + cellSize.height * 1.5
-                        makeDraggable(this@DeckTrackerWidget)
-                    })
-                    add(imageview {
+                add(borderpane {
+                    right = imageview {
                         image = Image(configIconStream)
                         padding = Insets(0.0, 0.0, 0.0, 2.0)
                         setOnMousePressed { me ->
@@ -112,10 +88,13 @@ class DeckTrackerWidget : JFrame() {
                                 contextMenu.show(this, me.screenX, me.screenY)
                             }
                         }
-                    })
-//                    add(settingsButton.apply {
-//                        padding = Insets(0.0, 0.0, 0.0, 2.0)
-//                    })
+                    }
+                    background = Background(BackgroundImage(Image(TESLTracker::class.java.getResourceAsStream("/UI/Class/PickArcher.png")),
+                            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT))
+                    maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
+                    minHeight = cellSize.height * 1.5
+                    makeDraggable(this@DeckTrackerWidget)
                 })
                 add(listview<CardSlot> {
                     items = deckCardsSlot
@@ -138,22 +117,6 @@ class DeckTrackerWidget : JFrame() {
             return Scene(layout).apply {
                 fill = Color.TRANSPARENT
                 stylesheets.add(TESLTracker::class.java.getResource("/UI/deckTrackerWidget.css").toExternalForm())
-//                setOnMousePressed { me ->
-//                    if (me.isPrimaryButtonDown) {
-//                        with(settingsButton.localToScreen(settingsButton.boundsInLocal)){
-//                            val sbX = minX - location.x
-//                            val sbY = minY - location.y
-//                            if (Rectangle(sbX, sbY, sbX + width, sbY + height).contains(me.screenX - location.x, me.screenY - location.y)) {
-//                                contextMenu.show(root, me.screenX, me.screenY)
-//                            }
-//                        }
-//                    }
-//                }
-//                setOnMousePressed { me ->
-//                    if (me.isPrimaryButtonDown) {
-//                        contextMenu.show(root, me.screenX, me.screenY)
-//                    }
-//                }
             }
         }
     }
@@ -163,7 +126,31 @@ class DeckTrackerWidget : JFrame() {
         deckCardsSlot.apply {
             clear()
             if (TESLTrackerData.cards.size > 0) {
-                addAll(cardsSlot)
+                addAll(cardsSlot.sortedBy { it.card.name }.sortedBy { it.card.cost })
+            }
+        }
+    }
+
+    fun trackCardDraw(card: Card) {
+        Platform.runLater {
+            with(deckCardsSlot) {
+                find { it.card == card }?.apply {
+                    indexOf(this).takeIf { it >= 0 }?.let {
+                        set(it, this.apply {
+                            currentQtd -= 1
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+    fun resetDraws() {
+        Platform.runLater {
+            for (i in deckCardsSlot.indices) {
+                deckCardsSlot[i] = deckCardsSlot[i].apply {
+                    currentQtd = qtd
+                }
             }
         }
     }
@@ -200,7 +187,7 @@ class DeckTrackerWidget : JFrame() {
                                 effect = DropShadow(20.0, Color.BLACK)
                                 image = roundedImage
                             }
-                            opacity = 1.0.takeIf { item.currentQtd > 0 } ?: 0.3
+                            opacity = 0.8.takeIf { item.currentQtd > 0 } ?: 0.2
                         }
                         padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.2)
                         style = "-fx-background-color: linear-gradient(to right, ${item.card.attr.colorHex}, #000000AA); " +
@@ -217,7 +204,7 @@ class DeckTrackerWidget : JFrame() {
                             text = item.card.name
                             textFill = when {
                                 item.currentQtd > 0 && item.currentQtd < item.qtd -> Color.YELLOW
-                                item.currentQtd <= 0 -> Color.LIGHTGRAY
+                                item.currentQtd <= 0 -> Color.DARKGRAY
                                 else -> Color.WHITE
                             }
                             effect = DropShadow(5.0, Color.BLACK)

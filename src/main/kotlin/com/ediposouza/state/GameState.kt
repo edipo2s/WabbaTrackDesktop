@@ -69,8 +69,7 @@ object GameState : StateHandler.TESLState, Runnable {
                 GameHandler.processMatchEnd(this)?.let { win ->
                     val result = "Win".takeIf { win } ?: "Loss"
                     Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
-                    setDeckCardsSlot(deckCardsSlot)
-                    threadRunning = false
+                    deckTracker.resetDraws()
                 }
             }
             Thread.sleep(1000L / GAME_RECOGNIZER_SPS)

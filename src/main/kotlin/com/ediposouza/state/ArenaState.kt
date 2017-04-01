@@ -75,6 +75,7 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             if (value) {
+                hidePicksTier()
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
@@ -97,7 +98,6 @@ object ArenaState : StateHandler.TESLState {
     init {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
-            Logger.i("Read $cards")
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
             Logger.i("Restored ${picks.size} picks")
         }
@@ -117,6 +117,7 @@ object ArenaState : StateHandler.TESLState {
         Logger.i("ArenaState onPause")
         saveArenaState()
         hidePicksTier()
+        GameState.deckTracker.isVisible = false
     }
 
     override fun hasValidState(): Boolean {
