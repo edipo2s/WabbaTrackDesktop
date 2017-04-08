@@ -5,13 +5,17 @@ import java.io.Serializable
 /**
  * Created by Edipo on 19/03/2017.
  */
-enum class CardSet(val db: String) {
+enum class CardSet(val title: String) {
 
-    CORE("core"),
-    MADHOUSE("madhouse"),
-    UNKNOWN("unknown");
+    CORE("Core"),
+    MADHOUSE("Madhouse Collection"),
+    FALLOFTHEDARKBROTHERHOOD("The Fall of the Dark Brotherhood"),
+    TOKENS("Tokens"),
+    UNKNOWN("Unknown");
 
     var unknownSetName = ""
+
+    val db = name.toLowerCase()
 
     override fun toString(): String {
         return name.takeIf { this != UNKNOWN } ?: unknownSetName

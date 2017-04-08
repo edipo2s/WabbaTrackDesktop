@@ -56,6 +56,7 @@ class TESLTracker : App(LoggerView::class) {
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
+    val menuDecks by lazy { Menu("Decks") }
 
     var waitingScreenshotChangeWasLogged = false
 
@@ -85,13 +86,16 @@ class TESLTracker : App(LoggerView::class) {
                 add(MenuItem("Login").apply {
                     addActionListener {
                         if (TESLTrackerAuth.login()) {
-                            this.label = TESLTrackerAuth.userName
+                            label = TESLTrackerAuth.userName
                             SwingUtilities.invokeLater {
                                 displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
+                                updateMenuDecks()
                             }
                         }
                     }
                 })
+                add(menuDecks)
+                menuDecks.isEnabled = false
                 add(MenuItem("Show Log").apply {
                     addActionListener {
                         Platform.runLater {
@@ -173,6 +177,26 @@ class TESLTracker : App(LoggerView::class) {
             }
             SwingUtilities.invokeLater {
                 displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)
+            }
+        }
+    }
+
+    private fun updateMenuDecks() {
+        TESLTrackerData.updateDecksDB {
+            menuDecks.isEnabled = true
+            menuDecks.removeAll()
+            TESLTrackerData.decks.forEach {
+                menuDecks.add(MenuItem(it.name).apply {
+                    addActionListener {
+                        val deck = TESLTrackerData.decks.find { it.name == label }
+                        GameState.setDeckCardsSlot(deck?.cards?.map {
+                            CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
+                        } ?: listOf())
+                        Platform.runLater {
+                            GameState.deckTracker.isVisible = true
+                        }
+                    }
+                })
             }
         }
     }

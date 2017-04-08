@@ -3,7 +3,6 @@ package com.ediposouza.data
 import com.ediposouza.TESLTracker
 import com.ediposouza.model.*
 import com.ediposouza.util.Logger
-import com.firebase.client.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import tornadofx.Rest
@@ -16,15 +15,13 @@ import java.io.FileWriter
  */
 object TESLTrackerData {
 
-    val FIREBASE_URI = "https://tes-legends-assistant.firebaseio.com/"
-
     val NODE_CARDS = "cards"
     val NODE_USERS = "users"
+    val NODE_USERS_DECKS = "decks"
     val NODE_USERS_MATCHES = "matches"
 
-    val firebase by lazy { Firebase(FIREBASE_URI) }
     var firebaseDatabaseAPI: Rest = Rest().apply {
-        baseURI = FIREBASE_URI
+        baseURI = "https://tes-legends-assistant.firebaseio.com/"
     }
 
     private val cardsDBFile by lazy {
@@ -39,6 +36,7 @@ object TESLTrackerData {
     var cards = mutableListOf<Card>()
     var cardsAllClass = listOf<String>()
     var cardsByClass = mapOf<String, List<String>>()
+    var decks = mutableListOf<Deck>()
 
     init {
         if (cardsDBFile.exists()) {
@@ -55,38 +53,28 @@ object TESLTrackerData {
 
     fun updateCardDB() {
         Logger.d("Updating cards database")
-        firebase.app.goOnline()
-        firebase.child(NODE_CARDS).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(ds: DataSnapshot?) {
-                cards.clear()
-                cards.addAll(ds?.children?.flatMap {
-                    val set = CardSet.of(it.key)
-                    it.children.flatMap {
-                        val attr = CardAttribute.of(it.key)
-                        it.children.map {
-                            it.getValue(FirebaseParsers.CardParser::class.java).toCard(it.key, set, attr)
-                        }
+        cards.clear()
+        with(firebaseDatabaseAPI.get("$NODE_CARDS.json").one()) {
+            cards.addAll(entries.flatMap { (set, setAttrsJson) ->
+                (setAttrsJson as javax.json.JsonObject).entries.flatMap { (attr, attrCardsJson) ->
+                    (attrCardsJson as javax.json.JsonObject).entries.map { (cardShortName, cardAttrsJson) ->
+                        val cardParser = Gson().fromJson(cardAttrsJson.toString(), FirebaseParsers.CardParser::class.java)
+                        cardParser.toCard(cardShortName, CardSet.of(set), CardAttribute.of(attr))
                     }
-                } ?: listOf())
-                cards.groupBy { it.set.name }.forEach { set, cards ->
-                    Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
                 }
-                cardsAllClass = cards.map(Card::shortName)
-                cardsByClass = DeckClass.values().map { deckCls ->
-                    deckCls.name.toLowerCase() to cards.filter {
-                        it.dualAttr1 == deckCls.attr1 || it.dualAttr1 == deckCls.attr2 ||
-                                it.dualAttr2 == deckCls.attr1 || it.dualAttr2 == deckCls.attr2
-                    }.map(Card::shortName)
-                }.toMap()
-                firebase.app.goOffline()
-                saveCardsDB()
-            }
-
-            override fun onCancelled(error: FirebaseError?) {
-                Logger.e(error?.toException())
-                firebase.app.goOffline()
-            }
-        })
+            })
+        }
+        cards.groupBy { it.set.title }.forEach { set, cards ->
+            Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
+        }
+        cardsAllClass = cards.map(Card::shortName)
+        cardsByClass = DeckClass.values().map { deckCls ->
+            deckCls.name.toLowerCase() to cards.filter {
+                it.dualAttr1 == deckCls.attr1 || it.dualAttr1 == deckCls.attr2 ||
+                        it.dualAttr2 == deckCls.attr1 || it.dualAttr2 == deckCls.attr2
+            }.map(Card::shortName)
+        }.toMap()
+        saveCardsDB()
     }
 
     fun getCard(shortName: String?): Card? {
@@ -97,9 +85,28 @@ object TESLTrackerData {
         return cardsByClass[deckClass.name.toLowerCase()] ?: cardsAllClass
     }
 
+    fun updateDecksDB(onSuccess: (() -> Unit)? = null) {
+        Logger.d("Updating decks database")
+        decks.clear()
+        if (TESLTrackerAuth.userUuid == null) {
+            Logger.e("Do login to get decks")
+            return
+        }
+        val userAccessToken = TESLTrackerAuth.userAccessToken
+        val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS"
+        with(firebaseDatabaseAPI.get("$userDecksPath/private.json?access_token=$userAccessToken").one()) {
+            decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
+                val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
+                deckParser.toDeck(deckUuid, true)
+            })
+        }
+        onSuccess?.invoke()
+        Logger.d("${decks.map(Deck::name).toSet()}")
+    }
+
     fun saveMatch(newMatch: Match, onSuccess: () -> Unit) {
         if (TESLTrackerAuth.userUuid == null) {
-            Logger.e("Do login to save Matchs")
+            Logger.e("Do login to save Matches")
             return
         }
         val userMatchesPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_MATCHES/${newMatch.uuid}"
@@ -123,18 +130,6 @@ object TESLTrackerData {
         } catch (e: Exception) {
             Logger.e(e)
         }
-    }
-
-    open class SimpleChildEventListener : ChildEventListener {
-        override fun onCancelled(p0: FirebaseError?) {}
-
-        override fun onChildMoved(p0: DataSnapshot?, p1: String?) {}
-
-        override fun onChildChanged(p0: DataSnapshot?, p1: String?) {}
-
-        override fun onChildAdded(p0: DataSnapshot?, p1: String?) {}
-
-        override fun onChildRemoved(p0: DataSnapshot?) {}
     }
 
 }

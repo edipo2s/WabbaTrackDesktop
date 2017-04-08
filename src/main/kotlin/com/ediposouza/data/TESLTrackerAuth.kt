@@ -4,6 +4,9 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.model.FirebaseAuth
 import com.ediposouza.util.CredentialsProvider
 import com.ediposouza.util.Logger
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.oauth2.Oauth2
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import tornadofx.Rest

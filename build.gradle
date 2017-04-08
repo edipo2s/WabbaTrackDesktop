@@ -28,7 +28,6 @@ dependencies {
     compile "com.google.apis:google-api-services-oauth2:+"
     compile "com.google.oauth-client:google-oauth-client-jetty:+"
     compile "com.google.http-client:google-http-client-jackson2:+"
-    compile "com.firebase:firebase-client-jvm:2.5.2"
 
     testCompile "junit:junit:4.12"
     testCompile "com.google.truth:truth:0.31"
