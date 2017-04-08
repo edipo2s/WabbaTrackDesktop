@@ -49,6 +49,11 @@ abstract class ReferenceConfig {
     open val SCREEN_MAIN_X = 0
     open val SCREEN_MAIN_Y = 0
 
+    open val SCREEN_MAIN_MODE_HEIGHT = 0
+    open val SCREEN_MAIN_MODE_WIDTH = 0
+    open val SCREEN_MAIN_MODE_X = 0
+    open val SCREEN_MAIN_MODE_Y = 0
+
     open val SCREEN_GAME_HEIGHT = 0
     open val SCREEN_GAME_WIDTH = 0
     open val SCREEN_GAME_X = 0

@@ -43,6 +43,12 @@ fun BufferedImage.getScreenMainCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getScreenMainModeCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(SCREEN_MAIN_MODE_X, SCREEN_MAIN_MODE_Y, SCREEN_MAIN_MODE_WIDTH, SCREEN_MAIN_MODE_HEIGHT)
+    }
+}
+
 fun BufferedImage.getScreenGameCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(SCREEN_GAME_X, SCREEN_GAME_Y, SCREEN_GAME_WIDTH, SCREEN_GAME_HEIGHT)

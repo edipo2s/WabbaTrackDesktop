@@ -14,7 +14,7 @@ import javax.imageio.ImageIO
 object CalcDHashs {
 
     val CALC_CARDS_HASH = false
-    val CALC_ARENA_PICKS_HASH = true
+    val CALC_ARENA_PICKS_HASH = false
 
     val CROP_FOLDER_ARENA = "Arena"
     val CROP_FOLDER_CARDS = "Cards"
@@ -29,6 +29,8 @@ object CalcDHashs {
 
         Logger.d("--Screens--")
         getDHashFile("/Screens/Main.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainCrop)
+        getDHashFile("/Screens/MainModeCasual.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
+        getDHashFile("/Screens/MainModeRanked.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
         getDHashFile("/Screens/Game.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenGameCrop)
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)

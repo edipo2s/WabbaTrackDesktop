@@ -25,6 +25,12 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
+    fun testScreenMainMode() {
+        recognizeScreen("ScreenMainModeCasual.png", DHash.SCREEN_MAIN_MODE_CASUAL, BufferedImage::getScreenMainModeCrop)
+        recognizeScreen("ScreenMainModeRanked.png", DHash.SCREEN_MAIN_MODE_RANKED, BufferedImage::getScreenMainModeCrop)
+    }
+
+    @Test
     fun testScreenGame() {
         recognizeScreen("ScreenGame.png", DHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
         recognizeScreen("ScreenGame2.png", null, BufferedImage::getScreenGameCrop)

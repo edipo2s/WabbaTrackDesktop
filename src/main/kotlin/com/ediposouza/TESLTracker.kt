@@ -34,7 +34,7 @@ class TESLTracker : App(LoggerView::class) {
     companion object {
 
         val APP_NAME = "TES Legends Tracker"
-        val SHOW_TEST_MENU = true
+        val SHOW_TEST_MENU = false
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
@@ -221,7 +221,7 @@ class TESLTracker : App(LoggerView::class) {
 
     private fun startElderScrollRecognition() {
         TESLTrackerData.updateCardDB()
-        Logger.i("Start screenshot game screens..")
+        Logger.i("Start screenshot game!")
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {
                 ScreenHandler.lastScreenRecognized = ""

@@ -46,6 +46,11 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_MAIN_X = 490
     override val SCREEN_MAIN_Y = 660
 
+    override val SCREEN_MAIN_MODE_HEIGHT = 100
+    override val SCREEN_MAIN_MODE_WIDTH = 130
+    override val SCREEN_MAIN_MODE_X = 400
+    override val SCREEN_MAIN_MODE_Y = 130
+
     override val SCREEN_GAME_HEIGHT = 45
     override val SCREEN_GAME_WIDTH = 95
     override val SCREEN_GAME_X = 940

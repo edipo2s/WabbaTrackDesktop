@@ -2,6 +2,7 @@ package com.ediposouza.handler
 
 import com.ediposouza.data.DHash
 import com.ediposouza.extensions.*
+import com.ediposouza.model.MatchMode
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.util.Logger
@@ -18,9 +19,20 @@ object ScreenHandler {
     fun process(screenshot: BufferedImage): Boolean {
 //        Logger.i("Checking game screen")
         //Screens check
-        if (screenshot.getScreenMainCrop().matchScreen(DHash.SCREEN_MAIN)) {
+        if (lastScreenRecognized != DHash.SCREEN_MAIN_MODE_CASUAL && lastScreenRecognized != DHash.SCREEN_MAIN_MODE_RANKED &&
+                screenshot.getScreenMainCrop().matchScreen(DHash.SCREEN_MAIN)) {
             Logger.i("Main Screen Detected!", true)
             StateHandler.currentTESLState = null
+            return true
+        }
+        if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_CASUAL)) {
+            Logger.i("Match Mode set to Casual!", false)
+            GameState.matchMode = MatchMode.CASUAL
+            return true
+        }
+        if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_RANKED)) {
+            Logger.i("Match Mode set to Ranked!", false)
+            GameState.matchMode = MatchMode.RANKED
             return true
         }
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
@@ -46,6 +58,8 @@ object ScreenHandler {
         }
         if (screenshot.getScreenArenaDashboardCrop().matchScreen(DHash.SCREEN_ARENA_DASHBOARD)) {
             Logger.i("Arena Dashboard Screen Detected!", true)
+            Logger.i("Match Mode set to Arena!", true)
+            GameState.matchMode = MatchMode.ARENA
             StateHandler.currentTESLState = ArenaState.apply {
                 finishPicks = true
             }
