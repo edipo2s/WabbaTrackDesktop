@@ -51,6 +51,8 @@ object GameState : StateHandler.TESLState, Runnable {
         playerDeckClass = null
         opponentDeckClass = null
         lastCardDraw = null
+        matchMode = null
+        deckTracker.resetDraws()
     }
 
     override fun run() {
@@ -68,12 +70,16 @@ object GameState : StateHandler.TESLState, Runnable {
                 GameHandler.processCardDraw(this)?.apply {
                     lastCardDraw = this
                     deckTracker.trackCardDraw(this)
+                    Thread({
+                        Thread.sleep(3000L)
+                        lastCardDraw = null
+                    }).start()
                 }
                 GameHandler.processMatchEnd(this)?.let { win ->
                     val result = "Win".takeIf { win } ?: "Loss"
                     Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
                     saveMatch(win)
-                    deckTracker.resetDraws()
+                    resetState()
                 }
             }
             Thread.sleep(1000L / GAME_RECOGNIZER_SPS)

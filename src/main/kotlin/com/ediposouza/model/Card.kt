@@ -300,7 +300,11 @@ data class CardPick(
         val value: Int,
         val synergy: List<Card>
 
-)
+) {
+
+    fun withoutSynergyList() = CardPick(card, value, listOf())
+
+}
 
 data class Card(
 

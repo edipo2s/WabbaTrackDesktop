@@ -150,9 +150,9 @@ object ArenaState : StateHandler.TESLState {
     fun setTierPicks(cardsPick: Triple<CardPick, CardPick, CardPick>) {
         lastArenaTierPicks = cardsPick
         Platform.runLater {
-            card1ArenaTierStage.setPickValue(cardsPick.first)
-            card2ArenaTierStage.setPickValue(cardsPick.second)
-            card3ArenaTierStage.setPickValue(cardsPick.third)
+            card1ArenaTierStage.setPickValue(cardsPick.first.takeIf { pickNumber > 1 } ?: cardsPick.first.withoutSynergyList())
+            card2ArenaTierStage.setPickValue(cardsPick.second.takeIf { pickNumber > 1 } ?: cardsPick.second.withoutSynergyList())
+            card3ArenaTierStage.setPickValue(cardsPick.third.takeIf { pickNumber > 1 } ?: cardsPick.third.withoutSynergyList())
         }
     }
 
