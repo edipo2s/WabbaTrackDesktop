@@ -1,5 +1,6 @@
 package com.ediposouza
 
+import com.ediposouza.data.TESLTrackerAuth
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
@@ -19,6 +20,7 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
 import tornadofx.FX
+import tornadofx.Rest
 import tornadofx.alert
 import java.awt.*
 import java.awt.image.BufferedImage
@@ -34,6 +36,7 @@ class TESLTracker : App(LoggerView::class) {
 
     companion object {
 
+        val APP_NAME = "TES Legends Tracker"
         val SHOW_TEST_MENU = true
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
@@ -51,11 +54,11 @@ class TESLTracker : App(LoggerView::class) {
         }
     }
 
-    val APP_NAME = "TES Legends Tracker"
     val DELAY_WINDOW_DETECTION = 5_000L
     val ELDER_SCROLL_SPS = 1    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
+    val firebaseLoginAPI: Rest by inject()
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
 
     var waitingScreenshotChangeWasLogged = false
@@ -72,7 +75,8 @@ class TESLTracker : App(LoggerView::class) {
 
         stage.close()
         configureSystemTrayIcon()
-        TESLTrackerData.cards
+        TESLTrackerData.initialize()
+        TESLTrackerAuth.initialize(firebaseLoginAPI)
         CompletableFuture.runAsync {
             startElderScrollDetection()
         }
@@ -86,7 +90,12 @@ class TESLTracker : App(LoggerView::class) {
             popupMenu = PopupMenu().apply {
                 add(MenuItem("Login").apply {
                     addActionListener {
-
+                        if (TESLTrackerAuth.login()) {
+                            this.label = TESLTrackerAuth.userName
+                            SwingUtilities.invokeLater {
+                                displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
+                            }
+                        }
                     }
                 })
                 add(MenuItem("Show Log").apply {

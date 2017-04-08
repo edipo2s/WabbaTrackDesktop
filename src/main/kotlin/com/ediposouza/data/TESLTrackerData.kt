@@ -43,6 +43,9 @@ object TESLTrackerData {
         }
     }
 
+    fun initialize() {
+    }
+
     fun updateCardDB() {
         Logger.d("Updating cards database")
         firebase.app.goOnline()

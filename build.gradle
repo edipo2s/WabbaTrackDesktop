@@ -25,6 +25,9 @@ dependencies {
     compile "no.tornado:tornadofx:1.7.0"
     compile "net.java.dev.jna:jna-platform:4.4.0"
     compile "com.google.code.gson:gson:2.8.0"
+    compile "com.google.apis:google-api-services-oauth2:+"
+    compile "com.google.oauth-client:google-oauth-client-jetty:+"
+    compile "com.google.http-client:google-http-client-jackson2:+"
     compile "com.firebase:firebase-client-jvm:2.5.2"
 
     testCompile "junit:junit:4.12"
