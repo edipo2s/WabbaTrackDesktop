@@ -1,14 +1,16 @@
 package com.ediposouza.state
 
+import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.GameHandler
 import com.ediposouza.handler.StateHandler
-import com.ediposouza.model.Card
-import com.ediposouza.model.CardSlot
-import com.ediposouza.model.DeckClass
+import com.ediposouza.model.*
 import com.ediposouza.ui.DeckTrackerWidget
 import com.ediposouza.util.Logger
 import com.ediposouza.util.ScreenFuncs
 import javafx.application.Platform
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Created by ediposouza on 24/03/17.
@@ -25,6 +27,7 @@ object GameState : StateHandler.TESLState, Runnable {
     var playerDeckClass: DeckClass? = null
     var opponentDeckClass: DeckClass? = null
     var lastCardDraw: Card? = null
+    var matchMode: MatchMode? = null
 
     init {
 
@@ -69,6 +72,7 @@ object GameState : StateHandler.TESLState, Runnable {
                 GameHandler.processMatchEnd(this)?.let { win ->
                     val result = "Win".takeIf { win } ?: "Loss"
                     Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
+                    saveMatch(win)
                     deckTracker.resetDraws()
                 }
             }
@@ -91,6 +95,17 @@ object GameState : StateHandler.TESLState, Runnable {
 
     private fun hideDeckTracker() {
         deckTracker.isVisible = false
+    }
+
+    fun saveMatch(win: Boolean) {
+        if (playerGoFirst != null && playerDeckClass != null && opponentDeckClass != null && matchMode != null) {
+            val newUuid = LocalDateTime.now().withNano(0).toString()
+            val currentSeason = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM"))
+            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, MatchDeck("", playerDeckClass!!, DeckType.OTHER),
+                    MatchDeck("", opponentDeckClass!!, DeckType.OTHER), matchMode!!, currentSeason, 0, false, win)) {
+                Logger.i("Match saved!")
+            }
+        }
     }
 
 }

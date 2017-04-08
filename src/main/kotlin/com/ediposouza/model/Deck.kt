@@ -1,8 +1,36 @@
 package com.ediposouza.model
 
+import java.time.LocalDateTime
+
 /**
  * Created by Edipo on 29/03/2017.
  */
+enum class DeckType {
+
+    AGGRO,
+    ARENA,
+    COMBO,
+    CONTROL,
+    MIDRANGE,
+    OTHER;
+
+    companion object {
+
+        fun of(value: String): DeckType {
+            val name = value.toUpperCase()
+            return OTHER.takeUnless { values().map { it.name }.contains(name) } ?: valueOf(name)
+        }
+
+    }
+}
+
+data class DeckUpdate(
+
+        val date: LocalDateTime,
+        val changes: Map<String, Int>
+
+)
+
 enum class DeckClass(val attr1: CardAttribute, val attr2: CardAttribute = CardAttribute.NEUTRAL) {
 
     ARCHER(CardAttribute.STRENGTH, CardAttribute.AGILITY),
@@ -37,6 +65,55 @@ enum class DeckClass(val attr1: CardAttribute, val attr2: CardAttribute = CardAt
             return values().filter { attr.contains(it.attr1) && attr.contains(it.attr2) }
         }
 
+    }
+
+}
+
+data class DeckComment(
+
+        val uuid: String,
+        val owner: String,
+        val comment: String,
+        val date: LocalDateTime
+
+)
+
+data class Deck(
+
+        val uuid: String,
+        val name: String,
+        val owner: String,
+        val private: Boolean,
+        val type: DeckType,
+        val cls: DeckClass,
+        val cost: Int,
+        val createdAt: LocalDateTime,
+        val updatedAt: LocalDateTime,
+        val patch: String,
+        val likes: List<String>,
+        val views: Int,
+        val cards: Map<String, Int>,
+        val updates: List<DeckUpdate>,
+        val comments: List<DeckComment>
+
+) {
+
+    companion object {
+
+        val DUMMY = Deck("", "", "", false, DeckType.OTHER, DeckClass.NEUTRAL, 0, LocalDateTime.now(),
+                LocalDateTime.now(), "", listOf(), 0, mapOf(), listOf(), listOf())
+    }
+
+    fun update(deckName: String, deckPrivate: Boolean, deckTypeSelected: DeckType, deckCls: DeckClass,
+               deckSoulCost: Int, deckPatchUuid: String, deckCards: Map<String, Int>): Deck {
+        return Deck(uuid, deckName, owner, deckPrivate, deckTypeSelected, deckCls, deckSoulCost,
+                createdAt, LocalDateTime.now(), deckPatchUuid, likes, views, deckCards, updates, comments)
+    }
+
+    override fun toString(): String {
+        return "Deck(id='$uuid', name='$name', owner='$owner', private=$private, type=$type, cls=$cls, cost=$cost, " +
+                "createdAt=$createdAt, updatedAt=$updatedAt, patch='$patch', likes=$likes, views=$views, cards=$cards, " +
+                "updates=$updates, comments=$comments)"
     }
 
 }

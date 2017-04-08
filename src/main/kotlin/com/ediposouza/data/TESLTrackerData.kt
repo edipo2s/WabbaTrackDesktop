@@ -3,12 +3,10 @@ package com.ediposouza.data
 import com.ediposouza.TESLTracker
 import com.ediposouza.model.*
 import com.ediposouza.util.Logger
-import com.firebase.client.DataSnapshot
-import com.firebase.client.Firebase
-import com.firebase.client.FirebaseError
-import com.firebase.client.ValueEventListener
+import com.firebase.client.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import tornadofx.Rest
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -18,7 +16,16 @@ import java.io.FileWriter
  */
 object TESLTrackerData {
 
-    val firebase by lazy { Firebase("https://tes-legends-assistant.firebaseio.com/") }
+    val FIREBASE_URI = "https://tes-legends-assistant.firebaseio.com/"
+
+    val NODE_CARDS = "cards"
+    val NODE_USERS = "users"
+    val NODE_USERS_MATCHES = "matches"
+
+    val firebase by lazy { Firebase(FIREBASE_URI) }
+    var firebaseDatabaseAPI: Rest = Rest().apply {
+        baseURI = FIREBASE_URI
+    }
 
     private val cardsDBFile by lazy {
         File("${TESLTracker.jarPath}/data").let {
@@ -49,7 +56,7 @@ object TESLTrackerData {
     fun updateCardDB() {
         Logger.d("Updating cards database")
         firebase.app.goOnline()
-        firebase.child("cards").addListenerForSingleValueEvent(object : ValueEventListener {
+        firebase.child(NODE_CARDS).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(ds: DataSnapshot?) {
                 cards.clear()
                 cards.addAll(ds?.children?.flatMap {
@@ -90,6 +97,22 @@ object TESLTrackerData {
         return cardsByClass[deckClass.name.toLowerCase()] ?: cardsAllClass
     }
 
+    fun saveMatch(newMatch: Match, onSuccess: () -> Unit) {
+        if (TESLTrackerAuth.userUuid == null) {
+            Logger.e("Do login to save Matchs")
+            return
+        }
+        val userMatchesPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_MATCHES/${newMatch.uuid}"
+        val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
+        val userAccessToken = TESLTrackerAuth.userAccessToken
+        firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$userMatchesPath.json?access_token=$userAccessToken",
+                newMatchData.byteInputStream()) { processor ->
+            processor.addHeader("Content-Type", "application/json")
+        }.one().apply {
+            onSuccess()
+        }
+    }
+
     private fun saveCardsDB() {
         try {
             val cardsJson = Gson().toJson(cards)
@@ -100,6 +123,18 @@ object TESLTrackerData {
         } catch (e: Exception) {
             Logger.e(e)
         }
+    }
+
+    open class SimpleChildEventListener : ChildEventListener {
+        override fun onCancelled(p0: FirebaseError?) {}
+
+        override fun onChildMoved(p0: DataSnapshot?, p1: String?) {}
+
+        override fun onChildChanged(p0: DataSnapshot?, p1: String?) {}
+
+        override fun onChildAdded(p0: DataSnapshot?, p1: String?) {}
+
+        override fun onChildRemoved(p0: DataSnapshot?) {}
     }
 
 }

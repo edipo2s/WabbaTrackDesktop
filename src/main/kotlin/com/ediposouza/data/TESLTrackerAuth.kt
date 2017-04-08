@@ -14,11 +14,14 @@ import java.io.InputStreamReader
  */
 object TESLTrackerAuth {
 
+    var userAccessToken: String? = null
     var userUuid: String? = null
     var userName: String? = null
     var userPhoto: String? = null
 
-    lateinit var firebaseLoginAPI: Rest
+    var firebaseLoginAPI: Rest = Rest().apply {
+        baseURI = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/"
+    }
 
     private val keysFileStream by lazy { InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json")) }
 
@@ -37,8 +40,9 @@ object TESLTrackerAuth {
 //            Logger.d("Validating a token: \n Access Token: ${credential?.accessToken}")
 
             Logger.d("Validating a token:")
+            userAccessToken = credential?.accessToken
             CredentialsProvider.oauth2?.run {
-                val tokeninfo = tokeninfo().setAccessToken(credential?.accessToken).execute()
+                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
 //                Logger.d(tokeninfo.toPrettyString())
                 Logger.d("Obtaining User Profile Information:")
                 val userinfo = userinfo().get().execute()
@@ -47,13 +51,13 @@ object TESLTrackerAuth {
 //                Logger.d(userinfo.toPrettyString())
             }
 
-            val body = Gson().toJson(FirebaseAuth(credential?.accessToken ?: ""))
+            val body = Gson().toJson(FirebaseAuth(userAccessToken ?: ""))
             Logger.d("Getting firebase ID:")
             val json = JsonParser().parse(keysFileStream).asJsonObject
             val apiKey = json.get("api_key").asString
-            firebaseLoginAPI.post("verifyAssertion?key=$apiKey", body.byteInputStream(), { rqt ->
-                rqt.addHeader("Content-Type", "application/json")
-            }).one().apply {
+            firebaseLoginAPI.post("verifyAssertion?key=$apiKey", body.byteInputStream()) { processor ->
+                processor.addHeader("Content-Type", "application/json")
+            }.one().apply {
                 userUuid = getString("localId")
 //                Logger.d("FirebaseID: $userUuid")
             }

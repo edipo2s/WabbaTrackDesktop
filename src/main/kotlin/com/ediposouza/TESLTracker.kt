@@ -4,9 +4,7 @@ import com.ediposouza.data.TESLTrackerAuth
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
-import com.ediposouza.model.Card
-import com.ediposouza.model.CardPick
-import com.ediposouza.model.CardSlot
+import com.ediposouza.model.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerView
@@ -20,7 +18,6 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
 import tornadofx.FX
-import tornadofx.Rest
 import tornadofx.alert
 import java.awt.*
 import java.awt.image.BufferedImage
@@ -58,7 +55,6 @@ class TESLTracker : App(LoggerView::class) {
     val ELDER_SCROLL_SPS = 1    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
-    val firebaseLoginAPI: Rest by inject()
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
 
     var waitingScreenshotChangeWasLogged = false
@@ -75,8 +71,6 @@ class TESLTracker : App(LoggerView::class) {
 
         stage.close()
         configureSystemTrayIcon()
-        TESLTrackerData.initialize()
-        TESLTrackerAuth.initialize(firebaseLoginAPI)
         CompletableFuture.runAsync {
             startElderScrollDetection()
         }
@@ -158,6 +152,19 @@ class TESLTracker : App(LoggerView::class) {
                             addActionListener {
                                 Platform.runLater {
                                     GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("baronoftear")!!)
+                                }
+                            }
+                        })
+                        add(MenuItem("Save Match Test").apply {
+                            addActionListener {
+                                Platform.runLater {
+                                    GameState.apply {
+                                        playerGoFirst = true
+                                        playerDeckClass = DeckClass.BATTLEMAGE
+                                        opponentDeckClass = DeckClass.MAGE
+                                        matchMode = MatchMode.CASUAL
+                                        saveMatch(true)
+                                    }
                                 }
                             }
                         })

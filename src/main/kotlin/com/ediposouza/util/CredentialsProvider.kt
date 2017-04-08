@@ -29,7 +29,8 @@ object CredentialsProvider {
     private val DATA_STORE_DIR = java.io.File(System.getProperty("user.home"), ".store/tesl_tracker")
 
     /** Scopes */
-    private val SCOPE_PROFILE_EMAIL = "oauth2:profile email"
+    private val SCOPE_PROFILE_EMAIL = "https://www.googleapis.com/auth/userinfo.email"
+    private val SCOPE_FIREBASE_DATABASE = "https://www.googleapis.com/auth/firebase.database"
 
     /**
      * Global instance of the [DataStoreFactory]. The best practice is to make it a single
@@ -58,7 +59,7 @@ object CredentialsProvider {
         }
         // set up authorization code flow
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets,
-                setOf(SCOPE_PROFILE_EMAIL)).setDataStoreFactory(dataStoreFactory).build()
+                setOf(SCOPE_PROFILE_EMAIL, SCOPE_FIREBASE_DATABASE)).setDataStoreFactory(dataStoreFactory).build()
         // authorize
         return AuthorizationCodeInstalledApp(flow, LocalServerReceiver()).authorize("user")
     }
