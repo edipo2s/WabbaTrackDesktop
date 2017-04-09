@@ -1,6 +1,7 @@
 package com.ediposouza.handler
 
 import com.ediposouza.data.DHash
+import com.ediposouza.data.DHashCards
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.*
 import com.ediposouza.model.Card
@@ -42,6 +43,22 @@ object GameHandler {
             Recognizer.recognizeImageInMap(it, DHash.GAME_OPPONENT_CLASS_LIST)?.let {
                 DeckClass.of(it).apply {
                     Logger.i("--OpponentDeckClass: $it!")
+                }
+            }
+        }
+    }
+
+    fun processFirstCardDraws(screenshot: BufferedImage): Triple<String, String, String>? {
+        return screenshot.getGameInitialCardDrawCrop(1).let {
+            Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { first ->
+                screenshot.getGameInitialCardDrawCrop(2).let {
+                    Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { second ->
+                        screenshot.getGameInitialCardDrawCrop(3).let {
+                            Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { third ->
+                                Triple(first, second, third)
+                            }
+                        }
+                    }
                 }
             }
         }

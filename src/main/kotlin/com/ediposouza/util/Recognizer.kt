@@ -51,7 +51,7 @@ object Recognizer {
                 .filter { it.second < PHASH_SIMILARITY_THRESHOLD }
                 .sortedBy { it.second }
 //        pHashDistances.forEach { Logger.d("${it.second} - ${it.first}") }
-        return pHashDistances.minBy { it.second }?.first
+        return pHashDistances.minBy { it.second }?.first?.removeSuffix("_alt")
     }
 
     fun isScreenshotDifferent(screenshot1Hash: String, screenshot2Hash: String): Boolean {

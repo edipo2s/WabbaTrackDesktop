@@ -10,6 +10,7 @@ import com.ediposouza.util.ScreenFuncs
 import javafx.application.Platform
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 /**
@@ -17,12 +18,14 @@ import java.time.format.DateTimeFormatter
  */
 object GameState : StateHandler.TESLState, Runnable {
 
-    val GAME_RECOGNIZER_SPS = 4    //Screenshot Per Second
+    val GAME_RECOGNIZER_SPS = 5    //Screenshot Per Second
 
     val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
 
     var threadRunning: Boolean = false
+    var firstCardDraws: Triple<String, String, String>? = null
+    var firstCardDrawsTracked: Boolean = false
     var playerGoFirst: Boolean? = null
     var playerDeckClass: DeckClass? = null
     var opponentDeckClass: DeckClass? = null
@@ -52,12 +55,21 @@ object GameState : StateHandler.TESLState, Runnable {
         opponentDeckClass = null
         lastCardDraw = null
         matchMode = null
+        firstCardDraws = null
+        firstCardDrawsTracked = false
         deckTracker.resetDraws()
     }
 
     override fun run() {
         while (threadRunning) {
             ScreenFuncs.takeScreenshot()?.apply {
+                Logger.e("${LocalTime.now()}")
+                if (!firstCardDrawsTracked) {
+                    GameHandler.processFirstCardDraws(this)?.apply {
+                        firstCardDraws = this
+                        Logger.d("First cards draw: $firstCardDraws")
+                    }
+                }
                 if (playerGoFirst == null) {
                     playerGoFirst = GameHandler.processPlayerGoFirst(this)
                 }
@@ -69,6 +81,13 @@ object GameState : StateHandler.TESLState, Runnable {
                 }
                 GameHandler.processCardDraw(this)?.apply {
                     lastCardDraw = this
+                    firstCardDraws?.apply {
+                        Logger.d("Tracking first cards draw: $firstCardDraws")
+                        TESLTrackerData.getCard(first)?.apply { deckTracker.trackCardDraw(this) }
+                        TESLTrackerData.getCard(second)?.apply { deckTracker.trackCardDraw(this) }
+                        TESLTrackerData.getCard(third)?.apply { deckTracker.trackCardDraw(this) }
+                        firstCardDrawsTracked = true
+                    }
                     deckTracker.trackCardDraw(this)
                     Thread({
                         Thread.sleep(3000L)

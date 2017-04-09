@@ -13,7 +13,7 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val APP_MAIN_HEIGHT = 75
     override val APP_MAIN_WIDTH = 75
     override val APP_MAIN_X = 1300
-    override val APP_MAIN_Y = 600
+    override val APP_MAIN_Y = 675
 
     override val ARENA_PICK_SELECT_FIRST_X = 235
     override val ARENA_PICK_SELECT_SECOND_X = 460
@@ -31,7 +31,7 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     override val DECK_TRACKER_WIDTH = 250
     override val DECK_TRACKER_X = 1200
-    override val DECK_TRACKER_Y = 50
+    override val DECK_TRACKER_Y = 100
     override val DECK_TRACKER_CARD_HEIGHT = 30
     override val DECK_TRACKER_CARD_WIDTH = 150
 
@@ -107,6 +107,13 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_CARD_DRAW_WIDTH = 120
     override val GAME_CARD_DRAW_X = 1003
     override val GAME_CARD_DRAW_Y = 360
+
+    override val CARD_INITIAL_DRAW_HEIGHT = 160
+    override val CARD_INITIAL_DRAW_WIDTH = 120
+    override val CARD_INITIAL_DRAW_FIRST_X = 412
+    override val CARD_INITIAL_DRAW_SECOND_X = 623
+    override val CARD_INITIAL_DRAW_THIRD_X = 835
+    override val CARD_INITIAL_DRAW_Y = 230
 
     override val GAME_PLAYER_FIRST_HEIGHT = 80
     override val GAME_PLAYER_FIRST_WIDTH = 65

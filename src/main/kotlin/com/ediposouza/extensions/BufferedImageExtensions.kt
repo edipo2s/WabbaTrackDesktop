@@ -111,6 +111,17 @@ fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getGameInitialCardDrawCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardPositionDrawStartX = when (cardPosition) {
+            1 -> CARD_INITIAL_DRAW_FIRST_X
+            2 -> CARD_INITIAL_DRAW_SECOND_X
+            else -> CARD_INITIAL_DRAW_THIRD_X
+        }
+        return crop(cardPositionDrawStartX, CARD_INITIAL_DRAW_Y, CARD_INITIAL_DRAW_WIDTH, CARD_INITIAL_DRAW_HEIGHT)
+    }
+}
+
 fun BufferedImage.getGamePlayerFirstCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(GAME_PLAYER_FIRST_X, GAME_PLAYER_FIRST_Y, GAME_PLAYER_FIRST_WIDTH, GAME_PLAYER_FIRST_HEIGHT)
@@ -153,7 +164,6 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
         return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, ARENA_PICK_CARD_WIDTH, ARENA_PICK_CARD_HEIGHT)
     }
 }
-
 
 private fun BufferedImage.crop(cropX: Int, cropY: Int, cropWidth: Int, cropHeight: Int): BufferedImage {
     val pickPosition = ImageFuncs.getScaledPosition(width, height, cropX, cropY)
