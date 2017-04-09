@@ -1,9 +1,46 @@
 package com.ediposouza.extensions
 
+import com.ediposouza.ui.MainWidget
+import java.awt.Menu
+import java.awt.MenuItem
+import java.awt.PopupMenu
+
 fun String.toIntSafely() = this.toIntOrNull() ?: 0
 
 fun String?.equalsOrNull(other: String): Boolean? = if (this == other) true else null
 
-fun Map<String, *>.jsonString(key: String) = get(key) as String
-fun Map<String, *>.jsonLong(key: String) = get(key) as Long
-fun Map<String, *>.jsonBool(key: String) = get(key) as Boolean
+fun PopupMenu.addMenu(label: String, menuOp: Menu.() -> Unit) {
+    MainWidget.contextMenu.items.add(javafx.scene.control.Menu(label))
+    add(Menu(label).apply {
+        menuOp()
+    })
+}
+
+fun PopupMenu.addMenuItem(label: String, onClick: (List<Any>) -> Unit) {
+    val menuItem = MenuItem(label)
+    val contextMenuItem = javafx.scene.control.MenuItem(label)
+    add(menuItem.apply {
+        addActionListener { onClick(listOf(menuItem, contextMenuItem)) }
+    })
+    MainWidget.contextMenu.items.add(contextMenuItem.apply {
+        setOnAction { onClick(listOf(menuItem, contextMenuItem)) }
+    })
+}
+
+fun PopupMenu.addMenu(label: String): List<Any> {
+    val menu = Menu(label)
+    add(menu)
+    val contextMenuItem = javafx.scene.control.Menu(label)
+    MainWidget.contextMenu.items.add(contextMenuItem)
+    return listOf(menu, contextMenuItem)
+}
+
+fun Menu.addMenuItem(menuItemLabel: String, onClick: () -> Unit) {
+    add(MenuItem(menuItemLabel).apply {
+        addActionListener { onClick() }
+    })
+    val mainContextMenu = MainWidget.contextMenu.items.find { it.text == label } as javafx.scene.control.Menu
+    mainContextMenu.items.add(javafx.scene.control.MenuItem(menuItemLabel).apply {
+        setOnAction { onClick() }
+    })
+}

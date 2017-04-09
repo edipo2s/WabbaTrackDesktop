@@ -2,12 +2,15 @@ package com.ediposouza
 
 import com.ediposouza.data.TESLTrackerAuth
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.extensions.addMenu
+import com.ediposouza.extensions.addMenuItem
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerView
+import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
 import javafx.application.Platform
 import javafx.geometry.Rectangle2D
@@ -55,8 +58,10 @@ class TESLTracker : App(LoggerView::class) {
     val ELDER_SCROLL_SPS = 1    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
+    lateinit var trayPopupMenu: PopupMenu
+    lateinit var menuDecks: List<Any>
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
-    val menuDecks by lazy { Menu("Decks") }
+    val mainWidget by lazy { MainWidget() }
 
     var waitingScreenshotChangeWasLogged = false
 
@@ -72,6 +77,9 @@ class TESLTracker : App(LoggerView::class) {
 
         stage.close()
         configureSystemTrayIcon()
+        Platform.runLater {
+            mainWidget.isVisible = true
+        }
         CompletableFuture.runAsync {
             startElderScrollDetection()
         }
@@ -82,99 +90,94 @@ class TESLTracker : App(LoggerView::class) {
             Logger.d("Tray Icon not supported")
         }
         trayicon(legendsIconStream, APP_NAME, false, true) {
-            popupMenu = PopupMenu().apply {
-                add(MenuItem("Login").apply {
-                    addActionListener {
-                        if (TESLTrackerAuth.login()) {
-                            label = TESLTrackerAuth.userName
-                            SwingUtilities.invokeLater {
-                                displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
-                                updateMenuDecks()
+            trayPopupMenu = PopupMenu().apply {
+                addMenuItem("Login") { menuItems ->
+                    if (TESLTrackerAuth.login()) {
+                        menuItems.forEach {
+                            if (it is MenuItem) {
+                                it.label = TESLTrackerAuth.userName
+                            }
+                            if (it is javafx.scene.control.MenuItem) {
+                                it.text = TESLTrackerAuth.userName
                             }
                         }
-                    }
-                })
-                add(menuDecks)
-                menuDecks.isEnabled = false
-                add(MenuItem("Show Log").apply {
-                    addActionListener {
-                        Platform.runLater {
-                            FX.primaryStage.show()
+                        SwingUtilities.invokeLater {
+                            displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
+                            updateMenuDecks()
                         }
                     }
-                })
-                add(MenuItem("Show Deck Tracker").apply {
-                    addActionListener {
-                        Platform.runLater {
-                            GameState.deckTracker.isVisible = true
-                        }
+                }
+                menuDecks = addMenu("Decks")
+                menuDecks.forEach {
+                    if (it is Menu) {
+                        it.isEnabled = false
                     }
-                })
-                add(MenuItem("About").apply {
-                    addActionListener {
-                        Platform.runLater {
-                            alert(Alert.AlertType.INFORMATION, "About", "TES Legends Tracker \nby Edipo2s")
-                        }
+                    if (it is javafx.scene.control.Menu) {
+                        it.isDisable = true
                     }
-                })
-                add(MenuItem("Exit").apply {
-                    addActionListener {
-                        Platform.exit()
-                        System.exit(0)
+                }
+                addMenuItem("Show Log") { menuItems ->
+                    Platform.runLater {
+                        FX.primaryStage.show()
                     }
-                })
+                }
+                addMenuItem("Show Deck Tracker") { menuItems ->
+                    Platform.runLater {
+                        GameState.deckTracker.isVisible = true
+                    }
+                }
+                addMenuItem("About") { menuItems ->
+                    Platform.runLater {
+                        alert(Alert.AlertType.INFORMATION, "About", "TES Legends Tracker \nby Edipo2s")
+                    }
+                }
+                addMenuItem("Exit") { menuItems ->
+                    Platform.exit()
+                    System.exit(0)
+                }
                 if (SHOW_TEST_MENU) {
-                    add(Menu("Test").apply {
-                        add(MenuItem("Show Arena Tier Test").apply {
-                            addActionListener {
-                                Platform.runLater {
-                                    ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf()),
-                                            CardPick(Card.DUMMY, 20, listOf()), CardPick(Card.DUMMY, 20, listOf())))
+                    addMenu("Test") {
+                        addMenuItem("Show Arena Tier Test") {
+                            Platform.runLater {
+                                ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf()),
+                                        CardPick(Card.DUMMY, 20, listOf()), CardPick(Card.DUMMY, 20, listOf())))
+                            }
+                        }
+                        addMenuItem("Show Arena Tier with Synergy Test") {
+                            Platform.runLater {
+                                ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf(Card.DUMMY, Card.DUMMY)),
+                                        CardPick(Card.DUMMY, 20, listOf(Card.DUMMY)), CardPick(Card.DUMMY, 20, listOf(Card.DUMMY))))
+                            }
+                        }
+                        addMenuItem("Show Deck Test") {
+                            Platform.runLater {
+                                val cardsSlot = ArenaState.picks.groupBy(Card::shortName)
+                                        .map { CardSlot(it.value.first(), it.value.size) }
+                                StateHandler.currentTESLState = GameState.apply {
+                                    setDeckCardsSlot(cardsSlot)
                                 }
                             }
-                        })
-                        add(MenuItem("Show Arena Tier with Synergy Test").apply {
-                            addActionListener {
-                                Platform.runLater {
-                                    ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf(Card.DUMMY, Card.DUMMY)),
-                                            CardPick(Card.DUMMY, 20, listOf(Card.DUMMY)), CardPick(Card.DUMMY, 20, listOf(Card.DUMMY))))
+                        }
+                        addMenuItem("Draw Test") {
+                            Platform.runLater {
+                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("baronoftear")!!)
+                            }
+                        }
+                        addMenuItem("Save Match Test") {
+                            Platform.runLater {
+                                GameState.apply {
+                                    playerGoFirst = true
+                                    playerDeckClass = DeckClass.BATTLEMAGE
+                                    opponentDeckClass = DeckClass.MAGE
+                                    matchMode = MatchMode.CASUAL
+                                    saveMatch(true)
                                 }
                             }
-                        })
-                        add(MenuItem("Show Deck Test").apply {
-                            addActionListener {
-                                Platform.runLater {
-                                    val cardsSlot = ArenaState.picks.groupBy(Card::shortName)
-                                            .map { CardSlot(it.value.first(), it.value.size) }
-                                    StateHandler.currentTESLState = GameState.apply {
-                                        setDeckCardsSlot(cardsSlot)
-                                    }
-                                }
-                            }
-                        })
-                        add(MenuItem("Draw Test").apply {
-                            addActionListener {
-                                Platform.runLater {
-                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("baronoftear")!!)
-                                }
-                            }
-                        })
-                        add(MenuItem("Save Match Test").apply {
-                            addActionListener {
-                                Platform.runLater {
-                                    GameState.apply {
-                                        playerGoFirst = true
-                                        playerDeckClass = DeckClass.BATTLEMAGE
-                                        opponentDeckClass = DeckClass.MAGE
-                                        matchMode = MatchMode.CASUAL
-                                        saveMatch(true)
-                                    }
-                                }
-                            }
-                        })
-                    })
+                        }
+                    }
                 }
             }
+            popupMenu = trayPopupMenu
             SwingUtilities.invokeLater {
                 displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)
             }
@@ -183,20 +186,35 @@ class TESLTracker : App(LoggerView::class) {
 
     private fun updateMenuDecks() {
         TESLTrackerData.updateDecksDB {
-            menuDecks.isEnabled = true
-            menuDecks.removeAll()
-            TESLTrackerData.decks.forEach {
-                menuDecks.add(MenuItem(it.name).apply {
-                    addActionListener {
-                        val deck = TESLTrackerData.decks.find { it.name == label }
-                        GameState.setDeckCardsSlot(deck?.cards?.map {
-                            CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
-                        } ?: listOf())
-                        Platform.runLater {
-                            GameState.deckTracker.isVisible = true
+            menuDecks.forEach {
+                if (it is Menu) {
+                    it.isEnabled = true
+                }
+                if (it is javafx.scene.control.Menu) {
+                    it.isDisable = false
+                }
+            }
+            menuDecks.forEach {
+                if (it is Menu) {
+                    it.removeAll()
+                }
+                if (it is javafx.scene.control.Menu) {
+                    it.items.clear()
+                }
+            }
+            TESLTrackerData.decks.forEach { deck ->
+                menuDecks.forEach {
+                    if (it is Menu) {
+                        it.addMenuItem(deck.name) {
+                            GameState.setDeckCardsSlot(deck.cards.map {
+                                CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
+                            })
+                            Platform.runLater {
+                                GameState.deckTracker.isVisible = true
+                            }
                         }
                     }
-                })
+                }
             }
         }
     }

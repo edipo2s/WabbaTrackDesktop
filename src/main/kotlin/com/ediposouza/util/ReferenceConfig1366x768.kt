@@ -10,6 +10,11 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     // -- APP --
 
+    override val APP_MAIN_HEIGHT = 75
+    override val APP_MAIN_WIDTH = 75
+    override val APP_MAIN_X = 1300
+    override val APP_MAIN_Y = 600
+
     override val ARENA_PICK_SELECT_FIRST_X = 235
     override val ARENA_PICK_SELECT_SECOND_X = 460
     override val ARENA_PICK_SELECT_THIRD_X = 690

@@ -13,6 +13,11 @@ abstract class ReferenceConfig {
 
     // -- APP --
 
+    open val APP_MAIN_HEIGHT = 0
+    open val APP_MAIN_WIDTH = 0
+    open val APP_MAIN_X = 0
+    open val APP_MAIN_Y = 0
+
     open val ARENA_PICK_SELECT_HEIGHT = 0
     open val ARENA_PICK_SELECT_WIDTH = 0
     open val ARENA_PICK_SELECT_FIRST_X = 0
