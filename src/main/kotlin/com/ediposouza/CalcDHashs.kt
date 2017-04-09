@@ -13,7 +13,7 @@ import javax.imageio.ImageIO
  */
 object CalcDHashs {
 
-    val CALC_CARDS_HASH = true
+    val CALC_CARDS_HASH = false
     val CALC_ARENA_PICKS_HASH = false
 
     val CROP_FOLDER_ARENA = "Arena"

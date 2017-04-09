@@ -8,6 +8,7 @@ import com.ediposouza.model.Card
 import com.ediposouza.model.CardSlot
 import com.ediposouza.model.DeckClass
 import com.ediposouza.util.ImageFuncs
+import com.ediposouza.util.Logger
 import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
@@ -195,7 +196,12 @@ class DeckTrackerWidget : JFrame() {
                             val cardSetName = item.card.set.name.toLowerCase().capitalize()
                             val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
                             val cardImagePath = "/Cards/$cardSetName/$cardAttrName/${item.card.shortName}.png"
-                            val cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
+                            var cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource("/Cards/card_back.png").toURI()))
+                            try {
+                                cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
+                            } catch (e: Exception) {
+                                Logger.e(e)
+                            }
                             image = SwingFXUtils.toFXImage(cardFullImage?.getCardForSlotCrop(), null)
                             fitHeight = cardSize.height.toDouble()
                             fitWidth = cardSize.width.toDouble() * 0.8

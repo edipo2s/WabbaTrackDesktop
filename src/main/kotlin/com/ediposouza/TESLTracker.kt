@@ -34,7 +34,7 @@ class TESLTracker : App(LoggerView::class) {
     companion object {
 
         val APP_NAME = "TES Legends Tracker"
-        val SHOW_TEST_MENU = false
+        val SHOW_TEST_MENU = true
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
