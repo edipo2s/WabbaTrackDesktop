@@ -6,8 +6,6 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.*
 import com.ediposouza.model.Card
 import com.ediposouza.model.DeckClass
-import com.ediposouza.state.GameState
-import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import java.awt.image.BufferedImage
 
@@ -18,22 +16,16 @@ object GameHandler {
 
     fun processPlayerGoFirst(screenshot: BufferedImage): Boolean? {
         return screenshot.getGamePlayerFirstCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_FIRST)?.apply {
-                Logger.i("--PlayerGoFirst!")
-            }
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_FIRST)
         } ?: screenshot.getGamePlayerSecondCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_SECOND)?.apply {
-                Logger.i("--PlayerGoSecond!")
-            }
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_SECOND)
         }
     }
 
     fun processPlayerDeckClass(screenshot: BufferedImage): DeckClass? {
         return screenshot.getGamePlayerClassCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_CLASS_LIST)?.let {
-                DeckClass.of(it).apply {
-                    Logger.i("--PlayerDeckClass: $it!")
-                }
+                DeckClass.of(it)
             }
         }
     }
@@ -41,9 +33,7 @@ object GameHandler {
     fun processOpponentDeckClass(screenshot: BufferedImage): DeckClass? {
         return screenshot.getGameOpponentClassCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_OPPONENT_CLASS_LIST)?.let {
-                DeckClass.of(it).apply {
-                    Logger.i("--OpponentDeckClass: $it!")
-                }
+                DeckClass.of(it)
             }
         }
     }
@@ -66,31 +56,21 @@ object GameHandler {
 
     fun processCardDraw(screenshot: BufferedImage): Card? {
         return screenshot.getGameCardDrawCrop().let {
-            TESLTrackerData.getCard(Recognizer.recognizeCardImage(it))?.let {
-                it.takeIf { it != GameState.lastCardDraw }?.apply {
-                    Logger.i("--$name draw!")
-                }
-            }
+            TESLTrackerData.getCard(Recognizer.recognizeCardImage(it))
         }
     }
 
     fun processMatchEnd(screenshot: BufferedImage): Boolean? {
         return screenshot.getGameWinCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN)?.apply {
-                Logger.i("-- Player Win!")
-            }
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN)
         } ?: screenshot.getGameWin2Crop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN2)?.apply {
-                Logger.i("--Player Win!")
-            }
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN2)
         } ?: screenshot.getGameLossCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS)?.apply {
-                Logger.i("--Player Lose!")
                 return false
             }
         } ?: screenshot.getGameLoss2Crop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS2)?.apply {
-                Logger.i("--Player Lose!")
                 return false
             }
         }

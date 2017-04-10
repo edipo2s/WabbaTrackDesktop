@@ -8,9 +8,9 @@ import com.ediposouza.ui.DeckTrackerWidget
 import com.ediposouza.util.Logger
 import com.ediposouza.util.ScreenFuncs
 import javafx.application.Platform
+import java.awt.image.BufferedImage
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 /**
@@ -18,10 +18,16 @@ import java.time.format.DateTimeFormatter
  */
 object GameState : StateHandler.TESLState, Runnable {
 
-    val GAME_RECOGNIZER_SPS = 5    //Screenshot Per Second
+    val GAME_RECOGNIZER_SPS = 3    //Screenshot Per Second
 
     val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
+
+    val playerGoFirstLock = "lock"
+    val playerDeckClassLock = "lock"
+    val opponentDeckClassLock = "lock"
+    val cardDrawLock = "lock"
+    val endMatchLock = "lock"
 
     var threadRunning: Boolean = false
     var firstCardDraws: Triple<String, String, String>? = null
@@ -63,43 +69,20 @@ object GameState : StateHandler.TESLState, Runnable {
     override fun run() {
         while (threadRunning) {
             ScreenFuncs.takeScreenshot()?.apply {
-                Logger.e("${LocalTime.now()}")
                 if (!firstCardDrawsTracked) {
-                    GameHandler.processFirstCardDraws(this)?.apply {
-                        firstCardDraws = this
-                        Logger.d("First cards draw: $firstCardDraws")
-                    }
+                    Thread({ GameHandler.processFirstCardDraws(this)?.run { firstCardDraws = this } }).start()
                 }
                 if (playerGoFirst == null) {
-                    playerGoFirst = GameHandler.processPlayerGoFirst(this)
+                    processPlayerGoFirst(this)
                 }
                 if (playerDeckClass == null) {
-                    playerDeckClass = GameHandler.processPlayerDeckClass(this)
+                    processPlayerDeck(this)
                 }
                 if (opponentDeckClass == null) {
-                    opponentDeckClass = GameHandler.processOpponentDeckClass(this)
+                    processOpponentDeck(this)
                 }
-                GameHandler.processCardDraw(this)?.apply {
-                    lastCardDraw = this
-                    firstCardDraws?.apply {
-                        Logger.d("Tracking first cards draw: $firstCardDraws")
-                        TESLTrackerData.getCard(first)?.apply { deckTracker.trackCardDraw(this) }
-                        TESLTrackerData.getCard(second)?.apply { deckTracker.trackCardDraw(this) }
-                        TESLTrackerData.getCard(third)?.apply { deckTracker.trackCardDraw(this) }
-                        firstCardDrawsTracked = true
-                    }
-                    deckTracker.trackCardDraw(this)
-                    Thread({
-                        Thread.sleep(3000L)
-                        lastCardDraw = null
-                    }).start()
-                }
-                GameHandler.processMatchEnd(this)?.let { win ->
-                    val result = "Win".takeIf { win } ?: "Loss"
-                    Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
-                    saveMatch(win)
-                    resetState()
-                }
+                processCardDraw(this)
+                processEndMatch(this)
             }
             Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
         }
@@ -110,6 +93,88 @@ object GameState : StateHandler.TESLState, Runnable {
         Platform.runLater {
             deckTracker.setDeckCardsSlot(cardsSlot)
         }
+    }
+
+    private fun processPlayerGoFirst(screenshot: BufferedImage) {
+        Thread({
+            GameHandler.processPlayerGoFirst(screenshot)?.run {
+                synchronized(playerGoFirstLock) {
+                    if (playerGoFirst == null) {
+                        playerGoFirst = this
+                        Logger.i("--PlayerGoFirst!".takeIf { this } ?: "--PlayerGoSecond!")
+                    }
+                }
+            }
+        }).start()
+    }
+
+    private fun processPlayerDeck(screenshot: BufferedImage) {
+        Thread({
+            GameHandler.processPlayerDeckClass(screenshot)?.run {
+                synchronized(playerDeckClassLock) {
+                    if (playerDeckClass == null) {
+                        playerDeckClass = this
+                        Logger.i("--PlayerDeckClass: $this!")
+                    }
+                }
+            }
+        }).start()
+    }
+
+    private fun processOpponentDeck(screenshot: BufferedImage) {
+        Thread({
+            GameHandler.processOpponentDeckClass(screenshot)?.run {
+                synchronized(opponentDeckClassLock) {
+                    if (opponentDeckClass == null) {
+                        opponentDeckClass = this
+                        Logger.i("--OpponentDeckClass: $this!")
+                    }
+                }
+            }
+        }).start()
+    }
+
+    private fun processCardDraw(screenshot: BufferedImage) {
+        Thread({
+            GameHandler.processCardDraw(screenshot)?.run {
+                synchronized(cardDrawLock) {
+                    if (lastCardDraw != this) {
+                        lastCardDraw = this
+                        deckTracker.trackCardDraw(this)
+                        Logger.i("--$name draw!")
+                        firstCardDraws?.apply {
+                            Logger.d("Tracking first cards draw: $firstCardDraws")
+                            TESLTrackerData.getCard(first)?.apply { deckTracker.trackCardDraw(this) }
+                            TESLTrackerData.getCard(second)?.apply { deckTracker.trackCardDraw(this) }
+                            TESLTrackerData.getCard(third)?.apply { deckTracker.trackCardDraw(this) }
+                            firstCardDraws = null
+                            firstCardDrawsTracked = true
+                        }
+                        Thread({
+                            Thread.sleep(3000L)
+                            lastCardDraw = null
+                        }).start()
+                    }
+                }
+            }
+        }).start()
+    }
+
+    private fun processEndMatch(screenshot: BufferedImage) {
+        Thread({
+            GameHandler.processMatchEnd(screenshot)?.run {
+                synchronized(endMatchLock) {
+                    val win = this
+                    if (playerDeckClass != null) {
+                        Logger.i("--Player Win!".takeIf { win } ?: "--Player Lose!")
+                        val result = "Win".takeIf { win } ?: "Loss"
+                        Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
+                        saveMatch(win)
+                        resetState()
+                    }
+                }
+            }
+        }).start()
     }
 
     private fun showDeckTracker() {

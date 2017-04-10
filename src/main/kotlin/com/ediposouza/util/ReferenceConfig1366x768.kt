@@ -31,7 +31,7 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     override val DECK_TRACKER_WIDTH = 250
     override val DECK_TRACKER_X = 1200
-    override val DECK_TRACKER_Y = 100
+    override val DECK_TRACKER_Y = 50
     override val DECK_TRACKER_CARD_HEIGHT = 30
     override val DECK_TRACKER_CARD_WIDTH = 150
 
