@@ -69,10 +69,15 @@ abstract class ReferenceConfig {
     open val SCREEN_ARENA_CLASSES_X = 0
     open val SCREEN_ARENA_CLASSES_Y = 0
 
-    open val SCREEN_ARENA_PICK_HEIGHT = 0
-    open val SCREEN_ARENA_PICK_WIDTH = 0
-    open val SCREEN_ARENA_PICK_X = 0
-    open val SCREEN_ARENA_PICK_Y = 0
+    open val SCREEN_ARENA_PICKS_HEIGHT = 0
+    open val SCREEN_ARENA_PICKS_WIDTH = 0
+    open val SCREEN_ARENA_PICKS_X = 0
+    open val SCREEN_ARENA_PICKS_Y = 0
+
+    open val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 0
+    open val SCREEN_ARENA_PICK_NUMBER_WIDTH = 0
+    open val SCREEN_ARENA_PICK_NUMBER_X = 0
+    open val SCREEN_ARENA_PICK_NUMBER_Y = 0
 
     open val SCREEN_ARENA_DASHBOARD_HEIGHT = 0
     open val SCREEN_ARENA_DASHBOARD_WIDTH = 0

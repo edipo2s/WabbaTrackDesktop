@@ -21,6 +21,7 @@ import org.jnativehook.mouse.NativeMouseListener
 import java.awt.Dimension
 import java.awt.Point
 import java.awt.Rectangle
+import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -29,7 +30,9 @@ import java.util.logging.Level
 /**
  * Created by ediposouza on 24/03/17.
  */
-object ArenaState : StateHandler.TESLState {
+object ArenaState : StateHandler.TESLState, Runnable {
+
+    val ARENA_RECOGNIZER_SPS = 1    //Screenshot Per Second
 
     private val card1ArenaTierStage by lazy { ArenaTierWidget(1) }
     private val card2ArenaTierStage by lazy { ArenaTierWidget(2) }
@@ -95,6 +98,10 @@ object ArenaState : StateHandler.TESLState {
 
     }
 
+    val arenaPickLock = "lock"
+    var threadRunning: Boolean = false
+    var lastPickNumberRecognized: Int? = null
+
     init {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
@@ -111,6 +118,8 @@ object ArenaState : StateHandler.TESLState {
         if (finishPicks) {
             hidePicksTier()
         }
+        threadRunning = true
+        Thread(this).start()
     }
 
     override fun onPause() {
@@ -118,6 +127,7 @@ object ArenaState : StateHandler.TESLState {
         saveArenaState()
         hidePicksTier()
         GameState.deckTracker.isVisible = false
+        threadRunning = false
     }
 
     override fun hasValidState(): Boolean {
@@ -133,6 +143,32 @@ object ArenaState : StateHandler.TESLState {
         finishPicks = false
         picks.clear()
         saveArenaState()
+    }
+
+    override fun run() {
+        while (GameState.threadRunning) {
+            ScreenFuncs.takeScreenshot()?.apply {
+                processPickCards(this)
+            }
+            Thread.sleep(1000L / ARENA_RECOGNIZER_SPS)
+        }
+    }
+
+    private fun processPickCards(screenshot: BufferedImage) {
+        Thread({
+            ArenaHandler.processArenaPickNumber(screenshot)?.run {
+                synchronized(arenaPickLock) {
+                    if (lastPickNumberRecognized != this) {
+                        lastPickNumberRecognized = this
+                        pickNumber = this
+                        ArenaHandler.processArenaPick(screenshot)?.run {
+                            ArenaState.setTierPicks(this)
+                        }
+                        Logger.i("Arena Pick $pickNumber Detected!", true)
+                    }
+                }
+            }
+        }).start()
     }
 
     private fun saveArenaState() {

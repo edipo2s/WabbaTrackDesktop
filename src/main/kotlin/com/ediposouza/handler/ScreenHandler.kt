@@ -42,25 +42,23 @@ object ScreenHandler {
             GameState.matchMode = MatchMode.PRATICE
             return true
         }
+        // Game
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
             Logger.i("Game Screen Detected!", true)
             StateHandler.currentTESLState = GameState
             return true
         }
-        //Arena screens check
-//        if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
-//            Logger.i("Arena Classes Screen Detected!", true)
-//            StateHandler.currentTESLState = ArenaState.apply {
-//                resetState()
-//            }
-//            return true
-//        }
-        if (screenshot.getScreenArenaPickCrop().matchScreenPickList(DHash.SCREENS_ARENA_PICK)) {
-            Logger.i("Arena Pick Screen Detected!", true)
+        // Arena
+        if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
+            Logger.i("Arena Classes Screen Detected!", true)
             StateHandler.currentTESLState = ArenaState.apply {
-                pickNumber = DHash.SCREENS_ARENA_PICK.indexOf(lastScreenRecognized) + 1
-                ArenaHandler.processArenaPick()
+                resetState()
             }
+            return true
+        }
+        if (screenshot.getScreenArenaPicksCrop().matchScreen(DHash.SCREEN_ARENA_PICKS)) {
+            Logger.i("Arena Picks Screen Detected!", true)
+            StateHandler.currentTESLState = ArenaState
             return true
         }
         if (screenshot.getScreenArenaDashboardCrop().matchScreen(DHash.SCREEN_ARENA_DASHBOARD)) {
@@ -78,16 +76,6 @@ object ScreenHandler {
     private fun BufferedImage.matchScreen(screen: String): Boolean {
         if (Recognizer.recognizeScreenImage(this) == screen && lastScreenRecognized != screen) {
             lastScreenRecognized = screen
-            return true
-        } else {
-            return false
-        }
-    }
-
-    private fun BufferedImage.matchScreenPickList(screens: List<String>): Boolean {
-        val recognizedScreen = Recognizer.recognizeScreenPickImage(this)
-        if (screens.contains(recognizedScreen) && lastScreenRecognized != recognizedScreen) {
-            lastScreenRecognized = recognizedScreen!!
             return true
         } else {
             return false

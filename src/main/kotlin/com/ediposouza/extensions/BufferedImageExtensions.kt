@@ -61,9 +61,15 @@ fun BufferedImage.getScreenArenaClassesCrop(): BufferedImage {
     }
 }
 
-fun BufferedImage.getScreenArenaPickCrop(): BufferedImage {
+fun BufferedImage.getScreenArenaPicksCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
-        return crop(SCREEN_ARENA_PICK_X, SCREEN_ARENA_PICK_Y, SCREEN_ARENA_PICK_WIDTH, SCREEN_ARENA_PICK_HEIGHT)
+        return crop(SCREEN_ARENA_PICKS_X, SCREEN_ARENA_PICKS_Y, SCREEN_ARENA_PICKS_WIDTH, SCREEN_ARENA_PICKS_HEIGHT)
+    }
+}
+
+fun BufferedImage.getScreenArenaPickNumberCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(SCREEN_ARENA_PICK_NUMBER_X, SCREEN_ARENA_PICK_NUMBER_Y, SCREEN_ARENA_PICK_NUMBER_WIDTH, SCREEN_ARENA_PICK_NUMBER_HEIGHT)
     }
 }
 

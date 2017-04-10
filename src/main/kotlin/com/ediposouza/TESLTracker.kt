@@ -77,11 +77,11 @@ class TESLTracker : App(LoggerView::class) {
 
         stage.close()
         configureSystemTrayIcon()
-        Platform.runLater {
-            mainWidget.isVisible = true
-        }
         CompletableFuture.runAsync {
             startElderScrollDetection()
+            Platform.runLater {
+                mainWidget.isVisible = true
+            }
         }
     }
 
@@ -116,22 +116,22 @@ class TESLTracker : App(LoggerView::class) {
                         it.isDisable = true
                     }
                 }
-                addMenuItem("Show Log") { menuItems ->
+                addMenuItem("Show Log") { _ ->
                     Platform.runLater {
                         FX.primaryStage.show()
                     }
                 }
-                addMenuItem("Show Deck Tracker") { menuItems ->
+                addMenuItem("Show Deck Tracker") { _ ->
                     Platform.runLater {
                         GameState.deckTracker.isVisible = true
                     }
                 }
-                addMenuItem("About") { menuItems ->
+                addMenuItem("About") { _ ->
                     Platform.runLater {
                         alert(Alert.AlertType.INFORMATION, "About", "TES Legends Tracker \nby Edipo2s")
                     }
                 }
-                addMenuItem("Exit") { menuItems ->
+                addMenuItem("Exit") { _ ->
                     Platform.exit()
                     System.exit(0)
                 }

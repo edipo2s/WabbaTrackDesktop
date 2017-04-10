@@ -4,11 +4,11 @@ import com.ediposouza.data.DHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.extensions.getArenaPickClassCrop
+import com.ediposouza.extensions.getScreenArenaPickNumberCrop
 import com.ediposouza.model.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
-import com.ediposouza.util.ScreenFuncs
 import java.awt.image.BufferedImage
 
 /**
@@ -23,22 +23,27 @@ object ArenaHandler {
         return null
     }
 
-    fun processArenaPick(retryNumber: Int = 0) {
-        ScreenFuncs.takeScreenshot()?.apply {
-            val arenaTier1Value = recognizeArenaPick(this, 1)
-            val arenaTier2Value = recognizeArenaPick(this, 2)
-            val arenaTier3Value = recognizeArenaPick(this, 3)
-            if (arenaTier1Value.card != arenaTier2Value.card && arenaTier1Value.card != arenaTier3Value.card &&
-                    arenaTier2Value.card != arenaTier3Value.card) {
-                ArenaState.setTierPicks(Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value))
-            } else {
-                Thread.sleep(1000L)
-                Logger.e("Duplicate pick, retrying detection")
-                if (retryNumber < 3) {
-                    processArenaPick(retryNumber + 1)
-                }
+    fun processArenaPickNumber(screenshot: BufferedImage): Int? {
+        return Recognizer.recognizeScreenPickImage(screenshot.getScreenArenaPickNumberCrop())?.let {
+            DHash.SCREENS_ARENA_PICK.indexOf(it) + 1
+        }
+    }
+
+    fun processArenaPick(screenshot: BufferedImage, retryNumber: Int = 0): Triple<CardPick, CardPick, CardPick>? {
+        val arenaTier1Value = recognizeArenaPick(screenshot, 1)
+        val arenaTier2Value = recognizeArenaPick(screenshot, 2)
+        val arenaTier3Value = recognizeArenaPick(screenshot, 3)
+        if (arenaTier1Value.card != arenaTier2Value.card && arenaTier1Value.card != arenaTier3Value.card &&
+                arenaTier2Value.card != arenaTier3Value.card) {
+            return Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value)
+        } else {
+            Thread.sleep(1000L)
+            Logger.e("Duplicate pick, retrying detection")
+            if (retryNumber < 3) {
+                return processArenaPick(screenshot, retryNumber + 1)
             }
         }
+        return null
     }
 
     private fun recognizeArenaPick(image: BufferedImage, pick: Int): CardPick {
