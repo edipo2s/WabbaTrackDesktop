@@ -19,7 +19,9 @@ object ScreenHandler {
     fun process(screenshot: BufferedImage): Boolean {
 //        Logger.i("Checking game screen")
         //Screens check
-        if (lastScreenRecognized != DHash.SCREEN_MAIN_MODE_CASUAL && lastScreenRecognized != DHash.SCREEN_MAIN_MODE_RANKED &&
+        if (lastScreenRecognized != DHash.SCREEN_MAIN_MODE_CASUAL &&
+                lastScreenRecognized != DHash.SCREEN_MAIN_MODE_RANKED &&
+                lastScreenRecognized != DHash.SCREEN_MAIN_MODE_PRATICE &&
                 screenshot.getScreenMainCrop().matchScreen(DHash.SCREEN_MAIN)) {
             Logger.i("Main Screen Detected!", true)
             StateHandler.currentTESLState = null
@@ -33,6 +35,11 @@ object ScreenHandler {
         if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_RANKED)) {
             Logger.i("Match Mode set to Ranked!", false)
             GameState.matchMode = MatchMode.RANKED
+            return true
+        }
+        if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_PRATICE)) {
+            Logger.i("Match Mode set to Pratice!", false)
+            GameState.matchMode = MatchMode.PRATICE
             return true
         }
         if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
@@ -69,7 +76,6 @@ object ScreenHandler {
     }
 
     private fun BufferedImage.matchScreen(screen: String): Boolean {
-        saveCroppedImage()
         if (Recognizer.recognizeScreenImage(this) == screen && lastScreenRecognized != screen) {
             lastScreenRecognized = screen
             return true

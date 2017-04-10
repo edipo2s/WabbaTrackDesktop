@@ -7,7 +7,8 @@ enum class MatchMode {
 
     RANKED,
     CASUAL,
-    ARENA
+    ARENA,
+    PRATICE
 
 }
 

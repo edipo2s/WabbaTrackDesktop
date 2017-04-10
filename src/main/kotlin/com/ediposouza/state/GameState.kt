@@ -188,7 +188,8 @@ object GameState : StateHandler.TESLState, Runnable {
     }
 
     fun saveMatch(win: Boolean) {
-        if (playerGoFirst != null && playerDeckClass != null && opponentDeckClass != null && matchMode != null) {
+        if (playerGoFirst != null && playerDeckClass != null && opponentDeckClass != null &&
+                matchMode != null && matchMode != MatchMode.PRATICE) {
             val newUuid = LocalDateTime.now().withNano(0).toString()
             val currentSeason = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM"))
             TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, MatchDeck("", playerDeckClass!!, DeckType.OTHER),

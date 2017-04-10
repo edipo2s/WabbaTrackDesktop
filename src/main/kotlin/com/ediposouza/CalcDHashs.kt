@@ -31,6 +31,7 @@ object CalcDHashs {
         getDHashFile("/Screens/Main.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainCrop)
         getDHashFile("/Screens/MainModeCasual.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
         getDHashFile("/Screens/MainModeRanked.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
+        getDHashFile("/Screens/MainModePratice.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
         getDHashFile("/Screens/Game.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenGameCrop)
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
