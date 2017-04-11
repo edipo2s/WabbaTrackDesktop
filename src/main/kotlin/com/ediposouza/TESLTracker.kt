@@ -37,7 +37,7 @@ class TESLTracker : App(LoggerView::class) {
     companion object {
 
         val APP_NAME = "TES Legends Tracker"
-        val SHOW_TEST_MENU = true
+        val SHOW_TEST_MENU = false
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
@@ -48,10 +48,6 @@ class TESLTracker : App(LoggerView::class) {
 
         private var lastScreenshotDHash = ""
 
-        fun redetectScreen() {
-            lastScreenshotDHash = ""
-            ScreenHandler.lastScreenRecognized = ""
-        }
     }
 
     val DELAY_WINDOW_DETECTION = 5_000L
@@ -77,11 +73,11 @@ class TESLTracker : App(LoggerView::class) {
 
         stage.close()
         configureSystemTrayIcon()
+        Platform.runLater {
+            mainWidget.isVisible = true
+        }
         CompletableFuture.runAsync {
             startElderScrollDetection()
-            Platform.runLater {
-                mainWidget.isVisible = true
-            }
         }
     }
 
@@ -92,20 +88,24 @@ class TESLTracker : App(LoggerView::class) {
         trayicon(legendsIconStream, APP_NAME, false, true) {
             trayPopupMenu = PopupMenu().apply {
                 addMenuItem("Login") { menuItems ->
-                    if (TESLTrackerAuth.login()) {
-                        menuItems.forEach {
-                            if (it is MenuItem) {
-                                it.label = TESLTrackerAuth.userName
+                    Thread({
+                        if (TESLTrackerAuth.login()) {
+                            menuItems.forEach {
+                                if (it is MenuItem) {
+                                    it.label = TESLTrackerAuth.userName
+                                }
+                                if (it is javafx.scene.control.MenuItem) {
+                                    it.text = TESLTrackerAuth.userName
+                                }
                             }
-                            if (it is javafx.scene.control.MenuItem) {
-                                it.text = TESLTrackerAuth.userName
+                            SwingUtilities.invokeLater {
+                                displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
                             }
+                            Thread({
+                                updateMenuDecks()
+                            }).start()
                         }
-                        SwingUtilities.invokeLater {
-                            displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
-                            updateMenuDecks()
-                        }
-                    }
+                    }).start()
                 }
                 menuDecks = addMenu("Decks")
                 menuDecks.forEach {
@@ -132,6 +132,10 @@ class TESLTracker : App(LoggerView::class) {
                     }
                 }
                 addMenuItem("Exit") { _ ->
+                    val currentTESLState = StateHandler.currentTESLState
+                    if (currentTESLState is ArenaState) {
+                        currentTESLState.saveArenaPicks()
+                    }
                     Platform.exit()
                     System.exit(0)
                 }
@@ -220,6 +224,7 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     private fun startElderScrollDetection() {
+        TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
         with(screenSize) {
             Logger.d("Image size: ${width.toInt()}x${height.toInt()}")
@@ -238,7 +243,6 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     private fun startElderScrollRecognition() {
-        TESLTrackerData.updateCardDB()
         Logger.i("Start screenshot game!")
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {

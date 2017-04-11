@@ -66,10 +66,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_ARENA_CLASSES_X = 560
     override val SCREEN_ARENA_CLASSES_Y = 135
 
-    override val SCREEN_ARENA_PICKS_HEIGHT = 0
-    override val SCREEN_ARENA_PICKS_WIDTH = 0
-    override val SCREEN_ARENA_PICKS_X = 0
-    override val SCREEN_ARENA_PICKS_Y = 0
+    override val SCREEN_ARENA_PICKS_HEIGHT = 40
+    override val SCREEN_ARENA_PICKS_WIDTH = 40
+    override val SCREEN_ARENA_PICKS_X = 330
+    override val SCREEN_ARENA_PICKS_Y = 650
 
     override val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 30
     override val SCREEN_ARENA_PICK_NUMBER_WIDTH = 25

@@ -40,6 +40,11 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
+    fun testArenaPickSanctuaryPet() {
+        recognizeArenaPick("PickSanctuaryPet.png", "steelsword", "sanctuarypet", "stealerofsecrets")
+    }
+
+    @Test
     fun testArenaPick1360x768() {
         recognizeArenaPick("Pick1360x768.png", "fharundefender", "treeminder", "execute")
     }

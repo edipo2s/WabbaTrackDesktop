@@ -32,8 +32,6 @@ import java.io.InputStreamReader
  */
 object CredentialsProvider {
 
-    private val keysFileStream by lazy { InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json")) }
-
     /** Directory to store user credentials.  */
     private val DATA_STORE_DIR = java.io.File(System.getProperty("user.home"), ".store/tesl_tracker")
 
@@ -61,7 +59,9 @@ object CredentialsProvider {
     @Throws(IOException::class)
     fun authorize(httpTransport: HttpTransport, jsonFactory: JsonFactory): Credential? {
         // load client secrets
+        val keysFileStream = InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json"))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, keysFileStream)
+        keysFileStream.close()
         if (clientSecrets.details.clientId.startsWith("Enter") || clientSecrets.details.clientSecret.startsWith("Enter ")) {
             Logger.e("API Keys not set")
             return null

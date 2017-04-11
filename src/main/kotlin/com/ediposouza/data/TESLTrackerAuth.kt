@@ -28,11 +28,6 @@ object TESLTrackerAuth {
 
     private val keysFileStream by lazy { InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json")) }
 
-    fun initialize(firebaseLoginAPI: Rest) {
-        this.firebaseLoginAPI = firebaseLoginAPI
-        firebaseLoginAPI.baseURI = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/"
-    }
-
     fun login(): Boolean {
         try {
             val httpTransport = GoogleNetHttpTransport.newTrustedTransport()

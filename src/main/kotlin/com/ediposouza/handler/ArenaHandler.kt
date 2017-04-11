@@ -37,7 +37,7 @@ object ArenaHandler {
                 arenaTier2Value.card != arenaTier3Value.card) {
             return Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value)
         } else {
-            Thread.sleep(1000L)
+            Thread.sleep(500L)
             Logger.e("Duplicate pick, retrying detection")
             if (retryNumber < 3) {
                 return processArenaPick(screenshot, retryNumber + 1)

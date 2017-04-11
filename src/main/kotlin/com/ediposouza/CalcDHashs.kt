@@ -34,6 +34,7 @@ object CalcDHashs {
         getDHashFile("/Screens/MainModePratice.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
         getDHashFile("/Screens/Game.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenGameCrop)
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
+        getDHashFile("/Screens/ArenaPicks.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPicksCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
         if (CALC_ARENA_PICKS_HASH) {
             getDHashFolderFiles("/Screens/ArenaPick", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickNumberCrop)

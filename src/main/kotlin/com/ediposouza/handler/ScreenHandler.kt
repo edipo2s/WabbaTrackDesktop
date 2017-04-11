@@ -17,7 +17,7 @@ object ScreenHandler {
     var lastScreenRecognized = ""
 
     fun process(screenshot: BufferedImage): Boolean {
-//        Logger.i("Checking game screen")
+//        Logger.i("Checking game screen: ${LocalTime.now()}")
         //Screens check
         if (lastScreenRecognized != DHash.SCREEN_MAIN_MODE_CASUAL &&
                 lastScreenRecognized != DHash.SCREEN_MAIN_MODE_RANKED &&

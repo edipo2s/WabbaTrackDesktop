@@ -101,7 +101,7 @@ object TESLTrackerData {
             })
         }
         onSuccess?.invoke()
-        Logger.d("${decks.map(Deck::name).toSet()}")
+        Logger.d("Decks: ${decks.map(Deck::name).toSet()}")
     }
 
     fun saveMatch(newMatch: Match, onSuccess: () -> Unit) {

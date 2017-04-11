@@ -43,6 +43,11 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
+    fun testScreenArenaPicks() {
+        recognizeScreen("ScreenArenaPicks.png", DHash.SCREEN_ARENA_PICKS, BufferedImage::getScreenArenaPicksCrop)
+    }
+
+    @Test
     fun testArenaPickClass() {
         recognizeArenaPickClass("ArenaClass/PickArcher.png", "Archer")
         recognizeArenaPickClass("ArenaClass/PickAssassin.png", "Assassin")
@@ -62,7 +67,7 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testScreenArenaPicks() {
+    fun testScreenArenaCardPicks() {
         recognizePickScreen("ArenaPick/ArenaPick01.png", DHash.SCREEN_ARENA_PICK_01, BufferedImage::getScreenArenaPickNumberCrop)
         recognizePickScreen("ArenaPick/ArenaPick02.png", DHash.SCREEN_ARENA_PICK_02, BufferedImage::getScreenArenaPickNumberCrop)
         recognizePickScreen("ArenaPick/ArenaPick03.png", DHash.SCREEN_ARENA_PICK_03, BufferedImage::getScreenArenaPickNumberCrop)

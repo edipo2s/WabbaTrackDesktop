@@ -32,7 +32,7 @@ import java.util.logging.Level
  */
 object ArenaState : StateHandler.TESLState, Runnable {
 
-    val ARENA_RECOGNIZER_SPS = 1    //Screenshot Per Second
+    val ARENA_RECOGNIZER_SPS = 3    //Screenshot Per Second
 
     private val card1ArenaTierStage by lazy { ArenaTierWidget(1) }
     private val card2ArenaTierStage by lazy { ArenaTierWidget(2) }
@@ -55,11 +55,6 @@ object ArenaState : StateHandler.TESLState, Runnable {
             }
         }
 
-    var lastArenaTierPicks: Triple<CardPick, CardPick, CardPick>? = null
-        set(value) {
-            field = value
-        }
-
     var pickNumber: Int = 0
         set(value) {
             field = value
@@ -71,8 +66,6 @@ object ArenaState : StateHandler.TESLState, Runnable {
                 }
             }
         }
-
-    val picks = mutableListOf<Card>()
 
     var finishPicks = false
         set(value) {
@@ -90,7 +83,7 @@ object ArenaState : StateHandler.TESLState, Runnable {
         }
 
         override fun nativeMouseClicked(p0: NativeMouseEvent?) {
-            p0?.point?.apply { takeLastCardPicked(this) }
+            p0?.point?.apply { takeLastCardPicked(this, cardPicksToSelect) }
         }
 
         override fun nativeMouseReleased(p0: NativeMouseEvent?) {
@@ -99,14 +92,19 @@ object ArenaState : StateHandler.TESLState, Runnable {
     }
 
     val arenaPickLock = "lock"
+    val saveArenaPicksLock = "lock"
+    val picks = mutableListOf<Card>()
     var threadRunning: Boolean = false
     var lastPickNumberRecognized: Int? = null
+    var cardPicksToSelect: Triple<CardPick, CardPick, CardPick>? = null
+
 
     init {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
             Logger.i("Restored ${picks.size} picks")
+//            Logger.d("Restored cards ${picks.map(Card::name).toSet()}")
         }
     }
 
@@ -118,52 +116,55 @@ object ArenaState : StateHandler.TESLState, Runnable {
         if (finishPicks) {
             hidePicksTier()
         }
+        startMouseClickCapture()
         threadRunning = true
         Thread(this).start()
     }
 
     override fun onPause() {
         Logger.i("ArenaState onPause")
-        saveArenaState()
+        stopMouseClickCapture()
         hidePicksTier()
         GameState.deckTracker.isVisible = false
         threadRunning = false
     }
 
     override fun hasValidState(): Boolean {
-        if (lastArenaTierPicks == null) {
+        if (cardPicksToSelect == null) {
             return true
         }
-        return lastArenaTierPicks?.first != lastArenaTierPicks?.second ||
-                lastArenaTierPicks?.second != lastArenaTierPicks?.third
+        return cardPicksToSelect?.first != cardPicksToSelect?.second ||
+                cardPicksToSelect?.second != cardPicksToSelect?.third
     }
 
     override fun resetState() {
         classSelect = null
         finishPicks = false
         picks.clear()
-        saveArenaState()
+        saveArenaPicks()
     }
 
     override fun run() {
-        while (GameState.threadRunning) {
+        while (ArenaState.threadRunning) {
+//            Logger.i("Checking picks: ${LocalTime.now()}")
             ScreenFuncs.takeScreenshot()?.apply {
-                processPickCards(this)
+                processPickNumber(this)
+                if (cardPicksToSelect == null) {
+                    processPickCards(this)
+                }
             }
             Thread.sleep(1000L / ARENA_RECOGNIZER_SPS)
         }
     }
 
-    private fun processPickCards(screenshot: BufferedImage) {
+    private fun processPickNumber(screenshot: BufferedImage) {
         Thread({
             ArenaHandler.processArenaPickNumber(screenshot)?.run {
                 synchronized(arenaPickLock) {
                     if (lastPickNumberRecognized != this) {
                         lastPickNumberRecognized = this
                         pickNumber = this
-                        ArenaHandler.processArenaPick(screenshot)?.run {
-                            ArenaState.setTierPicks(this)
-                        }
+                        cardPicksToSelect = null
                         Logger.i("Arena Pick $pickNumber Detected!", true)
                     }
                 }
@@ -171,20 +172,29 @@ object ArenaState : StateHandler.TESLState, Runnable {
         }).start()
     }
 
-    private fun saveArenaState() {
-        try {
-            val picksJson = Gson().toJson(picks.map(Card::shortName).toList())
-            FileWriter(arenaStateFile).apply {
-                write(picksJson)
-                flush()
+    fun processPickCards(screenshot: BufferedImage) {
+        ArenaHandler.processArenaPick(screenshot)?.run {
+            cardPicksToSelect = this
+            ArenaState.setTierPicks(this)
+        }
+    }
+
+    fun saveArenaPicks() {
+        synchronized(saveArenaPicksLock) {
+            try {
+                val picksJson = Gson().toJson(picks.map(Card::shortName).toList())
+                FileWriter(arenaStateFile).apply {
+                    write(picksJson)
+                    flush()
+                }
+            } catch (e: Exception) {
+                Logger.e(e)
             }
-        } catch (e: Exception) {
-            Logger.e(e)
         }
     }
 
     fun setTierPicks(cardsPick: Triple<CardPick, CardPick, CardPick>) {
-        lastArenaTierPicks = cardsPick
+        cardPicksToSelect = cardsPick
         Platform.runLater {
             card1ArenaTierStage.setPickValue(cardsPick.first.takeIf { pickNumber > 1 } ?: cardsPick.first.withoutSynergyList())
             card2ArenaTierStage.setPickValue(cardsPick.second.takeIf { pickNumber > 1 } ?: cardsPick.second.withoutSynergyList())
@@ -192,10 +202,19 @@ object ArenaState : StateHandler.TESLState, Runnable {
         }
     }
 
-    private fun showPicksTier() {
+    private fun showPicksTier(retry: Int = 0) {
         card1ArenaTierStage.isVisible = true
         card2ArenaTierStage.isVisible = true
         card3ArenaTierStage.isVisible = true
+    }
+
+    private fun hidePicksTier() {
+        card1ArenaTierStage.isVisible = false
+        card2ArenaTierStage.isVisible = false
+        card3ArenaTierStage.isVisible = false
+    }
+
+    private fun startMouseClickCapture(retry: Int = 0) {
         try {
             GlobalScreen.registerNativeHook()
             GlobalScreen.addNativeMouseListener(mouseListener)
@@ -204,28 +223,28 @@ object ArenaState : StateHandler.TESLState, Runnable {
                 useParentHandlers = false
             }
         } catch (ex: NativeHookException) {
-            System.err.println("There was a problem registering the native hook.")
+            Logger.e("There was a problem registering the native hook.")
+            if (retry < 3) {
+                showPicksTier(retry + 1)
+            }
         }
     }
 
-    private fun hidePicksTier() {
-        card1ArenaTierStage.isVisible = false
-        card2ArenaTierStage.isVisible = false
-        card3ArenaTierStage.isVisible = false
+    private fun stopMouseClickCapture() {
         GlobalScreen.removeNativeMouseListener(mouseListener)
         GlobalScreen.unregisterNativeHook()
     }
 
-    private fun takeLastCardPicked(mousePos: Point) {
+    private fun takeLastCardPicked(mousePos: Point, lastArenaCardPicks: Triple<CardPick, CardPick, CardPick>?) {
         with(TESLTracker.referenceConfig) {
             val cardSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_SELECT_WIDTH, ARENA_PICK_SELECT_HEIGHT)
             val cardFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_SELECT_FIRST_X, ARENA_PICK_SELECT_Y)
             val cardSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_SELECT_SECOND_X, ARENA_PICK_SELECT_Y)
             val cardThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_SELECT_THIRD_X, ARENA_PICK_SELECT_Y)
 
-            testMouseInCardPos(mousePos, cardFirstPos, cardSize, lastArenaTierPicks?.first?.card)
-            testMouseInCardPos(mousePos, cardSecondPos, cardSize, lastArenaTierPicks?.second?.card)
-            testMouseInCardPos(mousePos, cardThirdPos, cardSize, lastArenaTierPicks?.third?.card)
+            testMouseInCardPos(mousePos, cardFirstPos, cardSize, lastArenaCardPicks?.first?.card)
+            testMouseInCardPos(mousePos, cardSecondPos, cardSize, lastArenaCardPicks?.second?.card)
+            testMouseInCardPos(mousePos, cardThirdPos, cardSize, lastArenaCardPicks?.third?.card)
         }
     }
 
