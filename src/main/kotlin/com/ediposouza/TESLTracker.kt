@@ -36,7 +36,7 @@ class TESLTracker : App(LoggerView::class) {
 
     companion object {
 
-        val APP_NAME = "TES Legends Tracker"
+        val APP_NAME = "WabbaTrack - TES Legends Tracker"
         val SHOW_TEST_MENU = false
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()

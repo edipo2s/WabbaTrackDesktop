@@ -60,6 +60,12 @@ object GameHandler {
         }
     }
 
+    fun processCardGenerated(screenshot: BufferedImage): Boolean? {
+        return screenshot.getGameCardGenerateCrop().let {
+            Recognizer.recognizeScreenImage(it) == DHash.SCREEN_GAME_CARD_GENERATED
+        }
+    }
+
     fun processMatchEnd(screenshot: BufferedImage): Boolean? {
         return screenshot.getGameWinCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN)

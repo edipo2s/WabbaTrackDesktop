@@ -28,6 +28,7 @@ object GameState : StateHandler.TESLState {
     val playerDeckClassLock = "lock"
     val opponentDeckClassLock = "lock"
     val cardDrawLock = "lock"
+    val cardGenerateLock = "lock"
     val endMatchLock = "lock"
 
     var threadRunning: Boolean = false
@@ -38,6 +39,8 @@ object GameState : StateHandler.TESLState {
     var opponentDeckClass: DeckClass? = null
     var lastCardDraw: Card? = null
     var matchMode: MatchMode? = null
+    var cardGenerated: Card? = null
+    var cardGeneratedDetected: Boolean? = null
 
     init {
 
@@ -85,6 +88,7 @@ object GameState : StateHandler.TESLState {
                     if (opponentDeckClass == null) {
                         processOpponentDeck(this)
                     }
+                    processCardGenerate(this)
                     processCardDraw(this)
                     processEndMatch(this)
                 }
@@ -139,14 +143,43 @@ object GameState : StateHandler.TESLState {
         }
     }
 
+    private fun processCardGenerate(screenshot: BufferedImage) {
+        CompletableFuture.runAsync {
+            GameHandler.processCardGenerated(screenshot)?.run {
+                synchronized(cardGenerateLock) {
+                    if (cardGeneratedDetected != this) {
+                        cardGeneratedDetected = this
+                        Logger.i("--Card generated!")
+                        CompletableFuture.runAsync {
+                            Thread.sleep(3000L)
+                            cardGeneratedDetected = null
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun processCardDraw(screenshot: BufferedImage) {
         CompletableFuture.runAsync {
             GameHandler.processCardDraw(screenshot)?.run {
                 synchronized(cardDrawLock) {
                     if (lastCardDraw != this) {
                         lastCardDraw = this
-                        deckTracker.trackCardDraw(this)
-                        Logger.i("--$name draw!")
+                        if (cardGeneratedDetected ?: false) {
+                            cardGenerated = this
+                            Logger.i("--$name generated!")
+                        } else {
+                            deckTracker.trackCardDraw(this)
+                            Logger.i("--$name draw!")
+                        }
+                        CompletableFuture.runAsync {
+                            Thread.sleep(3000L)
+                            lastCardDraw = null
+                            if (cardGeneratedDetected ?: false) {
+                                cardGeneratedDetected = null
+                            }
+                        }
                         firstCardDraws?.apply {
                             Logger.d("Tracking first cards draw: $firstCardDraws")
                             TESLTrackerData.getCard(first)?.apply { deckTracker.trackCardDraw(this) }
@@ -154,10 +187,6 @@ object GameState : StateHandler.TESLState {
                             TESLTrackerData.getCard(third)?.apply { deckTracker.trackCardDraw(this) }
                             firstCardDraws = null
                             firstCardDrawsTracked = true
-                        }
-                        CompletableFuture.runAsync {
-                            Thread.sleep(3000L)
-                            lastCardDraw = null
                         }
                     }
                 }

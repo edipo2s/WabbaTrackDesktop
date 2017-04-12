@@ -117,6 +117,12 @@ fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getGameCardGenerateCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_CARD_GENERATED_X, GAME_CARD_GENERATED_Y, GAME_CARD_GENERATED_WIDTH, GAME_CARD_GENERATED_HEIGHT)
+    }
+}
+
 fun BufferedImage.getGameInitialCardDrawCrop(cardPosition: Int): BufferedImage {
     with(TESLTracker.referenceConfig) {
         val cardPositionDrawStartX = when (cardPosition) {

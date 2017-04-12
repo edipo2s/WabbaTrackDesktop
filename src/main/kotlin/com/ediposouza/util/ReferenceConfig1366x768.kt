@@ -113,6 +113,11 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_CARD_DRAW_X = 1003
     override val GAME_CARD_DRAW_Y = 360
 
+    override val GAME_CARD_GENERATED_HEIGHT = 130
+    override val GAME_CARD_GENERATED_WIDTH = 130
+    override val GAME_CARD_GENERATED_X = 1000
+    override val GAME_CARD_GENERATED_Y = 390
+
     override val CARD_INITIAL_DRAW_HEIGHT = 160
     override val CARD_INITIAL_DRAW_WIDTH = 120
     override val CARD_INITIAL_DRAW_FIRST_X = 412

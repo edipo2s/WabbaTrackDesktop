@@ -52,6 +52,7 @@ object CalcDHashs {
         getDHashFile("/Game/Loss2.png", CROP_FOLDER_GAME, BufferedImage::getGameLoss2Crop)
         getDHashFile("/Game/YourTurn.png", CROP_FOLDER_GAME, BufferedImage::getGameYourTurnCrop)
         getDHashFile("/Game/CardDraw.png", CROP_FOLDER_GAME, BufferedImage::getGameCardDrawCrop)
+        getDHashFile("/Game/CardGenerated.png", CROP_FOLDER_SCREENS, BufferedImage::getGameCardGenerateCrop)
         getDHashFolderFiles("/Game/PlayerClass", CROP_FOLDER_GAME, BufferedImage::getGamePlayerClassCrop)
         getDHashFolderFiles("/Game/OpponentClass", CROP_FOLDER_GAME, BufferedImage::getGameOpponentClassCrop)
     }
