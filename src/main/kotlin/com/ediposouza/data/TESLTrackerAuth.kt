@@ -66,4 +66,6 @@ object TESLTrackerAuth {
         }
     }
 
+    fun hasLoginCredentialsSaved(): Boolean = CredentialsProvider.hasCredentialsSaved()
+
 }

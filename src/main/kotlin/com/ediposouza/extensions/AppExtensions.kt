@@ -16,15 +16,16 @@ fun PopupMenu.addMenu(label: String, menuOp: Menu.() -> Unit) {
     })
 }
 
-fun PopupMenu.addMenuItem(label: String, onClick: (List<Any>) -> Unit) {
+fun PopupMenu.addMenuItem(label: String, onClick: () -> Unit): List<Any> {
     val menuItem = MenuItem(label)
-    val contextMenuItem = javafx.scene.control.MenuItem(label)
     add(menuItem.apply {
-        addActionListener { onClick(listOf(menuItem, contextMenuItem)) }
+        addActionListener { onClick() }
     })
+    val contextMenuItem = javafx.scene.control.MenuItem(label)
     MainWidget.contextMenu.items.add(contextMenuItem.apply {
-        setOnAction { onClick(listOf(menuItem, contextMenuItem)) }
+        setOnAction { onClick() }
     })
+    return listOf(menuItem, contextMenuItem)
 }
 
 fun PopupMenu.addMenu(label: String): List<Any> {

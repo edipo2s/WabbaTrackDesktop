@@ -25,12 +25,13 @@ import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.util.concurrent.CompletableFuture
 import java.util.logging.Level
 
 /**
  * Created by ediposouza on 24/03/17.
  */
-object ArenaState : StateHandler.TESLState, Runnable {
+object ArenaState : StateHandler.TESLState {
 
     val ARENA_RECOGNIZER_SPS = 3    //Screenshot Per Second
 
@@ -118,7 +119,7 @@ object ArenaState : StateHandler.TESLState, Runnable {
         }
         startMouseClickCapture()
         threadRunning = true
-        Thread(this).start()
+        runStateThread()
     }
 
     override fun onPause() {
@@ -144,21 +145,23 @@ object ArenaState : StateHandler.TESLState, Runnable {
         saveArenaPicks()
     }
 
-    override fun run() {
-        while (ArenaState.threadRunning) {
+    fun runStateThread() {
+        CompletableFuture.runAsync {
+            while (ArenaState.threadRunning) {
 //            Logger.i("Checking picks: ${LocalTime.now()}")
-            ScreenFuncs.takeScreenshot()?.apply {
-                processPickNumber(this)
-                if (cardPicksToSelect == null) {
-                    processPickCards(this)
+                ScreenFuncs.takeScreenshot()?.apply {
+                    if (cardPicksToSelect == null) {
+                        processPickCards(this)
+                    }
+                    processPickNumber(this)
                 }
+                Thread.sleep(1000L / ARENA_RECOGNIZER_SPS)
             }
-            Thread.sleep(1000L / ARENA_RECOGNIZER_SPS)
         }
     }
 
     private fun processPickNumber(screenshot: BufferedImage) {
-        Thread({
+        CompletableFuture.runAsync {
             ArenaHandler.processArenaPickNumber(screenshot)?.run {
                 synchronized(arenaPickLock) {
                     if (lastPickNumberRecognized != this) {
@@ -169,7 +172,7 @@ object ArenaState : StateHandler.TESLState, Runnable {
                     }
                 }
             }
-        }).start()
+        }
     }
 
     fun processPickCards(screenshot: BufferedImage) {

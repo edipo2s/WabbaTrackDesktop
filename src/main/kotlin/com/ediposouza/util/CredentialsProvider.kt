@@ -24,6 +24,7 @@ import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.oauth2.Oauth2
+import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 
@@ -33,7 +34,7 @@ import java.io.InputStreamReader
 object CredentialsProvider {
 
     /** Directory to store user credentials.  */
-    private val DATA_STORE_DIR = java.io.File(System.getProperty("user.home"), ".store/tesl_tracker")
+    private val DATA_STORE_DIR = File(System.getProperty("user.home"), ".store/tesl_tracker")
 
     /** Scopes */
     private val SCOPE_PROFILE_EMAIL = "https://www.googleapis.com/auth/userinfo.email"
@@ -72,5 +73,7 @@ object CredentialsProvider {
         // authorize
         return AuthorizationCodeInstalledApp(flow, LocalServerReceiver()).authorize("user")
     }
+
+    fun hasCredentialsSaved(): Boolean = File(DATA_STORE_DIR, "StoredCredential").exists()
 
 }

@@ -12,11 +12,12 @@ import java.awt.image.BufferedImage
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by ediposouza on 24/03/17.
  */
-object GameState : StateHandler.TESLState, Runnable {
+object GameState : StateHandler.TESLState {
 
     val GAME_RECOGNIZER_SPS = 3    //Screenshot Per Second
 
@@ -46,7 +47,7 @@ object GameState : StateHandler.TESLState, Runnable {
         showDeckTracker()
         Logger.i("GameState onResume")
         threadRunning = true
-        Thread(this).start()
+        runStateThread()
     }
 
     override fun onPause() {
@@ -66,25 +67,29 @@ object GameState : StateHandler.TESLState, Runnable {
         deckTracker.resetDraws()
     }
 
-    override fun run() {
-        while (threadRunning) {
-            ScreenFuncs.takeScreenshot()?.apply {
-                if (!firstCardDrawsTracked) {
-                    Thread({ GameHandler.processFirstCardDraws(this)?.run { firstCardDraws = this } }).start()
+    fun runStateThread() {
+        CompletableFuture.runAsync {
+            while (threadRunning) {
+                ScreenFuncs.takeScreenshot()?.apply {
+                    if (!firstCardDrawsTracked) {
+                        CompletableFuture.runAsync {
+                            GameHandler.processFirstCardDraws(this)?.run { firstCardDraws = this }
+                        }
+                    }
+                    if (playerGoFirst == null) {
+                        processPlayerGoFirst(this)
+                    }
+                    if (playerDeckClass == null) {
+                        processPlayerDeck(this)
+                    }
+                    if (opponentDeckClass == null) {
+                        processOpponentDeck(this)
+                    }
+                    processCardDraw(this)
+                    processEndMatch(this)
                 }
-                if (playerGoFirst == null) {
-                    processPlayerGoFirst(this)
-                }
-                if (playerDeckClass == null) {
-                    processPlayerDeck(this)
-                }
-                if (opponentDeckClass == null) {
-                    processOpponentDeck(this)
-                }
-                processCardDraw(this)
-                processEndMatch(this)
+                Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
             }
-            Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
         }
     }
 
@@ -96,7 +101,7 @@ object GameState : StateHandler.TESLState, Runnable {
     }
 
     private fun processPlayerGoFirst(screenshot: BufferedImage) {
-        Thread({
+        CompletableFuture.runAsync {
             GameHandler.processPlayerGoFirst(screenshot)?.run {
                 synchronized(playerGoFirstLock) {
                     if (playerGoFirst == null) {
@@ -105,11 +110,11 @@ object GameState : StateHandler.TESLState, Runnable {
                     }
                 }
             }
-        }).start()
+        }
     }
 
     private fun processPlayerDeck(screenshot: BufferedImage) {
-        Thread({
+        CompletableFuture.runAsync {
             GameHandler.processPlayerDeckClass(screenshot)?.run {
                 synchronized(playerDeckClassLock) {
                     if (playerDeckClass == null) {
@@ -118,11 +123,11 @@ object GameState : StateHandler.TESLState, Runnable {
                     }
                 }
             }
-        }).start()
+        }
     }
 
     private fun processOpponentDeck(screenshot: BufferedImage) {
-        Thread({
+        CompletableFuture.runAsync {
             GameHandler.processOpponentDeckClass(screenshot)?.run {
                 synchronized(opponentDeckClassLock) {
                     if (opponentDeckClass == null) {
@@ -131,11 +136,11 @@ object GameState : StateHandler.TESLState, Runnable {
                     }
                 }
             }
-        }).start()
+        }
     }
 
     private fun processCardDraw(screenshot: BufferedImage) {
-        Thread({
+        CompletableFuture.runAsync {
             GameHandler.processCardDraw(screenshot)?.run {
                 synchronized(cardDrawLock) {
                     if (lastCardDraw != this) {
@@ -150,18 +155,18 @@ object GameState : StateHandler.TESLState, Runnable {
                             firstCardDraws = null
                             firstCardDrawsTracked = true
                         }
-                        Thread({
+                        CompletableFuture.runAsync {
                             Thread.sleep(3000L)
                             lastCardDraw = null
-                        }).start()
+                        }
                     }
                 }
             }
-        }).start()
+        }
     }
 
     private fun processEndMatch(screenshot: BufferedImage) {
-        Thread({
+        CompletableFuture.runAsync {
             GameHandler.processMatchEnd(screenshot)?.run {
                 synchronized(endMatchLock) {
                     val win = this
@@ -174,7 +179,7 @@ object GameState : StateHandler.TESLState, Runnable {
                     }
                 }
             }
-        }).start()
+        }
     }
 
     private fun showDeckTracker() {
