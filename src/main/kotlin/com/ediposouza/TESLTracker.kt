@@ -57,9 +57,23 @@ class TESLTracker : App(LoggerView::class) {
     lateinit var trayIcon: TrayIcon
     lateinit var trayPopupMenu: PopupMenu
     lateinit var menuDecks: List<Any>
-    lateinit var loginMenuItems: List<Any>
+    var loginMenuItems: List<Any>? = null
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
     val mainWidget by lazy { MainWidget() }
+    var logging: Boolean = false
+        set(value) {
+            field = value
+            loginMenuItems?.forEach {
+                if (it is MenuItem) {
+                    it.label = "Logging..".takeIf { value } ?: "Login"
+                    it.isEnabled = !value
+                }
+                if (it is javafx.scene.control.MenuItem) {
+                    it.text = "Logging..".takeIf { value } ?: "Login"
+                    it.isDisable = value
+                }
+            }
+        }
 
     var waitingScreenshotChangeWasLogged = false
 
@@ -78,8 +92,7 @@ class TESLTracker : App(LoggerView::class) {
         CompletableFuture.runAsync {
             if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
                 Logger.d("Starting auto-login")
-                Thread.sleep(500L)
-                DoLogin()
+                doLogin()
             }
             Platform.runLater {
                 mainWidget.isVisible = true
@@ -96,7 +109,7 @@ class TESLTracker : App(LoggerView::class) {
             trayIcon = this
             trayPopupMenu = PopupMenu().apply {
                 loginMenuItems = addMenuItem("Login") {
-                    DoLogin()
+                    doLogin()
                 }
                 menuDecks = addMenu("Decks")
                 menuDecks.forEach {
@@ -140,6 +153,7 @@ class TESLTracker : App(LoggerView::class) {
                         }
                         addMenuItem("Show Arena Tier with Synergy Test") {
                             Platform.runLater {
+                                ArenaState.pickNumber = 2
                                 ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf(Card.DUMMY, Card.DUMMY)),
                                         CardPick(Card.DUMMY, 20, listOf(Card.DUMMY)), CardPick(Card.DUMMY, 20, listOf(Card.DUMMY))))
                             }
@@ -173,28 +187,45 @@ class TESLTracker : App(LoggerView::class) {
                 }
             }
             popupMenu = trayPopupMenu
-            SwingUtilities.invokeLater {
-                displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)
+            if (!logging) {
+                SwingUtilities.invokeLater {
+                    displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)
+                }
             }
         }
     }
 
-    private fun DoLogin() {
+    private fun doLogin(retry: Int = 0) {
+        logging = true
         CompletableFuture.runAsync {
-            if (TESLTrackerAuth.login()) {
-                loginMenuItems.forEach {
-                    if (it is MenuItem) {
-                        it.label = TESLTrackerAuth.userName
+            try {
+                if (TESLTrackerAuth.login()) {
+                    logging = false
+                    Logger.d("Success logged")
+                    loginMenuItems?.forEach {
+                        if (it is MenuItem) {
+                            it.label = TESLTrackerAuth.userName
+                        }
+                        if (it is javafx.scene.control.MenuItem) {
+                            it.text = TESLTrackerAuth.userName
+                        }
                     }
-                    if (it is javafx.scene.control.MenuItem) {
-                        it.text = TESLTrackerAuth.userName
+                    Platform.runLater {
+                        SwingUtilities.invokeLater {
+                            trayIcon.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
+                        }
+                    }
+                    CompletableFuture.runAsync {
+                        updateMenuDecks()
                     }
                 }
-                SwingUtilities.invokeLater {
-                    trayIcon.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
-                }
-                CompletableFuture.runAsync {
-                    updateMenuDecks()
+            } catch (e: Exception) {
+                if (retry < 3) {
+                    Logger.e("Error while logging. Retrying...")
+                    doLogin(retry + 1)
+                } else {
+                    logging = false
+                    Logger.e("Error while logging")
                 }
             }
         }
