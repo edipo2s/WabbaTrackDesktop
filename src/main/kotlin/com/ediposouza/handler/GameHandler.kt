@@ -62,7 +62,9 @@ object GameHandler {
 
     fun processCardGenerated(screenshot: BufferedImage): Boolean? {
         return screenshot.getGameCardGenerateCrop().let {
-            Recognizer.recognizeScreenImage(it) == DHash.SCREEN_GAME_CARD_GENERATED
+            Recognizer.recognizeScreenImage(it)?.let {
+                it == DHash.SCREEN_GAME_CARD_GENERATED
+            }
         }
     }
 

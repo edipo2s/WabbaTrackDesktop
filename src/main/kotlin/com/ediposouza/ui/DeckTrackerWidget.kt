@@ -42,6 +42,7 @@ import javax.swing.SwingUtilities
 class DeckTrackerWidget : JFrame() {
 
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
+    private var deckTrackerZoom: Float = 0.8f
     private lateinit var deckTrackerSize: Dimension
 
     val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
@@ -89,7 +90,7 @@ class DeckTrackerWidget : JFrame() {
         with(TESLTracker.referenceConfig) {
             val deckTrackerPos = ImageFuncs.getScreenScaledPosition(DECK_TRACKER_X, DECK_TRACKER_Y)
             setLocation(deckTrackerPos.x, deckTrackerPos.y)
-            val screenHeightUseful = TESLTracker.screenSize.height.toInt()
+            val screenHeightUseful = (TESLTracker.screenSize.height * 1.5).toInt()
             deckTrackerSize = Dimension(ImageFuncs.getScreenScaledSize(DECK_TRACKER_WIDTH, 0).width, screenHeightUseful)
             size = deckTrackerSize
         }
@@ -109,7 +110,9 @@ class DeckTrackerWidget : JFrame() {
 
     private fun createFxScene(): Scene {
         with(TESLTracker.referenceConfig) {
-            val cellSize = ImageFuncs.getScreenScaledSize(DECK_TRACKER_CARD_WIDTH, DECK_TRACKER_CARD_HEIGHT)
+            val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
+            val cellBaseWidth = DECK_TRACKER_CARD_WIDTH * deckTrackerZoom
+            val cellSize = ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
             val layout = VBox().apply {
                 add(deckCoverPane.apply {
                     maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
@@ -121,7 +124,7 @@ class DeckTrackerWidget : JFrame() {
                     prefHeight = deckTrackerSize.height.toDouble()
                     prefWidth = deckTrackerSize.width.toDouble()
                     setCellFactory {
-                        CardSlotCell().apply {
+                        CardSlotCell(cellSize).apply {
                             background = Background.EMPTY
                             prefWidthProperty().bind(this@listview.widthProperty().subtract(2))
                             prefHeight = cellSize.height.toDouble() + 1
@@ -179,13 +182,7 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
-    class CardSlotCell : ListCell<CardSlot>() {
-
-        val cardSize by lazy {
-            with(TESLTracker.referenceConfig) {
-                ImageFuncs.getScreenScaledSize(DECK_TRACKER_CARD_WIDTH, DECK_TRACKER_CARD_HEIGHT)
-            }
-        }
+    class CardSlotCell(val cardSize: Dimension) : ListCell<CardSlot>() {
 
         override fun updateItem(item: CardSlot?, empty: Boolean) {
             super.updateItem(item, empty)

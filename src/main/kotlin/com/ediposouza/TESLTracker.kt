@@ -36,7 +36,7 @@ class TESLTracker : App(LoggerView::class) {
 
     companion object {
 
-        val APP_NAME = "WabbaTrack - TES Legends Tracker"
+        val APP_NAME = "WabbaTrack"
         val SHOW_TEST_MENU = false
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
@@ -69,8 +69,10 @@ class TESLTracker : App(LoggerView::class) {
                     it.isEnabled = !value
                 }
                 if (it is javafx.scene.control.MenuItem) {
-                    it.text = "Logging..".takeIf { value } ?: "Login"
-                    it.isDisable = value
+                    Platform.runLater {
+                        it.text = "Logging..".takeIf { value } ?: "Login"
+                        it.isDisable = value
+                    }
                 }
             }
         }
@@ -198,28 +200,28 @@ class TESLTracker : App(LoggerView::class) {
     private fun doLogin(retry: Int = 0) {
         logging = true
         CompletableFuture.runAsync {
-            try {
-                if (TESLTrackerAuth.login()) {
-                    logging = false
-                    Logger.d("Success logged")
-                    loginMenuItems?.forEach {
-                        if (it is MenuItem) {
-                            it.label = TESLTrackerAuth.userName
-                        }
-                        if (it is javafx.scene.control.MenuItem) {
+            if (TESLTrackerAuth.login()) {
+                logging = false
+                Logger.d("Success logged")
+                loginMenuItems?.forEach {
+                    if (it is MenuItem) {
+                        it.label = TESLTrackerAuth.userName
+                    }
+                    if (it is javafx.scene.control.MenuItem) {
+                        Platform.runLater {
                             it.text = TESLTrackerAuth.userName
                         }
                     }
-                    Platform.runLater {
-                        SwingUtilities.invokeLater {
-                            trayIcon.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
-                        }
-                    }
-                    CompletableFuture.runAsync {
-                        updateMenuDecks()
+                }
+                Platform.runLater {
+                    SwingUtilities.invokeLater {
+                        trayIcon.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
                     }
                 }
-            } catch (e: Exception) {
+                CompletableFuture.runAsync {
+                    updateMenuDecks()
+                }
+            } else {
                 if (retry < 3) {
                     Logger.e("Error while logging. Retrying...")
                     doLogin(retry + 1)

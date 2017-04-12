@@ -14,7 +14,7 @@ import tornadofx.singleAssign
 /**
  * Created by Edipo on 18/03/2017.
  */
-class LoggerView : View("TES Legends Tracker Log") {
+class LoggerView : View("WabbaTrack Log") {
 
     val TRAY_ICON = "ic_legend.png"
 

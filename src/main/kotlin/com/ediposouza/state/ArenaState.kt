@@ -93,6 +93,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     val arenaPickLock = "lock"
+    val cardPicksToSelectLock = "lock"
     val saveArenaPicksLock = "lock"
     val picks = mutableListOf<Card>()
     var threadRunning: Boolean = false
@@ -147,13 +148,13 @@ object ArenaState : StateHandler.TESLState {
 
     fun runStateThread() {
         CompletableFuture.runAsync {
-            while (ArenaState.threadRunning) {
-//            Logger.i("Checking picks: ${LocalTime.now()}")
+            while (ArenaState.threadRunning && !finishPicks) {
+//                Logger.i("Checking picks: ${LocalTime.now()}")
                 ScreenFuncs.takeScreenshot()?.apply {
+                    processPickNumber(this)
                     if (cardPicksToSelect == null) {
                         processPickCards(this)
                     }
-                    processPickNumber(this)
                 }
                 Thread.sleep(1000L / ARENA_RECOGNIZER_SPS)
             }
@@ -176,9 +177,13 @@ object ArenaState : StateHandler.TESLState {
     }
 
     fun processPickCards(screenshot: BufferedImage) {
-        ArenaHandler.processArenaPick(screenshot)?.run {
-            cardPicksToSelect = this
-            ArenaState.setTierPicks(this)
+        CompletableFuture.runAsync {
+            ArenaHandler.processArenaPick(screenshot)?.run {
+                synchronized(cardPicksToSelectLock) {
+                    cardPicksToSelect = this
+                    ArenaState.setTierPicks(this)
+                }
+            }
         }
     }
 
@@ -255,6 +260,9 @@ object ArenaState : StateHandler.TESLState {
         if (Rectangle(cardPos.x, cardPos.y, cardSize.width, cardSize.height).contains(mousePos)) {
             picks.add(card ?: Card.DUMMY)
             Logger.i("${card?.name} Picked")
+            if (pickNumber == 30) {
+                finishPicks = true
+            }
         }
     }
 
