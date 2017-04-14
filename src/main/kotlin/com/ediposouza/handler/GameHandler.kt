@@ -74,13 +74,9 @@ object GameHandler {
         } ?: screenshot.getGameWin2Crop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN2)
         } ?: screenshot.getGameLossCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS)?.apply {
-                return false
-            }
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS)?.let { false }
         } ?: screenshot.getGameLoss2Crop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS2)?.apply {
-                return false
-            }
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS2)?.let { false }
         }
     }
 
