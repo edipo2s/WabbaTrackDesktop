@@ -7,6 +7,8 @@ import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardSlot
 import com.ediposouza.model.DeckClass
+import com.ediposouza.model.MatchMode
+import com.ediposouza.state.GameState
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
 import javafx.application.Platform
@@ -33,6 +35,7 @@ import java.awt.Dimension
 import java.awt.Window
 import java.io.File
 import java.io.InputStream
+import java.util.concurrent.CompletableFuture
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
@@ -42,17 +45,35 @@ import javax.swing.SwingUtilities
 class DeckTrackerWidget : JFrame() {
 
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
-    private var deckTrackerZoom: Float = 0.8f
+    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: 1.0f
     private lateinit var deckTrackerSize: Dimension
 
     val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
     val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.png") }
 
-    val contextMenu = ContextMenu(MenuItem("Hide").apply {
-        setOnAction {
-            this@DeckTrackerWidget.isVisible = false
-        }
-    })
+    val contextMenu = ContextMenu(
+            MenuItem("Hide").apply {
+                setOnAction {
+                    this@DeckTrackerWidget.isVisible = false
+                }
+            },
+            MenuItem("Zoom +").apply {
+                setOnAction {
+                    deckTrackerZoom -= 0.2f
+                    contentPane.removeAll()
+                    updateDeckCover()
+                    addFXScene()
+                }
+            },
+            MenuItem("Zoom -").apply {
+                setOnAction {
+                    deckTrackerZoom += 0.2f
+                    contentPane.removeAll()
+                    updateDeckCover()
+                    addFXScene()
+                }
+            }
+    )
 
     val deckCoverName by lazy {
         Label().apply {
@@ -95,6 +116,10 @@ class DeckTrackerWidget : JFrame() {
             size = deckTrackerSize
         }
 
+        addFXScene()
+    }
+
+    private fun addFXScene() {
         JFXPanel().apply {
             contentPane.add(this)
             Platform.runLater {
@@ -105,41 +130,42 @@ class DeckTrackerWidget : JFrame() {
                 }
             }
         }
-
     }
 
     private fun createFxScene(): Scene {
-        with(TESLTracker.referenceConfig) {
-            val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
-            val cellBaseWidth = DECK_TRACKER_CARD_WIDTH * deckTrackerZoom
-            val cellSize = ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
-            val layout = VBox().apply {
-                add(deckCoverPane.apply {
-                    maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
-                    minHeight = cellSize.height * 1.5
-                })
-                add(listview<CardSlot> {
-                    items = deckCardsSlot
-                    background = Background.EMPTY
-                    prefHeight = deckTrackerSize.height.toDouble()
-                    prefWidth = deckTrackerSize.width.toDouble()
-                    setCellFactory {
-                        CardSlotCell(cellSize).apply {
-                            background = Background.EMPTY
-                            prefWidthProperty().bind(this@listview.widthProperty().subtract(2))
-                            prefHeight = cellSize.height.toDouble() + 1
-                        }
-                    }
-                    makeDraggable(this@DeckTrackerWidget)
-//                    style = "-fx-background-color: #00FF00; "
-                })
+        val cellSize by lazy {
+            with(TESLTracker.referenceConfig) {
+                val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
+                val cellBaseWidth = DECK_TRACKER_CARD_WIDTH * deckTrackerZoom
+                ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
+            }
+        }
+        val layout = VBox().apply {
+            add(deckCoverPane.apply {
+                maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
+                minHeight = cellSize.height * 1.5
+            })
+            add(listview<CardSlot> {
+                items = deckCardsSlot
                 background = Background.EMPTY
-            }
+                prefHeight = deckTrackerSize.height.toDouble()
+                prefWidth = deckTrackerSize.width.toDouble()
+                setCellFactory {
+                    CardSlotCell(cellSize).apply {
+                        background = Background.EMPTY
+                        prefWidthProperty().bind(this@listview.widthProperty().subtract(2))
+                        prefHeight = cellSize.height.toDouble() + 1
+                    }
+                }
+                makeDraggable(this@DeckTrackerWidget)
+//                    style = "-fx-background-color: #00FF00; "
+            })
+            background = Background.EMPTY
+        }
 
-            return Scene(layout).apply {
-                fill = Color.TRANSPARENT
-                stylesheets.add(TESLTracker::class.java.getResource("/UI/deckTrackerWidget.css").toExternalForm())
-            }
+        return Scene(layout).apply {
+            fill = Color.TRANSPARENT
+            stylesheets.add(TESLTracker::class.java.getResource("/UI/deckTrackerWidget.css").toExternalForm())
         }
     }
 
@@ -151,11 +177,24 @@ class DeckTrackerWidget : JFrame() {
                 addAll(cardsSlot.sortedBy { it.card.name }.sortedBy { it.card.cost })
             }
         }
+        updateDeckCover()
+    }
+
+    private fun updateDeckCover() {
         val coverFileName = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
         val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${coverFileName ?: "Default"}.png")
+        val cellSize by lazy {
+            with(TESLTracker.referenceConfig) {
+                val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
+                val cellBaseWidth = DECK_TRACKER_CARD_WIDTH * deckTrackerZoom
+                ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
+            }
+        }
         deckCoverName.text = coverFileName?.name?.toLowerCase()?.capitalize() ?: ""
         deckCoverPane.background = Background(BackgroundImage(Image(deckCoverStream), BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
+                        cellSize.height * 1.5, false, false, false, false)))
     }
 
     fun trackCardDraw(card: Card) {
@@ -165,6 +204,11 @@ class DeckTrackerWidget : JFrame() {
                     indexOf(this).takeIf { it >= 0 }?.let {
                         set(it, this.apply {
                             currentQtd -= 1
+                            recentChanged = true
+                            CompletableFuture.runAsync {
+                                Thread.sleep(500L)
+                                recentChanged = false
+                            }
                         })
                     }
                 }
@@ -187,6 +231,7 @@ class DeckTrackerWidget : JFrame() {
         override fun updateItem(item: CardSlot?, empty: Boolean) {
             super.updateItem(item, empty)
             if (item != null) {
+                var changeIndicator: BorderPane? = null
                 graphic = StackPane().apply {
                     add(stackpane {
                         imageview {
@@ -213,7 +258,7 @@ class DeckTrackerWidget : JFrame() {
                                 effect = DropShadow(20.0, Color.BLACK)
                                 image = roundedImage
                             }
-                            opacity = 0.8.takeIf { item.currentQtd > 0 } ?: 0.2
+                            opacity = 0.85.takeIf { item.currentQtd > 0 } ?: 0.2
                         }
                         padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.2)
                         style = "-fx-background-color: linear-gradient(to right, ${item.card.attr.colorHex}, #000000AA); " +
@@ -251,10 +296,30 @@ class DeckTrackerWidget : JFrame() {
                             prefWidth = cardSize.height.toDouble() / 2
                         }
                     })
+                    add(borderpane {
+                        changeIndicator = this
+                        background = Background.EMPTY
+                        style = "-fx-background-color: #FFFF00AA; " +
+                                "-fx-background-radius: 25.0;"
+                        opacity = 0.0
+                    })
                     background = Background.EMPTY
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                     style = "-fx-background-color: #000000AA; " +
                             "-fx-background-radius: 25.0;"
+                    if (item.recentChanged) {
+                        item.recentChanged = false
+                        changeIndicator?.opacity = 1.0
+                        CompletableFuture.runAsync {
+                            var changeIndicatorOpacity = changeIndicator?.opacity ?: 0.0
+                            while (changeIndicatorOpacity > 0.0) {
+                                Logger.d("$changeIndicatorOpacity")
+                                changeIndicator?.opacity = changeIndicatorOpacity - 0.1
+                                changeIndicatorOpacity = changeIndicator?.opacity ?: 0.0
+                                Thread.sleep(100)
+                            }
+                        }
+                    }
                 }
             }
         }

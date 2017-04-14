@@ -37,7 +37,7 @@ class TESLTracker : App(LoggerView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val SHOW_TEST_MENU = false
+        val SHOW_TEST_MENU = true
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
@@ -171,7 +171,11 @@ class TESLTracker : App(LoggerView::class) {
                         }
                         addMenuItem("Draw Test") {
                             Platform.runLater {
-                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("baronoftear")!!)
+                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("finishoff")!!)
+                                CompletableFuture.runAsync {
+                                    Thread.sleep(2000L)
+                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("daringcutpurse")!!)
+                                }
                             }
                         }
                         addMenuItem("Save Match Test") {

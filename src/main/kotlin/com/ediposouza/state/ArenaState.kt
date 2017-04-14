@@ -115,11 +115,11 @@ object ArenaState : StateHandler.TESLState {
         if (pickNumber > 0 && !finishPicks) {
             showPicksTier()
             startMouseClickCapture()
+            threadRunning = true
         }
         if (finishPicks) {
             hidePicksTier()
         }
-        threadRunning = true
         runStateThread()
     }
 

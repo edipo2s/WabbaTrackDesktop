@@ -11,7 +11,6 @@ import javafx.application.Platform
 import java.awt.image.BufferedImage
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
 
@@ -21,6 +20,7 @@ import java.util.concurrent.CompletableFuture
 object GameState : StateHandler.TESLState {
 
     val GAME_RECOGNIZER_SPS = 1    //Screenshot Per Second
+    val GAME_RECOGNIZER_CARD_DELAY = 4    //Screenshot Per Second
     val GAME_RECOGNIZER_FIRST_DRAW_SPS = 3    //Screenshot Per Second
 
     val deckTracker by lazy { DeckTrackerWidget() }
@@ -86,7 +86,6 @@ object GameState : StateHandler.TESLState {
         CompletableFuture.runAsync {
             while (threadRunning) {
                 ScreenFuncs.takeScreenshot()?.apply {
-                    Logger.e("Screenshot ${LocalTime.now()}")
                     if (playerGoFirst == null) {
                         processPlayerGoFirst(this)
                     }
@@ -182,7 +181,7 @@ object GameState : StateHandler.TESLState {
                             Logger.i("--$name draw!")
                         }
                         CompletableFuture.runAsync {
-                            Thread.sleep(3000L)
+                            Thread.sleep(1000L * GAME_RECOGNIZER_CARD_DELAY)
                             lastCardDraw = null
                             if (cardGeneratedDetected ?: false) {
                                 cardGeneratedDetected = null
@@ -206,13 +205,15 @@ object GameState : StateHandler.TESLState {
         CompletableFuture.runAsync {
             GameHandler.processMatchEnd(screenshot)?.run {
                 synchronized(endMatchLock) {
-                    val win = this
-                    Logger.i("--Player Win!".takeIf { win } ?: "--Player Lose!")
-                    if (playerDeckClass != null) {
-                        val result = "Win".takeIf { win } ?: "Loss"
-                        Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
-                        saveMatch(win)
-                        resetState()
+                    if (playerGoFirst != null) {
+                        val win = this
+                        Logger.i("--Player Win!".takeIf { win } ?: "--Player Lose!")
+                        if (playerDeckClass != null) {
+                            val result = "Win".takeIf { win } ?: "Loss"
+                            Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
+                            saveMatch(win)
+                            resetState()
+                        }
                     }
                 }
             }

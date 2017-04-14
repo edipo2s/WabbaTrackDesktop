@@ -290,7 +290,8 @@ data class CardSlot(
 
         val card: Card,
         val qtd: Int,
-        var currentQtd: Int = qtd
+        var currentQtd: Int = qtd,
+        var recentChanged: Boolean = false
 
 )
 
