@@ -30,6 +30,7 @@ object GameState : StateHandler.TESLState {
     val playerDeckClassLock = "lock"
     val opponentDeckClassLock = "lock"
     val cardDrawLock = "lock"
+    val cardDrawProphecyLock = "lock"
     val cardGenerateLock = "lock"
     val endMatchLock = "lock"
 
@@ -97,6 +98,7 @@ object GameState : StateHandler.TESLState {
                     }
                     processCardGenerate(this)
                     processCardDraw(this)
+                    processCardDrawProphecy(this)
                     processEndMatch(this)
                 }
                 Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
@@ -194,6 +196,24 @@ object GameState : StateHandler.TESLState {
                             TESLTrackerData.getCard(third)?.apply { deckTracker.trackCardDraw(this) }
                             firstCardDraws = null
                             firstCardDrawsTracked = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processCardDrawProphecy(screenshot: BufferedImage) {
+        CompletableFuture.runAsync {
+            GameHandler.processCardDrawProphecy(screenshot)?.run {
+                synchronized(cardDrawProphecyLock) {
+                    if (lastCardDraw != this) {
+                        lastCardDraw = this
+                        deckTracker.trackCardDraw(this)
+                        Logger.i("--$name prophecy draw!")
+                        CompletableFuture.runAsync {
+                            Thread.sleep(1000L * GAME_RECOGNIZER_CARD_DELAY)
+                            lastCardDraw = null
                         }
                     }
                 }

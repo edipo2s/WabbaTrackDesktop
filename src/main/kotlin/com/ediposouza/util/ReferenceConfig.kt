@@ -116,6 +116,11 @@ abstract class ReferenceConfig {
     open val GAME_CARD_DRAW_X = 0
     open val GAME_CARD_DRAW_Y = 0
 
+    open val GAME_CARD_DRAW_PROPHECY_HEIGHT = 0
+    open val GAME_CARD_DRAW_PROPHECY_WIDTH = 0
+    open val GAME_CARD_DRAW_PROPHECY_X = 0
+    open val GAME_CARD_DRAW_PROPHECY_Y = 0
+
     open val GAME_CARD_GENERATED_HEIGHT = 0
     open val GAME_CARD_GENERATED_WIDTH = 0
     open val GAME_CARD_GENERATED_X = 0

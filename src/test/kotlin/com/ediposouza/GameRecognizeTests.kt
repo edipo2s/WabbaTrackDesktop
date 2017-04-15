@@ -2,10 +2,7 @@ package com.ediposouza
 
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
-import com.ediposouza.extensions.getGameCardDrawCrop
-import com.ediposouza.extensions.getGameInitialCardDrawCrop
-import com.ediposouza.extensions.getGameOpponentClassCrop
-import com.ediposouza.extensions.getGamePlayerClassCrop
+import com.ediposouza.extensions.*
 import com.ediposouza.util.BaseRecognizeTests
 import com.ediposouza.util.Recognizer
 import com.ediposouza.util.ReferenceConfig1366x768
@@ -34,6 +31,12 @@ class GameRecognizeTests : BaseRecognizeTests() {
     fun testGameCardDraw() {
         val croppedImage = getFileImage("Game/CardDraw.png").getGameCardDrawCrop()
         assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("quinrawlburglar")
+    }
+
+    @Test
+    fun testGameCardDrawProphecy() {
+        val croppedImage = getFileImage("Game/CardProphecy.png").getGameCardDrawProphecyCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("blacksapprotector")
     }
 
     @Test

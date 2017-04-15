@@ -60,6 +60,12 @@ object GameHandler {
         }
     }
 
+    fun processCardDrawProphecy(screenshot: BufferedImage): Card? {
+        return screenshot.getGameCardDrawProphecyCrop().let {
+            TESLTrackerData.getCard(Recognizer.recognizeCardImage(it))
+        }
+    }
+
     fun processCardGenerated(screenshot: BufferedImage): Boolean? {
         return screenshot.getGameCardGenerateCrop().let {
             Recognizer.recognizeScreenImage(it)?.let {

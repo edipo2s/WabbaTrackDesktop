@@ -117,6 +117,13 @@ fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getGameCardDrawProphecyCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_CARD_DRAW_PROPHECY_X, GAME_CARD_DRAW_PROPHECY_Y, GAME_CARD_DRAW_PROPHECY_WIDTH,
+                GAME_CARD_DRAW_PROPHECY_HEIGHT)
+    }
+}
+
 fun BufferedImage.getGameCardGenerateCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(GAME_CARD_GENERATED_X, GAME_CARD_GENERATED_Y, GAME_CARD_GENERATED_WIDTH, GAME_CARD_GENERATED_HEIGHT)
