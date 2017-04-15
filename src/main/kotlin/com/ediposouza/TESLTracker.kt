@@ -171,10 +171,10 @@ class TESLTracker : App(LoggerView::class) {
                         }
                         addMenuItem("Draw Test") {
                             Platform.runLater {
-                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("finishoff")!!)
+                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("firebolt")!!)
                                 CompletableFuture.runAsync {
                                     Thread.sleep(2000L)
-                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("daringcutpurse")!!)
+                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("blacksapprotector")!!)
                                 }
                             }
                         }

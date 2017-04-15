@@ -73,6 +73,8 @@ object ArenaState : StateHandler.TESLState {
             field = value
             if (value) {
                 hidePicksTier()
+                stopMouseClickCapture()
+                threadRunning = false
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
@@ -114,12 +116,12 @@ object ArenaState : StateHandler.TESLState {
         Logger.i("ArenaState onResume")
         if (pickNumber > 0 && !finishPicks) {
             showPicksTier()
-            startMouseClickCapture()
-            threadRunning = true
         }
         if (finishPicks) {
             hidePicksTier()
         }
+        startMouseClickCapture()
+        threadRunning = true
         runStateThread()
     }
 
