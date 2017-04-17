@@ -2,7 +2,10 @@ package com.ediposouza
 
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
-import com.ediposouza.extensions.*
+import com.ediposouza.extensions.getGameCardDrawCrop
+import com.ediposouza.extensions.getGameCardDrawProphecyCrop
+import com.ediposouza.extensions.getGameOpponentClassCrop
+import com.ediposouza.extensions.getGamePlayerClassCrop
 import com.ediposouza.util.BaseRecognizeTests
 import com.ediposouza.util.Recognizer
 import com.ediposouza.util.ReferenceConfig1366x768
@@ -37,22 +40,6 @@ class GameRecognizeTests : BaseRecognizeTests() {
     fun testGameCardDrawProphecy() {
         val croppedImage = getFileImage("Game/CardProphecy.png").getGameCardDrawProphecyCrop()
         assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("blacksapprotector")
-    }
-
-    @Test
-    fun testGameCardsInitialDraw() {
-        var croppedImage = getFileImage("Game/InitialCards.png").getGameInitialCardDrawCrop(1)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, true)).isEqualTo("elusiveschemer")
-        croppedImage = getFileImage("Game/InitialCards.png").getGameInitialCardDrawCrop(2)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, true)).isEqualTo("blacksapprotector")
-        croppedImage = getFileImage("Game/InitialCards.png").getGameInitialCardDrawCrop(3)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, true)).isEqualTo("blacksapprotector")
-        croppedImage = getFileImage("Game/InitialCards2.png").getGameInitialCardDrawCrop(1)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, true)).isEqualTo("elusiveschemer")
-        croppedImage = getFileImage("Game/InitialCards2.png").getGameInitialCardDrawCrop(2)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, true)).isEqualTo("ungolimthelistener")
-        croppedImage = getFileImage("Game/InitialCards2.png").getGameInitialCardDrawCrop(3)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST, true)).isEqualTo("shriekingharpy")
     }
 
     @Test

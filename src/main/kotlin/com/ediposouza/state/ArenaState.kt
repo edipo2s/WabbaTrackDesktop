@@ -33,7 +33,11 @@ import java.util.logging.Level
  */
 object ArenaState : StateHandler.TESLState {
 
-    val ARENA_RECOGNIZER_SPS = 3    //Screenshot Per Second
+    const val ARENA_RECOGNIZER_SPS = 3    //Screenshot Per Second
+
+    const val arenaPickLock = "lock"
+    const val cardPicksToSelectLock = "lock"
+    const val saveArenaPicksLock = "lock"
 
     private val card1ArenaTierStage by lazy { ArenaTierWidget(1) }
     private val card2ArenaTierStage by lazy { ArenaTierWidget(2) }
@@ -61,7 +65,7 @@ object ArenaState : StateHandler.TESLState {
             field = value
             when {
                 value > 0 -> Logger.d("PickNumber: $pickNumber")
-                value == 1 -> {
+                value == 1 && cardPicksToSelect == null -> {
                     resetState()
                     classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
                 }
@@ -72,9 +76,8 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             if (value) {
-                hidePicksTier()
-                stopMouseClickCapture()
                 threadRunning = false
+                hidePicksTier()
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
@@ -94,9 +97,6 @@ object ArenaState : StateHandler.TESLState {
 
     }
 
-    val arenaPickLock = "lock"
-    val cardPicksToSelectLock = "lock"
-    val saveArenaPicksLock = "lock"
     val picks = mutableListOf<Card>()
     var threadRunning: Boolean = false
     var lastPickNumberRecognized: Int? = null
@@ -107,8 +107,7 @@ object ArenaState : StateHandler.TESLState {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
-            Logger.i("Restored ${picks.size} picks")
-//            Logger.d("Restored cards ${picks.map(Card::name).toSet()}")
+            Logger.d("Restored ${picks.size} picks")
         }
     }
 
@@ -120,14 +119,12 @@ object ArenaState : StateHandler.TESLState {
         if (finishPicks) {
             hidePicksTier()
         }
-        startMouseClickCapture()
         threadRunning = true
         runStateThread()
     }
 
     override fun onPause() {
         Logger.i("ArenaState onPause")
-        stopMouseClickCapture()
         hidePicksTier()
         GameState.deckTracker.isVisible = false
         threadRunning = false
@@ -135,9 +132,9 @@ object ArenaState : StateHandler.TESLState {
 
     override fun hasValidState(): Boolean {
         if (cardPicksToSelect == null) {
-            return true
+            return false
         }
-        return cardPicksToSelect?.first != cardPicksToSelect?.second ||
+        return cardPicksToSelect?.first != cardPicksToSelect?.second &&
                 cardPicksToSelect?.second != cardPicksToSelect?.third
     }
 
@@ -151,7 +148,6 @@ object ArenaState : StateHandler.TESLState {
     fun runStateThread() {
         CompletableFuture.runAsync {
             while (ArenaState.threadRunning && !finishPicks) {
-//                Logger.i("Checking picks: ${LocalTime.now()}")
                 ScreenFuncs.takeScreenshot()?.apply {
                     processPickNumber(this)
                     if (cardPicksToSelect == null) {
@@ -209,19 +205,22 @@ object ArenaState : StateHandler.TESLState {
             card1ArenaTierStage.setPickValue(cardsPick.first.takeIf { pickNumber > 1 } ?: cardsPick.first.withoutSynergyList())
             card2ArenaTierStage.setPickValue(cardsPick.second.takeIf { pickNumber > 1 } ?: cardsPick.second.withoutSynergyList())
             card3ArenaTierStage.setPickValue(cardsPick.third.takeIf { pickNumber > 1 } ?: cardsPick.third.withoutSynergyList())
+            showPicksTier()
         }
     }
 
-    private fun showPicksTier(retry: Int = 0) {
+    private fun showPicksTier() {
         card1ArenaTierStage.isVisible = true
         card2ArenaTierStage.isVisible = true
         card3ArenaTierStage.isVisible = true
+        startMouseClickCapture()
     }
 
     private fun hidePicksTier() {
         card1ArenaTierStage.isVisible = false
         card2ArenaTierStage.isVisible = false
         card3ArenaTierStage.isVisible = false
+        stopMouseClickCapture()
     }
 
     private fun startMouseClickCapture(retry: Int = 0) {
@@ -235,7 +234,7 @@ object ArenaState : StateHandler.TESLState {
         } catch (ex: NativeHookException) {
             Logger.e("There was a problem registering the native hook.")
             if (retry < 3) {
-                showPicksTier(retry + 1)
+                startMouseClickCapture(retry + 1)
             }
         }
     }

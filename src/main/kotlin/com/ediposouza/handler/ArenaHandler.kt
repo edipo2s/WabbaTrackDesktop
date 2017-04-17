@@ -18,7 +18,10 @@ object ArenaHandler {
 
     fun processArenaClass(screenshot: BufferedImage?): DeckClass? {
         screenshot?.getArenaPickClassCrop()?.apply {
-            return DeckClass.of(Recognizer.recognizeImageInMap(this, DHash.CLASS_PICK_LIST))
+            return Recognizer.recognizeImageInMap(this, DHash.CLASS_PICK_LIST)?.let {
+                Logger.i("Class picked $it")
+                DeckClass.of(it)
+            }
         }
         return null
     }

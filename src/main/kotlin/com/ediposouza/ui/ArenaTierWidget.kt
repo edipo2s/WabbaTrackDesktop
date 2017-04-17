@@ -136,7 +136,6 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     }
 
     fun setPickValue(arenaTier: CardPick) {
-        isVisible = true
         nameValueLabel.text = arenaTier.card.name
         with(synergyValueLabel) {
             style = "-fx-font-size: ${1.takeIf { arenaTier.synergy.isEmpty() } ?: 12};"
