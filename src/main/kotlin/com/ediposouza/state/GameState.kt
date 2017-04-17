@@ -19,20 +19,20 @@ import java.util.concurrent.CompletableFuture
  */
 object GameState : StateHandler.TESLState {
 
-    val GAME_RECOGNIZER_SPS = 1    //Screenshot Per Second
-    val GAME_RECOGNIZER_CARD_DELAY = 4    //Screenshot Per Second
-    val GAME_RECOGNIZER_FIRST_DRAW_SPS = 3    //Screenshot Per Second
+    const val GAME_RECOGNIZER_SPS = 1    //Screenshot Per Second
+    const val GAME_RECOGNIZER_CARD_DELAY = 4    //Screenshot Per Second
+    const val GAME_RECOGNIZER_FIRST_DRAW_SPS = 3    //Screenshot Per Second
+
+    const val playerGoFirstLock = "lock"
+    const val playerDeckClassLock = "lock"
+    const val opponentDeckClassLock = "lock"
+    const val cardDrawLock = "lock"
+    const val cardDrawProphecyLock = "lock"
+    const val cardGenerateLock = "lock"
+    const val endMatchLock = "lock"
 
     val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
-
-    val playerGoFirstLock = "lock"
-    val playerDeckClassLock = "lock"
-    val opponentDeckClassLock = "lock"
-    val cardDrawLock = "lock"
-    val cardDrawProphecyLock = "lock"
-    val cardGenerateLock = "lock"
-    val endMatchLock = "lock"
 
     var threadRunning: Boolean = false
     var firstCardDraws: Triple<String, String, String>? = null
@@ -44,10 +44,6 @@ object GameState : StateHandler.TESLState {
     var matchMode: MatchMode? = null
     var cardGenerated: Card? = null
     var cardGeneratedDetected: Boolean? = null
-
-    init {
-
-    }
 
     override fun onResume() {
         showDeckTracker()
@@ -78,7 +74,9 @@ object GameState : StateHandler.TESLState {
             while (!firstCardDrawsTracked) {
                 CompletableFuture.runAsync {
                     ScreenFuncs.takeScreenshot()?.apply {
-                        GameHandler.processFirstCardDraws(this)?.run { firstCardDraws = this }
+                        GameHandler.processFirstCardDraws(this)?.run {
+                            firstCardDraws = this
+                        }
                     }
                 }
                 Thread.sleep(1000L / GAME_RECOGNIZER_FIRST_DRAW_SPS)

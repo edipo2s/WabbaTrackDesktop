@@ -9,6 +9,7 @@ import tornadofx.Rest
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Edipo on 19/03/2017.
@@ -42,13 +43,8 @@ object TESLTrackerData {
         if (cardsDBFile.exists()) {
             val listCardType = object : TypeToken<ArrayList<Card>>() {}.type
             cards = Gson().fromJson(FileReader(cardsDBFile).readText(), listCardType)
-            cards.groupBy { it.set.name }.forEach { set, cards ->
-                Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
-            }
+            analyseCardDB()
         }
-    }
-
-    fun initialize() {
     }
 
     fun updateCardDB() {
@@ -64,17 +60,22 @@ object TESLTrackerData {
                 }
             })
         }
+        analyseCardDB()
+        saveCardsDB()
+    }
+
+    private fun analyseCardDB() {
         cards.groupBy { it.set.title }.forEach { set, cards ->
             Logger.d("Imported ${set.capitalize()} set with ${cards.size} cards.")
         }
         cardsAllClass = cards.map(Card::shortName)
         cardsByClass = DeckClass.values().map { deckCls ->
             deckCls.name.toLowerCase() to cards.filter {
-                it.dualAttr1 == deckCls.attr1 || it.dualAttr1 == deckCls.attr2 ||
+                it.attr == CardAttribute.NEUTRAL ||
+                        it.dualAttr1 == deckCls.attr1 || it.dualAttr1 == deckCls.attr2 ||
                         it.dualAttr2 == deckCls.attr1 || it.dualAttr2 == deckCls.attr2
             }.map(Card::shortName)
         }.toMap()
-        saveCardsDB()
     }
 
     fun getCard(shortName: String?): Card? {
@@ -112,11 +113,17 @@ object TESLTrackerData {
         val userMatchesPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_MATCHES/${newMatch.uuid}"
         val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
         val userAccessToken = TESLTrackerAuth.userAccessToken
-        firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$userMatchesPath.json?access_token=$userAccessToken",
-                newMatchData.byteInputStream()) { processor ->
-            processor.addHeader("Content-Type", "application/json")
-        }.one().apply {
-            onSuccess()
+        try {
+            firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$userMatchesPath.json?access_token=$userAccessToken",
+                    newMatchData.byteInputStream()) { processor ->
+                processor.addHeader("Content-Type", "application/json")
+            }.one().apply {
+                onSuccess()
+            }
+        } catch (e: Exception) {
+            reAuthUser {
+                saveMatch(newMatch, onSuccess)
+            }
         }
     }
 
@@ -129,6 +136,22 @@ object TESLTrackerData {
             }
         } catch (e: Exception) {
             Logger.e(e)
+        }
+    }
+
+    private fun reAuthUser(retry: Int = 0, onSuccess: () -> Unit) {
+        Logger.d("start reAuth User")
+        CompletableFuture.runAsync {
+            if (TESLTrackerAuth.login()) {
+                onSuccess()
+            } else {
+                if (retry < 3) {
+                    Logger.e("Error while logging. Retrying...")
+                    reAuthUser(retry + 1, onSuccess)
+                } else {
+                    Logger.e("Error while reAuth User")
+                }
+            }
         }
     }
 

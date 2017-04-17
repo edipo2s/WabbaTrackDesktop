@@ -4,6 +4,7 @@ import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.state.ArenaState
+import com.ediposouza.state.GameState
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -28,10 +29,11 @@ object Recognizer {
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        return ArenaState.classSelect?.let {
+        val classSelect = GameState.playerDeckClass ?: ArenaState.classSelect
+        return classSelect?.let {
             val cardsFromClass = TESLTrackerData.getCardFromClass(it)
             val classPHash = DHashCards.LIST.filter { cardsFromClass.contains(it.value) }
-            Logger.d("Filtering dhash by ${ArenaState.classSelect} class with ${classPHash.size} cards")
+            Logger.d("Filtering dhash by $classSelect class with ${classPHash.size} cards")
             recognizeImageInMap(image, classPHash)
         } ?: recognizeImageInMap(image, DHashCards.LIST)
     }

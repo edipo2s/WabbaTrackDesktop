@@ -65,7 +65,7 @@ class GameRecognizeTests : BaseRecognizeTests() {
         recognizeOpponent("Game/OpponentMonk.png", "Monk", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentScout.png", "Scout", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentSorcerer.png", "Sorcerer", BufferedImage::getGameOpponentClassCrop)
-        recognizeOpponent("Game/OpponentSpellword.png", "Spellword", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentSpellsword.png", "Spellsword", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentWarrior.png", "Warrior", BufferedImage::getGameOpponentClassCrop)
     }
 
@@ -79,7 +79,7 @@ class GameRecognizeTests : BaseRecognizeTests() {
         recognizePlayer("Game/PlayerMonk.png", "Monk", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerScout.png", "Scout", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerSorcerer.png", "Sorcerer", BufferedImage::getGamePlayerClassCrop)
-        recognizePlayer("Game/PlayerSpellword.png", "Spellword", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerSpellsword.png", "Spellsword", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerWarrior.png", "Warrior", BufferedImage::getGamePlayerClassCrop)
     }
 
