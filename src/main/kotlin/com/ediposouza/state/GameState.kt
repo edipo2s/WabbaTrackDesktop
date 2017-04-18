@@ -2,6 +2,7 @@ package com.ediposouza.state
 
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.GameHandler
+import com.ediposouza.handler.GameHandler.processCardDrawProphecy
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.*
 import com.ediposouza.ui.DeckTrackerWidget
@@ -20,8 +21,8 @@ import java.util.concurrent.CompletableFuture
 object GameState : StateHandler.TESLState {
 
     const val GAME_RECOGNIZER_SPS = 1    //Screenshot Per Second
+    const val GAME_RECOGNIZER_DRAW_SPS = 2    //Screenshot Per Second
     const val GAME_RECOGNIZER_CARD_DELAY = 4    //Screenshot Per Second
-    const val GAME_RECOGNIZER_FIRST_DRAW_SPS = 3    //Screenshot Per Second
 
     const val playerGoFirstLock = "lock"
     const val playerDeckClassLock = "lock"
@@ -71,15 +72,16 @@ object GameState : StateHandler.TESLState {
 
     fun runStateThread() {
         CompletableFuture.runAsync {
-            while (!firstCardDrawsTracked) {
-                CompletableFuture.runAsync {
-                    ScreenFuncs.takeScreenshot()?.apply {
-                        GameHandler.processFirstCardDraws(this)?.run {
-                            firstCardDraws = this
-                        }
+            while (threadRunning) {
+                ScreenFuncs.takeScreenshot()?.apply {
+                    if (!firstCardDrawsTracked) {
+                        processCardFirstDraws(this)
                     }
+                    processCardDraw(this)
+                    processCardDrawProphecy(this)
+                    processCardGenerate(this)
                 }
-                Thread.sleep(1000L / GAME_RECOGNIZER_FIRST_DRAW_SPS)
+                Thread.sleep(1000L / GAME_RECOGNIZER_DRAW_SPS)
             }
         }
         CompletableFuture.runAsync {
@@ -94,9 +96,6 @@ object GameState : StateHandler.TESLState {
                     if (opponentDeckClass == null) {
                         processOpponentDeck(this)
                     }
-                    processCardGenerate(this)
-                    processCardDraw(this)
-                    processCardDrawProphecy(this)
                     processEndMatch(this)
                 }
                 Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
@@ -108,6 +107,16 @@ object GameState : StateHandler.TESLState {
         deckCardsSlot = cardsSlot
         Platform.runLater {
             deckTracker.setDeckCardsSlot(cardsSlot)
+        }
+    }
+
+    private fun processCardFirstDraws(screenshot: BufferedImage) {
+        CompletableFuture.runAsync {
+            if (firstCardDraws == null) {
+                GameHandler.processFirstCardDraws(screenshot)?.run {
+                    firstCardDraws = this
+                }
+            }
         }
     }
 
@@ -169,6 +178,19 @@ object GameState : StateHandler.TESLState {
 
     private fun processCardDraw(screenshot: BufferedImage) {
         CompletableFuture.runAsync {
+            GameHandler.processCardDrawProphecy(screenshot)?.run {
+                synchronized(cardDrawProphecyLock) {
+                    if (lastCardDraw != this) {
+                        lastCardDraw = this
+                        deckTracker.trackCardDraw(this)
+                        Logger.i("--$name prophecy draw!")
+                        CompletableFuture.runAsync {
+                            Thread.sleep(1000L * GAME_RECOGNIZER_CARD_DELAY)
+                            lastCardDraw = null
+                        }
+                    }
+                }
+            }
             GameHandler.processCardDraw(screenshot)?.run {
                 synchronized(cardDrawLock) {
                     if (lastCardDraw != this) {
@@ -194,24 +216,6 @@ object GameState : StateHandler.TESLState {
                             TESLTrackerData.getCard(third)?.apply { deckTracker.trackCardDraw(this) }
                             firstCardDraws = null
                             firstCardDrawsTracked = true
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun processCardDrawProphecy(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
-            GameHandler.processCardDrawProphecy(screenshot)?.run {
-                synchronized(cardDrawProphecyLock) {
-                    if (lastCardDraw != this) {
-                        lastCardDraw = this
-                        deckTracker.trackCardDraw(this)
-                        Logger.i("--$name prophecy draw!")
-                        CompletableFuture.runAsync {
-                            Thread.sleep(1000L * GAME_RECOGNIZER_CARD_DELAY)
-                            lastCardDraw = null
                         }
                     }
                 }

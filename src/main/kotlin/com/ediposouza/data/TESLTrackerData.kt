@@ -79,7 +79,11 @@ object TESLTrackerData {
     }
 
     fun getCard(shortName: String?): Card? {
-        return cards.find { it.shortName == shortName }
+        val card = cards.find { it.shortName == shortName }
+        if (card == null && shortName != null) {
+            Logger.e("Card $shortName not found")
+        }
+        return card
     }
 
     fun getCardFromClass(deckClass: DeckClass): List<String> {

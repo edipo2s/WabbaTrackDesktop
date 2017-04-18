@@ -313,7 +313,7 @@ class DeckTrackerWidget : JFrame() {
                         CompletableFuture.runAsync {
                             var changeIndicatorOpacity = changeIndicator?.opacity ?: 0.0
                             while (changeIndicatorOpacity > 0.0) {
-                                Logger.d("$changeIndicatorOpacity")
+//                                Logger.d("$changeIndicatorOpacity")
                                 changeIndicator?.opacity = changeIndicatorOpacity - 0.1
                                 changeIndicatorOpacity = changeIndicator?.opacity ?: 0.0
                                 Thread.sleep(100)

@@ -33,7 +33,7 @@ object Recognizer {
         return classSelect?.let {
             val cardsFromClass = TESLTrackerData.getCardFromClass(it)
             val classPHash = DHashCards.LIST.filter { cardsFromClass.contains(it.value) }
-            Logger.d("Filtering dhash by $classSelect class with ${classPHash.size} cards")
+//            Logger.d("Filtering dhash by $classSelect class with ${classPHash.size} cards")
             recognizeImageInMap(image, classPHash)
         } ?: recognizeImageInMap(image, DHashCards.LIST)
     }

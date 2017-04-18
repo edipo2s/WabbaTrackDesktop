@@ -51,7 +51,7 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     val DELAY_WINDOW_DETECTION = 5_000L
-    val ELDER_SCROLL_SPS = 2    //Screenshot Per Second
+    val ELDER_SCROLL_SPS = 2f    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
     lateinit var trayIcon: TrayIcon
@@ -311,7 +311,8 @@ class TESLTracker : App(LoggerView::class) {
             lastScreenshotDHash = screenshotDHash
             waitingScreenshotChangeWasLogged = false
             ScreenHandler.process(screenshot)
-            Thread.sleep(1000L / ELDER_SCROLL_SPS)
+            val sps = ELDER_SCROLL_SPS.takeIf { StateHandler.currentTESLState == null } ?: 0.5f
+            Thread.sleep((1000 / sps).toLong())
             if (!ScreenHandler.screenRecognized) {
                 return isTESLegendsScreenActive() || isTESLegendsTrackerWindow() || isTESLegendsTrackerPopupWindow()
             }

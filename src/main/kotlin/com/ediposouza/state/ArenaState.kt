@@ -33,7 +33,7 @@ import java.util.logging.Level
  */
 object ArenaState : StateHandler.TESLState {
 
-    const val ARENA_RECOGNIZER_SPS = 3    //Screenshot Per Second
+    const val ARENA_RECOGNIZER_SPS = 2    //Screenshot Per Second
 
     const val arenaPickLock = "lock"
     const val cardPicksToSelectLock = "lock"
@@ -143,6 +143,7 @@ object ArenaState : StateHandler.TESLState {
         finishPicks = false
         picks.clear()
         saveArenaPicks()
+        Logger.d("Arena state reset")
     }
 
     fun runStateThread() {
@@ -150,7 +151,7 @@ object ArenaState : StateHandler.TESLState {
             while (ArenaState.threadRunning && !finishPicks) {
                 ScreenFuncs.takeScreenshot()?.apply {
                     processPickNumber(this)
-                    if (cardPicksToSelect == null) {
+                    if (cardPicksToSelect == null && pickNumber > 0) {
                         processPickCards(this)
                     }
                 }
@@ -179,6 +180,9 @@ object ArenaState : StateHandler.TESLState {
             ArenaHandler.processArenaPick(screenshot)?.run {
                 synchronized(cardPicksToSelectLock) {
                     cardPicksToSelect = this
+                    Logger.i("--${this.first.card.name}: ${this.first.card.arenaTier}")
+                    Logger.i("--${this.second.card.name}: ${this.second.card.arenaTier}")
+                    Logger.i("--${this.third.card.name}: ${this.third.card.arenaTier}")
                     ArenaState.setTierPicks(this)
                 }
             }
@@ -226,6 +230,7 @@ object ArenaState : StateHandler.TESLState {
     private fun startMouseClickCapture(retry: Int = 0) {
         try {
             GlobalScreen.registerNativeHook()
+            GlobalScreen.removeNativeMouseListener(mouseListener)
             GlobalScreen.addNativeMouseListener(mouseListener)
             java.util.logging.Logger.getLogger(GlobalScreen::class.java.`package`.name).apply {
                 level = Level.WARNING

@@ -36,12 +36,14 @@ object ArenaHandler {
         val arenaTier1Value = recognizeArenaPick(screenshot, 1)
         val arenaTier2Value = recognizeArenaPick(screenshot, 2)
         val arenaTier3Value = recognizeArenaPick(screenshot, 3)
-        if (arenaTier1Value.card != arenaTier2Value.card && arenaTier1Value.card != arenaTier3Value.card &&
-                arenaTier2Value.card != arenaTier3Value.card) {
+        if (arenaTier1Value.card.shortName != arenaTier2Value.card.shortName &&
+                arenaTier1Value.card.shortName != arenaTier3Value.card.shortName &&
+                arenaTier2Value.card.shortName != arenaTier3Value.card.shortName) {
             return Triple(arenaTier1Value, arenaTier2Value, arenaTier3Value)
         } else {
             Thread.sleep(500L)
-            Logger.e("Duplicate pick, retrying detection")
+            Logger.e("Duplicate pick, retrying detection: ${arenaTier1Value.card.shortName}, " +
+                    "${arenaTier2Value.card.shortName}, ${arenaTier3Value.card.shortName}")
             if (retryNumber < 3) {
                 return processArenaPick(screenshot, retryNumber + 1)
             }
@@ -52,7 +54,6 @@ object ArenaHandler {
     private fun recognizeArenaPick(image: BufferedImage, pick: Int): CardPick {
         with(image.getArenaCardCrop(pick)) {
             TESLTrackerData.getCard(Recognizer.recognizeCardImage(this))?.apply {
-                Logger.i("--$name: $arenaTier")
                 return calcArenaValue(this, ArenaState.picks)
             }
         }

@@ -61,10 +61,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_GAME_X = 940
     override val SCREEN_GAME_Y = 645
 
-    override val SCREEN_ARENA_CLASSES_HEIGHT = 85
-    override val SCREEN_ARENA_CLASSES_WIDTH = 250
-    override val SCREEN_ARENA_CLASSES_X = 560
-    override val SCREEN_ARENA_CLASSES_Y = 135
+    override val SCREEN_ARENA_CLASSES_HEIGHT = 115
+    override val SCREEN_ARENA_CLASSES_WIDTH = 80
+    override val SCREEN_ARENA_CLASSES_X = 500
+    override val SCREEN_ARENA_CLASSES_Y = 132
 
     override val SCREEN_ARENA_PICKS_HEIGHT = 40
     override val SCREEN_ARENA_PICKS_WIDTH = 40
@@ -108,20 +108,20 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_YOUR_TURN_X = 450
     override val GAME_YOUR_TURN_Y = 300
 
-    override val GAME_CARD_DRAW_HEIGHT = 160
+    override val GAME_CARD_DRAW_HEIGHT = 157
     override val GAME_CARD_DRAW_WIDTH = 120
     override val GAME_CARD_DRAW_X = 1003
-    override val GAME_CARD_DRAW_Y = 360
+    override val GAME_CARD_DRAW_Y = 358
 
     override val GAME_CARD_DRAW_PROPHECY_HEIGHT = 115
     override val GAME_CARD_DRAW_PROPHECY_WIDTH = 92
     override val GAME_CARD_DRAW_PROPHECY_X = 943
     override val GAME_CARD_DRAW_PROPHECY_Y = 453
 
-    override val GAME_CARD_GENERATED_HEIGHT = 130
-    override val GAME_CARD_GENERATED_WIDTH = 130
-    override val GAME_CARD_GENERATED_X = 1000
-    override val GAME_CARD_GENERATED_Y = 390
+    override val GAME_CARD_GENERATED_HEIGHT = 100
+    override val GAME_CARD_GENERATED_WIDTH = 70
+    override val GAME_CARD_GENERATED_X = 1100
+    override val GAME_CARD_GENERATED_Y = 380
 
     override val CARD_INITIAL_DRAW_HEIGHT = 160
     override val CARD_INITIAL_DRAW_WIDTH = 120
