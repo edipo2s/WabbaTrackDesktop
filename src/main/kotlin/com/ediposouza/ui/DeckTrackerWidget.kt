@@ -31,7 +31,6 @@ import javafx.scene.shape.Rectangle
 import tornadofx.*
 import java.awt.Dimension
 import java.awt.Window
-import java.io.File
 import java.io.InputStream
 import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
@@ -132,7 +131,7 @@ class DeckTrackerWidget : JFrame() {
                 }
                 makeDraggable(this@DeckTrackerWidget)
             }
-            background = Background(BackgroundImage(ImageIO.read(defaultDeckCoverStream).toFXImage(), BackgroundRepeat.NO_REPEAT,
+            background = Background(BackgroundImage(defaultDeckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
                     BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
         }
     }
@@ -238,39 +237,6 @@ class DeckTrackerWidget : JFrame() {
         updateDeckCover()
     }
 
-    private fun updateDeckCover() {
-        val deckClass = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
-        val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${deckClass ?: "Default"}.webp")
-        val cellSize by lazy {
-            with(TESLTracker.referenceConfig) {
-                val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
-                val cellBaseWidth = DECK_TRACKER_CARD_WIDTH * deckTrackerZoom
-                ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
-            }
-        }
-        deckCoverName.text = deckClass?.name?.toLowerCase()?.capitalize() ?: ""
-        deckCoverPane.background = Background(BackgroundImage(ImageIO.read(deckCoverStream).toFXImage(), BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
-                        cellSize.height * 1.5, false, false, false, false)))
-        val deckAttr1 = deckClass?.attr1?.name?.toLowerCase()?.capitalize() ?: CardAttribute.NEUTRAL
-        val deckAttr2 = deckClass?.attr2?.name?.toLowerCase()?.capitalize() ?: CardAttribute.NEUTRAL
-        val deckAttrSize = cellSize.height * 0.5
-        with(deckAttr1Image) {
-            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr1.png"))
-            fitHeight = deckAttrSize
-            fitWidth = deckAttrSize
-            isVisible = deckAttr1 != CardAttribute.NEUTRAL
-        }
-        with(deckAttr2Image) {
-            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr2.png"))
-            fitHeight = deckAttrSize
-            fitWidth = deckAttrSize
-            isVisible = deckAttr2 != CardAttribute.NEUTRAL
-        }
-        updateDeckInfo()
-    }
-
     fun trackCardDraw(card: Card) {
         Platform.runLater {
             with(deckCardsSlot) {
@@ -289,6 +255,50 @@ class DeckTrackerWidget : JFrame() {
             }
             updateDeckInfo()
         }
+    }
+
+    fun resetDraws() {
+        Platform.runLater {
+            for (i in deckCardsSlot.indices) {
+                deckCardsSlot[i] = deckCardsSlot[i].apply {
+                    currentQtd = qtd
+                }
+            }
+        }
+    }
+
+    private fun updateDeckCover() {
+        val deckClass = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
+        val deckClassName = deckClass?.name?.toLowerCase()?.capitalize()
+        val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${deckClassName ?: "Default"}.webp")
+        val cellSize by lazy {
+            with(TESLTracker.referenceConfig) {
+                val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
+                val cellBaseWidth = DECK_TRACKER_CARD_WIDTH * deckTrackerZoom
+                ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
+            }
+        }
+        deckCoverName.text = deckClassName ?: ""
+        deckCoverPane.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
+                        cellSize.height * 1.5, false, false, false, false)))
+        val deckAttr1 = deckClass?.attr1 ?: CardAttribute.NEUTRAL
+        val deckAttr2 = deckClass?.attr2 ?: CardAttribute.NEUTRAL
+        val deckAttrSize = cellSize.height * 0.5
+        with(deckAttr1Image) {
+            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/${deckAttr1.name.toLowerCase().capitalize()}.png"))
+            fitHeight = deckAttrSize
+            fitWidth = deckAttrSize
+            isVisible = deckAttr1 != CardAttribute.NEUTRAL
+        }
+        with(deckAttr2Image) {
+            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/${deckAttr2.name.toLowerCase().capitalize()}.png"))
+            fitHeight = deckAttrSize
+            fitWidth = deckAttrSize
+            isVisible = deckAttr2 != CardAttribute.NEUTRAL
+        }
+        updateDeckInfo()
     }
 
     private fun updateDeckInfo() {
@@ -312,16 +322,6 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
-    fun resetDraws() {
-        Platform.runLater {
-            for (i in deckCardsSlot.indices) {
-                deckCardsSlot[i] = deckCardsSlot[i].apply {
-                    currentQtd = qtd
-                }
-            }
-        }
-    }
-
     class CardSlotCell(val cardSize: Dimension) : ListCell<CardSlot>() {
 
         override fun updateItem(item: CardSlot?, empty: Boolean) {
@@ -334,9 +334,9 @@ class DeckTrackerWidget : JFrame() {
                             val cardSetName = item.card.set.name.toLowerCase().capitalize()
                             val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
                             val cardImagePath = "/CardsWebp/$cardSetName/$cardAttrName/${item.card.shortName}.webp"
-                            var cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource("/CardsWebp/card_back.webp").toURI()))
+                            var cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream("/CardsWebp/card_back.webp"))
                             try {
-                                cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
+                                cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream(cardImagePath))
                             } catch (e: Exception) {
                                 Logger.e(e)
                             }

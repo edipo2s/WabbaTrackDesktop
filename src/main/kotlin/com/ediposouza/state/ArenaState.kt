@@ -44,7 +44,7 @@ object ArenaState : StateHandler.TESLState {
     private val card3ArenaTierStage by lazy { ArenaTierWidget(3) }
 
     private val arenaStateFile by lazy {
-        File("${TESLTracker.jarPath}/data").let {
+        File(File(TESLTracker.jarPath).parentFile, "data").let {
             if (!it.exists()) {
                 it.mkdirs()
             }

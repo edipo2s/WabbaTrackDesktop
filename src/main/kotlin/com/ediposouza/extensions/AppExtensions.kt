@@ -1,9 +1,13 @@
 package com.ediposouza.extensions
 
 import com.ediposouza.ui.MainWidget
+import javafx.embed.swing.SwingFXUtils
+import javafx.scene.image.Image
 import java.awt.Menu
 import java.awt.MenuItem
 import java.awt.PopupMenu
+import java.io.InputStream
+import javax.imageio.ImageIO
 
 fun String.toIntSafely() = this.toIntOrNull() ?: 0
 
@@ -44,4 +48,8 @@ fun Menu.addMenuItem(menuItemLabel: String, onClick: () -> Unit) {
     mainContextMenu.items.add(javafx.scene.control.MenuItem(menuItemLabel).apply {
         setOnAction { onClick() }
     })
+}
+
+fun InputStream.toFXImage(): Image {
+    return SwingFXUtils.toFXImage(ImageIO.read(this), null)
 }

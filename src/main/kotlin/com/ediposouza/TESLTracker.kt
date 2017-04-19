@@ -113,6 +113,7 @@ class TESLTracker : App(LoggerView::class) {
                 loginMenuItems = addMenuItem("Login") {
                     doLogin()
                 }
+                logging = logging
                 menuDecks = addMenu("Decks")
                 menuDecks.forEach {
                     if (it is Menu) {
@@ -163,7 +164,8 @@ class TESLTracker : App(LoggerView::class) {
                         }
                         addMenuItem("Show Deck Test") {
                             Platform.runLater {
-                                val cardsSlot = ArenaState.picks.groupBy(Card::shortName)
+                                val cardsSlot = ArenaState.picks
+                                        .groupBy(Card::shortName)
                                         .map { CardSlot(it.value.first(), it.value.size) }
                                 StateHandler.currentTESLState = GameState.apply {
                                     setDeckCardsSlot(cardsSlot)

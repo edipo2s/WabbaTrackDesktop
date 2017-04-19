@@ -26,7 +26,7 @@ object TESLTrackerData {
     }
 
     private val cardsDBFile by lazy {
-        File("${TESLTracker.jarPath}/data").let {
+        File(File(TESLTracker.jarPath).parentFile, "data").let {
             if (!it.exists()) {
                 it.mkdirs()
             }
@@ -105,6 +105,14 @@ object TESLTrackerData {
                 deckParser.toDeck(deckUuid, true)
             })
         }
+        val userOwnerFilter = "orderBy=%22owner%22&equalTo=%22${TESLTrackerAuth.userUuid}%22"
+        with(firebaseDatabaseAPI.get("$NODE_USERS_DECKS/public.json?$userOwnerFilter&access_token=$userAccessToken").one()) {
+            decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
+                val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
+                deckParser.toDeck(deckUuid, true)
+            })
+        }
+        decks.sortBy(Deck::name)
         onSuccess?.invoke()
         Logger.d("Decks: ${decks.map(Deck::name).toSet()}")
     }
