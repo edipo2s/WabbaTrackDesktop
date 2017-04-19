@@ -4,6 +4,7 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.makeDraggable
+import com.ediposouza.extensions.toFXImage
 import com.ediposouza.model.*
 import com.ediposouza.state.GameState
 import com.ediposouza.util.ImageFuncs
@@ -13,7 +14,6 @@ import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.embed.swing.JFXPanel
-import javafx.embed.swing.SwingFXUtils
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
@@ -34,6 +34,7 @@ import java.awt.Window
 import java.io.File
 import java.io.InputStream
 import java.util.concurrent.CompletableFuture
+import javax.imageio.ImageIO
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
@@ -47,7 +48,7 @@ class DeckTrackerWidget : JFrame() {
     private lateinit var deckTrackerSize: Dimension
 
     val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
-    val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.png") }
+    val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.webp") }
 
     val contextMenu = ContextMenu(
             MenuItem("Hide").apply {
@@ -131,7 +132,7 @@ class DeckTrackerWidget : JFrame() {
                 }
                 makeDraggable(this@DeckTrackerWidget)
             }
-            background = Background(BackgroundImage(Image(defaultDeckCoverStream), BackgroundRepeat.NO_REPEAT,
+            background = Background(BackgroundImage(ImageIO.read(defaultDeckCoverStream).toFXImage(), BackgroundRepeat.NO_REPEAT,
                     BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
         }
     }
@@ -239,7 +240,7 @@ class DeckTrackerWidget : JFrame() {
 
     private fun updateDeckCover() {
         val deckClass = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
-        val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${deckClass ?: "Default"}.png")
+        val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${deckClass ?: "Default"}.webp")
         val cellSize by lazy {
             with(TESLTracker.referenceConfig) {
                 val cellBaseHeight = DECK_TRACKER_CARD_HEIGHT * deckTrackerZoom
@@ -248,7 +249,7 @@ class DeckTrackerWidget : JFrame() {
             }
         }
         deckCoverName.text = deckClass?.name?.toLowerCase()?.capitalize() ?: ""
-        deckCoverPane.background = Background(BackgroundImage(Image(deckCoverStream), BackgroundRepeat.NO_REPEAT,
+        deckCoverPane.background = Background(BackgroundImage(ImageIO.read(deckCoverStream).toFXImage(), BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
                         cellSize.height * 1.5, false, false, false, false)))
@@ -332,14 +333,14 @@ class DeckTrackerWidget : JFrame() {
                         imageview {
                             val cardSetName = item.card.set.name.toLowerCase().capitalize()
                             val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
-                            val cardImagePath = "/Cards/$cardSetName/$cardAttrName/${item.card.shortName}.png"
-                            var cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource("/Cards/card_back.png").toURI()))
+                            val cardImagePath = "/CardsWebp/$cardSetName/$cardAttrName/${item.card.shortName}.webp"
+                            var cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource("/CardsWebp/card_back.webp").toURI()))
                             try {
                                 cardFullImage = ImageFuncs.getFileImage(File(TESLTracker::class.java.getResource(cardImagePath).toURI()))
                             } catch (e: Exception) {
                                 Logger.e(e)
                             }
-                            image = SwingFXUtils.toFXImage(cardFullImage?.getCardForSlotCrop(), null)
+                            image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
                             fitHeight = cardSize.height.toDouble()
                             fitWidth = cardSize.width.toDouble() * 0.8
                             clip = Rectangle(fitWidth, fitHeight).apply {

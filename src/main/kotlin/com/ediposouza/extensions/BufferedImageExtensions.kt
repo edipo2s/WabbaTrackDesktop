@@ -2,6 +2,8 @@ package com.ediposouza.extensions
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.util.ImageFuncs
+import javafx.embed.swing.SwingFXUtils
+import javafx.scene.image.Image
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -11,6 +13,10 @@ import javax.imageio.ImageIO
  */
 
 val SAVE_CROP_IMAGES = false
+
+fun BufferedImage.toFXImage(): Image {
+    return SwingFXUtils.toFXImage(this, null)
+}
 
 fun BufferedImage.saveCroppedImage() {
     val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
