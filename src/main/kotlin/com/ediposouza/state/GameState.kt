@@ -45,6 +45,7 @@ object GameState : StateHandler.TESLState {
     var matchMode: MatchMode? = null
     var cardGenerated: Card? = null
     var cardGeneratedDetected: Boolean? = null
+    var shouldShowDeckTracker: Boolean = true
 
     override fun onResume() {
         showDeckTracker()
@@ -243,7 +244,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun showDeckTracker() {
-        if (deckCardsSlot.isNotEmpty()) {
+        if (deckCardsSlot.isNotEmpty() && shouldShowDeckTracker) {
             deckTracker.isVisible = true
         }
     }

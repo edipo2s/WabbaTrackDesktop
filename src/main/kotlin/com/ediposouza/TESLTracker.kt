@@ -130,6 +130,7 @@ class TESLTracker : App(LoggerView::class) {
                 addMenuItem("Show Deck Tracker") {
                     Platform.runLater {
                         GameState.deckTracker.isVisible = true
+                        GameState.shouldShowDeckTracker = true
                     }
                 }
                 addMenuItem("About") {
@@ -174,7 +175,11 @@ class TESLTracker : App(LoggerView::class) {
                                 GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("firebolt")!!)
                                 CompletableFuture.runAsync {
                                     Thread.sleep(2000L)
-                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("blacksapprotector")!!)
+                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("windkeepspellsword")!!)
+                                    CompletableFuture.runAsync {
+                                        Thread.sleep(2000L)
+                                        GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("lightningbolt")!!)
+                                    }
                                 }
                             }
                         }
