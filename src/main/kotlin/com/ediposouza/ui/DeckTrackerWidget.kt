@@ -129,10 +129,10 @@ class DeckTrackerWidget : JFrame() {
                         }
                     }
                 }
-                background = Background(BackgroundImage(Image(defaultDeckCoverStream), BackgroundRepeat.NO_REPEAT,
-                        BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
                 makeDraggable(this@DeckTrackerWidget)
             }
+            background = Background(BackgroundImage(Image(defaultDeckCoverStream), BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
         }
     }
 
@@ -306,7 +306,7 @@ class DeckTrackerWidget : JFrame() {
             val cardsPropheciesQtd = deckCardsSlotProphecies.sumBy { it.currentQtd }
             val cardsPropheciesHitChance = Bindings.format("%.1f", 100 * cardsPropheciesQtd / cardsLeftQtd).value
             with(deckInfoLabel) {
-                text = "Prophecy: $cardsPropheciesQtd cards - $cardsPropheciesHitChance% Hit"
+                text = "$cardsPropheciesQtd Prophecies - $cardsPropheciesHitChance% Hit"
             }
         }
     }
