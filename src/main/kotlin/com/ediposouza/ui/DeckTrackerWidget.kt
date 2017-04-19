@@ -124,7 +124,7 @@ class DeckTrackerWidget : JFrame() {
                     image = Image(configIconStream)
                     padding = Insets(0.0, 0.0, 0.0, 2.0)
                     setOnMousePressed { me ->
-                        if (me.isPrimaryButtonDown) {
+                        if (me.isPrimaryButtonDown || me.isSecondaryButtonDown) {
                             contextMenu.show(this, me.screenX, me.screenY)
                         }
                     }
@@ -208,7 +208,7 @@ class DeckTrackerWidget : JFrame() {
                 prefHeight = deckTrackerSize.height.toDouble()
                 prefWidth = deckTrackerSize.width.toDouble()
                 setCellFactory {
-                    CardSlotCell(cellSize).apply {
+                    CardSlotCell(this@DeckTrackerWidget, cellSize).apply {
                         background = Background.EMPTY
                         prefWidthProperty().bind(this@listview.widthProperty().subtract(2))
                         prefHeight = cellSize.height.toDouble() + 1
@@ -322,7 +322,9 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
-    class CardSlotCell(val cardSize: Dimension) : ListCell<CardSlot>() {
+    class CardSlotCell(val deckTrackerWidget: DeckTrackerWidget, val cardSize: Dimension) : ListCell<CardSlot>() {
+
+        private var cardWidget: CardWidget? = null
 
         override fun updateItem(item: CardSlot?, empty: Boolean) {
             super.updateItem(item, empty)
@@ -403,6 +405,16 @@ class DeckTrackerWidget : JFrame() {
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                     style = "-fx-background-color: #000000AA; " +
                             "-fx-background-radius: 25.0;"
+                    setOnMouseEntered { me ->
+                        val cardPosX = deckTrackerWidget.location.x
+                        val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
+                        cardWidget = CardWidget(item.card, cardPosX, cardPosY)
+                        cardWidget?.isVisible = true
+                    }
+                    setOnMouseExited {
+                        cardWidget?.isVisible = false
+                        cardWidget = null
+                    }
                     if (item.recentChanged) {
                         item.recentChanged = false
                         changeIndicator?.opacity = 1.0

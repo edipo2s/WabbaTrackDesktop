@@ -130,15 +130,15 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val CARD_INITIAL_DRAW_THIRD_X = 835
     override val CARD_INITIAL_DRAW_Y = 230
 
-    override val GAME_PLAYER_FIRST_HEIGHT = 80
-    override val GAME_PLAYER_FIRST_WIDTH = 65
-    override val GAME_PLAYER_FIRST_X = 960
-    override val GAME_PLAYER_FIRST_Y = 535
+    override val GAME_PLAYER_FIRST_HEIGHT = 50
+    override val GAME_PLAYER_FIRST_WIDTH = 55
+    override val GAME_PLAYER_FIRST_X = 970
+    override val GAME_PLAYER_FIRST_Y = 550
 
-    override val GAME_PLAYER_SECOND_HEIGHT = 80
-    override val GAME_PLAYER_SECOND_WIDTH = 70
-    override val GAME_PLAYER_SECOND_X = 910
-    override val GAME_PLAYER_SECOND_Y = 100
+    override val GAME_PLAYER_SECOND_HEIGHT = 50
+    override val GAME_PLAYER_SECOND_WIDTH = 55
+    override val GAME_PLAYER_SECOND_X = 920
+    override val GAME_PLAYER_SECOND_Y = 115
 
     override val GAME_PLAYER_CLASS_HEIGHT = 35
     override val GAME_PLAYER_CLASS_WIDTH = 70

@@ -18,7 +18,7 @@ object GameHandler {
         return screenshot.getGamePlayerFirstCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_FIRST)
         } ?: screenshot.getGamePlayerSecondCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_SECOND)
+            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_SECOND)?.let { false }
         }
     }
 

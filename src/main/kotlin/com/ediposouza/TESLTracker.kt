@@ -37,7 +37,7 @@ class TESLTracker : App(LoggerView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val SHOW_TEST_MENU = true
+        val SHOW_TEST_MENU = false
 
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
@@ -92,11 +92,11 @@ class TESLTracker : App(LoggerView::class) {
         stage.close()
         configureSystemTrayIcon()
         CompletableFuture.runAsync {
-            if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
-                Logger.d("Starting auto-login")
-                doLogin()
-            }
             Platform.runLater {
+                if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
+                    Logger.d("Starting auto-login")
+                    doLogin()
+                }
                 mainWidget.isVisible = true
             }
             startElderScrollDetection()
