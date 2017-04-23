@@ -34,7 +34,6 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     @Test
     fun testScreenGame() {
         recognizeScreen("ScreenGame.png", DHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
-        recognizeScreen("ScreenGame2.png", null, BufferedImage::getScreenGameCrop)
     }
 
     @Test
@@ -48,17 +47,8 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testArenaPickClass() {
-        recognizeArenaPickClass("ArenaClass/PickArcher.png", "Archer")
-        recognizeArenaPickClass("ArenaClass/PickAssassin.png", "Assassin")
-        recognizeArenaPickClass("ArenaClass/PickBattlemage.png", "Battlemage")
-        recognizeArenaPickClass("ArenaClass/PickCrusader.png", "Crusader")
-        recognizeArenaPickClass("ArenaClass/PickMage.png", "Mage")
-        recognizeArenaPickClass("ArenaClass/PickMonk.png", "Monk")
-        recognizeArenaPickClass("ArenaClass/PickScout.png", "Scout")
-        recognizeArenaPickClass("ArenaClass/PickSorcerer.png", "Sorcerer")
-        recognizeArenaPickClass("ArenaClass/PickSpellsword.png", "Spellsword")
-        recognizeArenaPickClass("ArenaClass/PickWarrior.png", "Warrior")
+    fun testScreenArenaDash() {
+        recognizeScreen("ScreenArenaDash.png", DHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
     }
 
     @Test
@@ -101,8 +91,17 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testScreenArenaDash() {
-        recognizeScreen("ScreenArenaDash.png", DHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
+    fun testArenaPickClass() {
+        recognizeArenaPickClass("ArenaClass/PickArcher.png", "Archer")
+        recognizeArenaPickClass("ArenaClass/PickAssassin.png", "Assassin")
+        recognizeArenaPickClass("ArenaClass/PickBattlemage.png", "Battlemage")
+        recognizeArenaPickClass("ArenaClass/PickCrusader.png", "Crusader")
+        recognizeArenaPickClass("ArenaClass/PickMage.png", "Mage")
+        recognizeArenaPickClass("ArenaClass/PickMonk.png", "Monk")
+        recognizeArenaPickClass("ArenaClass/PickScout.png", "Scout")
+        recognizeArenaPickClass("ArenaClass/PickSorcerer.png", "Sorcerer")
+        recognizeArenaPickClass("ArenaClass/PickSpellsword.png", "Spellsword")
+        recognizeArenaPickClass("ArenaClass/PickWarrior.png", "Warrior")
     }
 
     private fun recognizeScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
