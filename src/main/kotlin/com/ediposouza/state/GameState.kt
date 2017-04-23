@@ -75,12 +75,12 @@ object GameState : StateHandler.TESLState {
         CompletableFuture.runAsync {
             while (threadRunning) {
                 ScreenFuncs.takeScreenshot()?.apply {
-                    if (!firstCardDrawsTracked) {
-                        processCardFirstDraws(this)
-                    }
                     processCardDraw(this)
                     processCardDrawProphecy(this)
                     processCardGenerate(this)
+                    if (!firstCardDrawsTracked) {
+                        processCardFirstDraws(this)
+                    }
                 }
                 Thread.sleep(1000L / GAME_RECOGNIZER_DRAW_SPS)
             }
@@ -113,7 +113,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processCardFirstDraws(screenshot: BufferedImage) {
         CompletableFuture.runAsync {
-            if (firstCardDraws == null) {
+            if (!firstCardDrawsTracked) {
                 GameHandler.processFirstCardDraws(screenshot)?.run {
                     firstCardDraws = this
                 }

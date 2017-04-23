@@ -20,12 +20,13 @@ fun BufferedImage.toFXImage(): Image {
 
 fun BufferedImage.saveCroppedImage() {
     val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
-    File("src/main/resources/Crops/Tmp").apply {
+    File(File(TESLTracker.jarPath).parentFile, "data/tmp").apply {
         if (!exists()) {
             mkdir()
         }
     }
-    ImageIO.write(this, "png", File("src/main/resources/Crops/Tmp/$tmpFileName"))
+    val tmpFolder = File(File(TESLTracker.jarPath).parentFile, "data/tmp")
+    ImageIO.write(this, "png", File(tmpFolder, tmpFileName))
 }
 
 fun BufferedImage.getCardCrop(): BufferedImage? {
