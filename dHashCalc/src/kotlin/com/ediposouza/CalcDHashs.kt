@@ -86,7 +86,7 @@ object CalcDHashs {
     }
 
     private fun calcDHash(image: BufferedImage, imageName: String, cropFolder: String) {
-        var cropFolderPath = "src/main/resources/Crops"
+        var cropFolderPath = File(File(TESLTracker.jarPath).parentFile, "data/crops").path
         if (cropFolder.isNotEmpty()) {
             cropFolderPath += "/$cropFolder"
         }

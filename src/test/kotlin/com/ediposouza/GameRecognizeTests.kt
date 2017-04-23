@@ -44,30 +44,42 @@ class GameRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testGameOpponentClass() {
+        recognizeOpponent("Game/OpponentAgility.png", "Agility", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentArcher.png", "Archer", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentAssassin.png", "Assassin", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentBattlemage.png", "Battlemage", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentCrusader.png", "Crusader", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentEndurance.png", "Endurance", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentIntelligence.png", "Intelligence", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentMage.png", "Mage", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentMonk.png", "Monk", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentNeutral.png", "Neutral", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentScout.png", "Scout", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentSorcerer.png", "Sorcerer", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentSpellsword.png", "Spellsword", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentStrength.png", "Strength", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentWarrior.png", "Warrior", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/OpponentWillpower.png", "Willpower", BufferedImage::getGameOpponentClassCrop)
     }
 
     @Test
     fun testGamePlayerClass() {
+        recognizePlayer("Game/PlayerAgility.png", "Agility", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerArcher.png", "Archer", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerAssassin.png", "Assassin", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerBattlemage.png", "Battlemage", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerCrusader.png", "Crusader", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerEndurance.png", "Endurance", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerIntelligence.png", "Intelligence", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerMage.png", "Mage", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerMonk.png", "Monk", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerNeutral.png", "Neutral", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerScout.png", "Scout", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerSorcerer.png", "Sorcerer", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerSpellsword.png", "Spellsword", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerStrength.png", "Strength", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerWarrior.png", "Warrior", BufferedImage::getGamePlayerClassCrop)
+        recognizePlayer("Game/PlayerWillpower.png", "Willpower", BufferedImage::getGamePlayerClassCrop)
     }
 
     private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
