@@ -22,6 +22,7 @@ object GameState : StateHandler.TESLState {
 
     const val GAME_RECOGNIZER_SPS = 1    //Screenshot Per Second
     const val GAME_RECOGNIZER_DRAW_SPS = 2    //Screenshot Per Second
+    const val GAME_RECOGNIZER_DRAW_FIRST_SPS = 4    //Screenshot Per Second
     const val GAME_RECOGNIZER_CARD_DELAY = 4    //Screenshot Per Second
 
     const val playerGoFirstLock = "lock"
@@ -37,6 +38,7 @@ object GameState : StateHandler.TESLState {
 
     var threadRunning: Boolean = false
     var firstCardDraws: Triple<String, String, String>? = null
+    var firstCardDrawsWithoutMulligan: Triple<String, String, String>? = null
     var firstCardDrawsTracked: Boolean = false
     var playerGoFirst: Boolean? = null
     var playerDeckClass: DeckClass? = null
@@ -67,19 +69,28 @@ object GameState : StateHandler.TESLState {
         lastCardDraw = null
         matchMode = null
         firstCardDraws = null
+        firstCardDrawsWithoutMulligan = null
         firstCardDrawsTracked = false
         deckTracker.resetDraws()
     }
 
     fun runStateThread() {
         CompletableFuture.runAsync {
-            while (threadRunning) {
+            while (!firstCardDrawsTracked) {
                 ScreenFuncs.takeScreenshot()?.apply {
+                    processCardFirstDraws(this)
                     processCardDraw(this)
-                    processCardDrawProphecy(this)
-                    processCardGenerate(this)
-                    if (!firstCardDrawsTracked) {
-                        processCardFirstDraws(this)
+                }
+                Thread.sleep(1000L / GAME_RECOGNIZER_DRAW_FIRST_SPS)
+            }
+        }
+        CompletableFuture.runAsync {
+            while (threadRunning) {
+                if (firstCardDrawsTracked) {
+                    ScreenFuncs.takeScreenshot()?.apply {
+                        processCardDraw(this)
+                        processCardDrawProphecy(this)
+                        processCardGenerate(this)
                     }
                 }
                 Thread.sleep(1000L / GAME_RECOGNIZER_DRAW_SPS)
@@ -87,17 +98,19 @@ object GameState : StateHandler.TESLState {
         }
         CompletableFuture.runAsync {
             while (threadRunning) {
-                ScreenFuncs.takeScreenshot()?.apply {
-                    if (playerGoFirst == null) {
-                        processPlayerGoFirst(this)
+                if (firstCardDrawsTracked) {
+                    ScreenFuncs.takeScreenshot()?.apply {
+                        if (playerGoFirst == null) {
+                            processPlayerGoFirst(this)
+                        }
+                        if (playerDeckClass == null) {
+                            processPlayerDeck(this)
+                        }
+                        if (opponentDeckClass == null) {
+                            processOpponentDeck(this)
+                        }
+                        processEndMatch(this)
                     }
-                    if (playerDeckClass == null) {
-                        processPlayerDeck(this)
-                    }
-                    if (opponentDeckClass == null) {
-                        processOpponentDeck(this)
-                    }
-                    processEndMatch(this)
                 }
                 Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
             }
@@ -115,7 +128,12 @@ object GameState : StateHandler.TESLState {
         CompletableFuture.runAsync {
             if (!firstCardDrawsTracked) {
                 GameHandler.processFirstCardDraws(screenshot)?.run {
-                    firstCardDraws = this
+                    if (firstCardDrawsWithoutMulligan != this) {
+                        firstCardDraws = this
+                    }
+                    if (firstCardDrawsWithoutMulligan == null) {
+                        firstCardDrawsWithoutMulligan = this
+                    }
                 }
             }
         }
@@ -235,8 +253,8 @@ object GameState : StateHandler.TESLState {
                             val result = "Win".takeIf { win } ?: "Loss"
                             Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
                             saveMatch(win)
-                            resetState()
                         }
+                        resetState()
                     }
                 }
             }

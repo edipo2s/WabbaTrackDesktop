@@ -20,12 +20,12 @@ abstract class BaseRecognizeTests {
     protected fun recognizeImage(image: BufferedImage, dHashMap: Map<String, String>, outputFile: Boolean = false): String? {
         if (outputFile) {
             val tmpFileName = "recognize_${System.currentTimeMillis()}.png"
-            File("src/test/resources/Crops/Tmp").apply {
+            val cropFolderPath = File(File(TESLTracker.jarPath).parentFile, "data/crops").apply {
                 if (!exists()) {
                     mkdir()
                 }
             }
-            ImageIO.write(image, "png", File("src/test/resources/Crops/Tmp/$tmpFileName"))
+            ImageIO.write(image, "png", File(cropFolderPath, "Tmp/$tmpFileName"))
         }
         return Recognizer.recognizeImageInMap(image, dHashMap)
     }
