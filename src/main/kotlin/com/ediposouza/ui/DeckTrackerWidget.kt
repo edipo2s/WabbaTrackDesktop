@@ -264,6 +264,7 @@ class DeckTrackerWidget : JFrame() {
                     currentQtd = qtd
                 }
             }
+            updateDeckInfo()
         }
     }
 
@@ -405,7 +406,7 @@ class DeckTrackerWidget : JFrame() {
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                     style = "-fx-background-color: #000000AA; " +
                             "-fx-background-radius: 25.0;"
-                    setOnMouseEntered { me ->
+                    setOnMouseEntered {
                         val cardPosX = deckTrackerWidget.location.x
                         val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
                         cardWidget = CardWidget(item.card, cardPosX, cardPosY)
