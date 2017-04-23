@@ -106,11 +106,6 @@ abstract class ReferenceConfig {
     open val GAME_LOSS2_X = 0
     open val GAME_LOSS2_Y = 0
 
-    open val GAME_YOUR_TURN_HEIGHT = 0
-    open val GAME_YOUR_TURN_WIDTH = 0
-    open val GAME_YOUR_TURN_X = 0
-    open val GAME_YOUR_TURN_Y = 0
-
     open val GAME_CARD_DRAW_HEIGHT = 0
     open val GAME_CARD_DRAW_WIDTH = 0
     open val GAME_CARD_DRAW_X = 0

@@ -21,6 +21,26 @@ class GameRecognizeTests : BaseRecognizeTests() {
     }
 
     @Test
+    fun testRing() {
+        var croppedImage = getFileImage("Game/PlayFirst.png").getGamePlayerFirstCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_ITEMS_LIST)).isEqualTo(DHash.PLAYER_GAME_FIRST)
+        croppedImage = getFileImage("Game/PlaySecond.png").getGamePlayerSecondCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_ITEMS_LIST)).isEqualTo(DHash.PLAYER_GAME_SECOND)
+    }
+
+    @Test
+    fun testResult() {
+        var croppedImage = getFileImage("Game/win.png").getGameWinCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_ITEMS_LIST)).isEqualTo(DHash.GAME_WIN)
+        croppedImage = getFileImage("Game/win2.png").getGameWin2Crop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_ITEMS_LIST)).isEqualTo(DHash.GAME_WIN2)
+        croppedImage = getFileImage("Game/loss.png").getGameLossCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_ITEMS_LIST)).isEqualTo(DHash.GAME_LOSS)
+        croppedImage = getFileImage("Game/loss2.png").getGameLoss2Crop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_ITEMS_LIST)).isEqualTo(DHash.GAME_LOSS2)
+    }
+
+    @Test
     fun testInitialCardsDraw() {
         var croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(1)
         assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("elusiveschemer")

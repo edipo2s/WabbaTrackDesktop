@@ -103,11 +103,6 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_LOSS2_X = 550
     override val GAME_LOSS2_Y = 250
 
-    override val GAME_YOUR_TURN_HEIGHT = 35
-    override val GAME_YOUR_TURN_WIDTH = 470
-    override val GAME_YOUR_TURN_X = 450
-    override val GAME_YOUR_TURN_Y = 300
-
     override val GAME_CARD_DRAW_HEIGHT = 157
     override val GAME_CARD_DRAW_WIDTH = 120
     override val GAME_CARD_DRAW_X = 1003

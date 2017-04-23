@@ -112,12 +112,6 @@ fun BufferedImage.getGameLoss2Crop(): BufferedImage {
     }
 }
 
-fun BufferedImage.getGameYourTurnCrop(): BufferedImage {
-    with(TESLTracker.referenceConfig) {
-        return crop(GAME_YOUR_TURN_X, GAME_YOUR_TURN_Y, GAME_YOUR_TURN_WIDTH, GAME_YOUR_TURN_HEIGHT)
-    }
-}
-
 fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(GAME_CARD_DRAW_X, GAME_CARD_DRAW_Y, GAME_CARD_DRAW_WIDTH, GAME_CARD_DRAW_HEIGHT)
