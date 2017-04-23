@@ -20,11 +20,6 @@ class ArenaCardPickRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testArenaPicks() {
-        recognizeArenaPick("ScreenArenaPicks.png", "giantsnake", "spiderlair", "brilliantexperiment")
-    }
-
-    @Test
-    fun testArenaPick1366x768() {
         recognizeArenaPick("ArenaPick/ArenaPick01.png", "fifthlegiontrainer", "septimguardsman", "snowwolf")
         recognizeArenaPick("ArenaPick/ArenaPick02.png", "icespike", "voraciousspriggan", "lightningbolt")
         recognizeArenaPick("ArenaPick/ArenaPick03.png", "redoranenforcer", "lightningbolt", "camlornsentinel")
