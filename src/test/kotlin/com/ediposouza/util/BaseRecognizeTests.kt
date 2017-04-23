@@ -11,8 +11,9 @@ import javax.imageio.ImageIO
 abstract class BaseRecognizeTests {
 
     protected fun getFileImage(testFileName: String): BufferedImage {
-        val image = ImageIO.read(TESLTracker::class.java.getResource("/Test/$testFileName"))
-        val reference = TESLTracker.referenceConfig.SCREEN_REFERENCE
+        val currentResolution = TESLTracker.referenceConfig.SCREEN_REFERENCE
+        val image = ImageIO.read(TESLTracker::class.java.getResource("/Test$currentResolution/$testFileName"))
+//        val reference = TESLTracker.referenceConfig.SCREEN_REFERENCE
 //        Logger.i("Using $reference as screen reference with Image size: ${image.width}x${image.height}")
         return image
     }

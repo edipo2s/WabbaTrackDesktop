@@ -8,7 +8,7 @@ abstract class ReferenceConfig {
     open val SCREEN_REFERENCE_WIDTH = 0
     open val SCREEN_REFERENCE_HEIGHT = 0
 
-    val SCREEN_REFERENCE by lazy { "$SCREEN_REFERENCE_WIDTH x $SCREEN_REFERENCE_HEIGHT" }
+    val SCREEN_REFERENCE by lazy { "${SCREEN_REFERENCE_WIDTH}x$SCREEN_REFERENCE_HEIGHT" }
     val SCREEN_REFERENCE_RATIO by lazy { SCREEN_REFERENCE_WIDTH.toDouble() / SCREEN_REFERENCE_HEIGHT.toDouble() }
 
     // -- APP --
@@ -18,34 +18,20 @@ abstract class ReferenceConfig {
     open val APP_MAIN_X = 0
     open val APP_MAIN_Y = 0
 
-    open val ARENA_PICK_SELECT_HEIGHT = 0
-    open val ARENA_PICK_SELECT_WIDTH = 0
-    open val ARENA_PICK_SELECT_FIRST_X = 0
-    open val ARENA_PICK_SELECT_SECOND_X = 0
-    open val ARENA_PICK_SELECT_THIRD_X = 0
-    open val ARENA_PICK_SELECT_Y = 0
-
-    open val ARENA_PICK_NUMBER_HEIGHT = 0
-    open val ARENA_PICK_NUMBER_WIDTH = 0
-    open val ARENA_PICK_NUMBER_FIRST_X = 0
-    open val ARENA_PICK_NUMBER_SECOND_X = 0
-    open val ARENA_PICK_NUMBER_THIRD_X = 0
-    open val ARENA_PICK_NUMBER_Y = 0
-
     open val DECK_TRACKER_WIDTH = 0
     open val DECK_TRACKER_X = 0
     open val DECK_TRACKER_Y = 0
     open val DECK_TRACKER_CARD_HEIGHT = 0
     open val DECK_TRACKER_CARD_WIDTH = 0
 
-    open val FULL_CARD_HEIGHT = 0
-    open val FULL_CARD_WIDTH = 0
-    open val FULL_CARD_Y = 0
-    open val FULL_CARD_X = 0
-    open val FULL_CARD_DECK_IMAGE_X = 0
-    open val FULL_CARD_DECK_IMAGE_Y = 0
-    open val FULL_CARD_DECK_IMAGE_HEIGHT = 0
-    open val FULL_CARD_DECK_IMAGE_WIDTH = 0
+    val FULL_CARD_HEIGHT = 275
+    val FULL_CARD_WIDTH = 212
+    val FULL_CARD_X = 80
+    val FULL_CARD_Y = 100
+    val FULL_CARD_DECK_IMAGE_X = 50
+    val FULL_CARD_DECK_IMAGE_Y = 155
+    val FULL_CARD_DECK_IMAGE_HEIGHT = 80
+    val FULL_CARD_DECK_IMAGE_WIDTH = 290
 
     // -- Screens --
 
@@ -161,5 +147,19 @@ abstract class ReferenceConfig {
     open val ARENA_PICK_CARD_FIRST_X = 0
     open val ARENA_PICK_CARD_SECOND_X = 0
     open val ARENA_PICK_CARD_THIRD_X = 0
+
+    open val ARENA_PICK_SELECT_HEIGHT = 0
+    open val ARENA_PICK_SELECT_WIDTH = 0
+    open val ARENA_PICK_SELECT_FIRST_X = 0
+    open val ARENA_PICK_SELECT_SECOND_X = 0
+    open val ARENA_PICK_SELECT_THIRD_X = 0
+    open val ARENA_PICK_SELECT_Y = 0
+
+    open val ARENA_PICK_NUMBER_HEIGHT = 0
+    open val ARENA_PICK_NUMBER_WIDTH = 0
+    open val ARENA_PICK_NUMBER_FIRST_X = 0
+    open val ARENA_PICK_NUMBER_SECOND_X = 0
+    open val ARENA_PICK_NUMBER_THIRD_X = 0
+    open val ARENA_PICK_NUMBER_Y = 0
 
 }

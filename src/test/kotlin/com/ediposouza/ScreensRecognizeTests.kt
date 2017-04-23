@@ -33,7 +33,7 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testScreenGame() {
-        recognizeScreen("ScreenGame.png", DHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
+        recognizeScreen("Game/PlayerFirst.png", DHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
     }
 
     @Test
