@@ -10,8 +10,8 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
 
     // -- APP --
 
-    override val APP_MAIN_HEIGHT = 105
-    override val APP_MAIN_WIDTH = 105
+    override val APP_MAIN_HEIGHT = 90
+    override val APP_MAIN_WIDTH = 90
     override val APP_MAIN_X = 1800
     override val APP_MAIN_Y = 970
 

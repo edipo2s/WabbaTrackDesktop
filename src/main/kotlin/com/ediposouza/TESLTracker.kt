@@ -13,10 +13,8 @@ import com.ediposouza.ui.LoggerView
 import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
 import javafx.application.Platform
-import javafx.geometry.Rectangle2D
 import javafx.scene.control.Alert
 import javafx.scene.image.Image
-import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
@@ -39,8 +37,8 @@ class TESLTracker : App(LoggerView::class) {
         val APP_NAME = "WabbaTrack"
         val SHOW_TEST_MENU = false
 
-        var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
-        val screenSize: Rectangle2D by lazy { Screen.getPrimary().visualBounds }
+        lateinit var referenceConfig: ReferenceConfig
+        val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
 
         val iconName: String = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"
         val jarPath: String = URLDecoder.decode(TESLTracker::class.java.protectionDomain.codeSource.location.file, "UTF-8")
@@ -90,6 +88,11 @@ class TESLTracker : App(LoggerView::class) {
         })
 
         stage.close()
+        referenceConfig = when {
+            screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
+            else -> ReferenceConfig1920x1080()
+        }
+
         configureSystemTrayIcon()
         CompletableFuture.runAsync {
             Platform.runLater {
@@ -283,7 +286,7 @@ class TESLTracker : App(LoggerView::class) {
         TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
         with(screenSize) {
-            Logger.d("Image size: ${width.toInt()}x${height.toInt()}")
+            Logger.d("Image size: ${width}x$height")
         }
         Logger.i("Waiting Elder scroll legends..")
         while (true) {

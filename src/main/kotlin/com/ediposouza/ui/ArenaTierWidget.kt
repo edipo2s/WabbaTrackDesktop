@@ -122,7 +122,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
             })
             alignment = Pos.TOP_CENTER
             background = Background.EMPTY
-            prefHeight = TESLTracker.screenSize.height / 2
+            prefHeight = TESLTracker.screenSize.height / 2.0
         }
         return Scene(layout).apply {
             fill = Color.TRANSPARENT
