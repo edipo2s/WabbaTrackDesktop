@@ -13,9 +13,14 @@ import com.ediposouza.ui.LoggerView
 import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
 import javafx.application.Platform
+import javafx.scene.Scene
 import javafx.scene.control.Alert
+import javafx.scene.control.ProgressIndicator
 import javafx.scene.control.TextInputDialog
 import javafx.scene.image.Image
+import javafx.scene.layout.Background
+import javafx.scene.paint.Color
+import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import tornadofx.App
@@ -27,6 +32,7 @@ import java.io.InputStream
 import java.net.URLDecoder
 import java.util.concurrent.CompletableFuture
 import javax.swing.SwingUtilities
+
 
 /**
  * Created by ediposouza on 06/03/17.
@@ -46,6 +52,20 @@ class TESLTracker : App(LoggerView::class) {
         val iconName: String = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"
         val jarPath: String = URLDecoder.decode(TESLTracker::class.java.protectionDomain.codeSource.location.file, "UTF-8")
         val legendsIcon: Image by lazy { Image(iconName) }
+        val loading by lazy {
+            Stage().apply {
+                initStyle(StageStyle.TRANSPARENT)
+                isResizable = false
+                isAlwaysOnTop = true
+                initModality(Modality.APPLICATION_MODAL)
+            }.apply {
+                scene = Scene(ProgressIndicator().apply {
+                    background = Background.EMPTY
+                }).apply {
+                    fill = Color.TRANSPARENT
+                }
+            }
+        }
 
         private var lastScreenshotDHash = ""
         private var loginMenuItems: List<Any>? = null
@@ -132,7 +152,7 @@ class TESLTracker : App(LoggerView::class) {
         }
 
         configureSystemTrayIcon()
-        if (!TESLTrackerAuth.hasLoginCredentialsSaved()) {
+        if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
             Logger.d("Starting auto-login")
             doLogin()
         } else {
@@ -182,8 +202,12 @@ class TESLTracker : App(LoggerView::class) {
                             }.showAndWait()
                             if (result.isPresent) {
                                 val url = result.get()
+                                loading.show()
                                 CompletableFuture.runAsync {
                                     LegendsDeckImporter.import(url) { deck ->
+                                        Platform.runLater {
+                                            loading.close()
+                                        }
                                         Mixpanel.postEventDeckImported(deck.name)
                                         showDeckInDeckTracker(deck)
                                         Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)

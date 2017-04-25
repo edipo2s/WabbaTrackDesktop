@@ -24,7 +24,6 @@ object TESLTrackerData {
     val NODE_USERS = "users"
     val NODE_USERS_DECKS = "decks"
     val NODE_DECKS = "decks"
-    val NODE_DECKS_IMPORTED = "imported"
     val NODE_DECKS_PRIVATE = "private"
     val NODE_DECKS_PUBLIC = "public"
     val NODE_USERS_MATCHES = "matches"
@@ -151,9 +150,25 @@ object TESLTrackerData {
 
     fun saveDeck(uuid: String, name: String, cls: DeckClass, type: DeckType, cost: Int, patch: String,
                  cards: Map<String, Int>, owner: String, onSuccess: (Deck) -> Unit) {
-        val newDeck = Deck(uuid, name, owner, false, type, cls, cost, LocalDateTime.now().withNano(0),
-                LocalDateTime.now().withNano(0), patch, listOf(), 0, cards, listOf(), listOf())
-        val deckPath = "$NODE_DECKS/$NODE_DECKS_IMPORTED/$uuid"
+        var createdAt = LocalDateTime.now().withNano(0)
+        var views = 0
+        val likes = mutableListOf<String>()
+        val comments = mutableListOf<DeckComment>()
+        with(firebaseDatabaseAPI.get("$NODE_DECKS/$NODE_DECKS_PUBLIC.json?orderBy=%22\$key%22&equalTo=%22$uuid%22").one()) {
+            if (entries.size > 0) {
+                val entry = entries.first()
+                val deckParser = Gson().fromJson(entry.value.toString(), FirebaseParsers.DeckParser::class.java)
+                with(deckParser.toDeck(entry.key, true)) {
+                    createdAt = this.createdAt
+                    views = this.views
+                    likes.addAll(likes)
+                    comments.addAll(comments)
+                }
+            }
+        }
+        val newDeck = Deck(uuid, name, owner, false, type, cls, cost, createdAt,
+                LocalDateTime.now().withNano(0), patch, likes, views, cards, listOf(), comments)
+        val deckPath = "$NODE_DECKS/$NODE_DECKS_PUBLIC/$uuid"
         val deckData = Gson().toJson(FirebaseParsers.DeckParser().fromDeck(newDeck))
         try {
             firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$deckPath.json", deckData.byteInputStream()) { processor ->
