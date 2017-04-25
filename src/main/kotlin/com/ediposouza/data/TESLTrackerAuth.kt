@@ -4,6 +4,7 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.model.FirebaseAuth
 import com.ediposouza.util.CredentialsProvider
 import com.ediposouza.util.Logger
+import com.ediposouza.util.Mixpanel
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.oauth2.Oauth2
@@ -20,6 +21,7 @@ object TESLTrackerAuth {
     var userAccessToken: String? = null
     var userUuid: String? = null
     var userName: String? = null
+    var userEmail: String? = null
     var userPhoto: String? = null
 
     var firebaseLoginAPI: Rest = Rest().apply {
@@ -45,6 +47,7 @@ object TESLTrackerAuth {
                 Logger.d("Obtaining User Profile Information:")
                 val userinfo = userinfo().get().execute()
                 userName = userinfo.name
+                userEmail = userinfo.email
                 userPhoto = userinfo.picture
 //                Logger.d(userinfo.toPrettyString())
             }
@@ -59,6 +62,7 @@ object TESLTrackerAuth {
                 userUuid = getString("localId")
 //                Logger.d("FirebaseID: $userUuid")
             }
+            Mixpanel.trackUser()
             return true
         } catch (e: Exception) {
             Logger.e(e)

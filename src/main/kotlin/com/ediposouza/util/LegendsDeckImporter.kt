@@ -51,10 +51,8 @@ object LegendsDeckImporter {
 
                 val deckOwner = it.select(".deck_page_deck_author .inner_deck_head  a").first().text()
 
-                Logger.d("Saving Deck: $deckUuid $deckName $deckCls $deckType $deckCost $deckPatch $deckCards $deckOwner")
                 TESLTrackerData.saveDeck(deckUuid, deckName, deckCls, deckType, deckCost, deckPatch.uuidDate,
                         deckCards, deckOwner) { savedDeck ->
-                    Logger.d("$deckName Saved")
                     onSuccess(savedDeck)
                 }
             }

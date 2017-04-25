@@ -7,6 +7,7 @@ import com.ediposouza.teslesgendstracker.data.Patch
 import com.ediposouza.util.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import javafx.application.Platform
 import tornadofx.Rest
 import java.io.*
 import java.net.URL
@@ -52,27 +53,34 @@ object TESLTrackerData {
 
     init {
         if (cardsDBFile.exists()) {
-            val listCardType = object : TypeToken<ArrayList<Card>>() {}.type
-            cards = Gson().fromJson(FileReader(cardsDBFile).readText(), listCardType)
-            analyseCardDB()
+            try {
+                val listCardType = object : TypeToken<ArrayList<Card>>() {}.type
+                cards = Gson().fromJson(FileReader(cardsDBFile).readText(), listCardType)
+                analyseCardDB()
+            } catch (e: Exception) {
+                Logger.e("Error while loading cardsDB: ${e.message}")
+                cardsDBFile.delete()
+            }
         }
     }
 
     fun updateCardDB() {
         Logger.d("Updating cards database")
-        cards.clear()
-        with(firebaseDatabaseAPI.get("$NODE_CARDS.json").one()) {
-            cards.addAll(entries.flatMap { (set, setAttrsJson) ->
-                (setAttrsJson as javax.json.JsonObject).entries.flatMap { (attr, attrCardsJson) ->
-                    (attrCardsJson as javax.json.JsonObject).entries.map { (cardShortName, cardAttrsJson) ->
-                        val cardParser = Gson().fromJson(cardAttrsJson.toString(), FirebaseParsers.CardParser::class.java)
-                        cardParser.toCard(cardShortName, CardSet.of(set), CardAttribute.of(attr))
+        CompletableFuture.runAsync {
+            cards.clear()
+            with(firebaseDatabaseAPI.get("$NODE_CARDS.json").one()) {
+                cards.addAll(entries.flatMap { (set, setAttrsJson) ->
+                    (setAttrsJson as javax.json.JsonObject).entries.flatMap { (attr, attrCardsJson) ->
+                        (attrCardsJson as javax.json.JsonObject).entries.map { (cardShortName, cardAttrsJson) ->
+                            val cardParser = Gson().fromJson(cardAttrsJson.toString(), FirebaseParsers.CardParser::class.java)
+                            cardParser.toCard(cardShortName, CardSet.of(set), CardAttribute.of(attr))
+                        }
                     }
-                }
-            })
+                })
+            }
+            analyseCardDB()
+            saveCardsDB()
         }
-        analyseCardDB()
-        saveCardsDB()
     }
 
     private fun analyseCardDB() {
@@ -102,30 +110,34 @@ object TESLTrackerData {
     }
 
     fun updateDecksDB(onSuccess: (() -> Unit)? = null) {
-        Logger.d("Updating decks database")
-        decks.clear()
-        if (!TESLTrackerAuth.isUserLogged()) {
-            Logger.e("Do login to get decks")
-            return
+        CompletableFuture.runAsync {
+            Logger.d("Updating decks database")
+            decks.clear()
+            if (!TESLTrackerAuth.isUserLogged()) {
+                Logger.e("Do login to get decks")
+            } else {
+                val userAccessToken = TESLTrackerAuth.userAccessToken
+                val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS"
+                with(firebaseDatabaseAPI.get("$userDecksPath/$NODE_DECKS_PRIVATE.json?access_token=$userAccessToken").one()) {
+                    decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
+                        val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
+                        deckParser.toDeck(deckUuid, true)
+                    })
+                }
+                val userOwnerFilter = "orderBy=%22owner%22&equalTo=%22${TESLTrackerAuth.userUuid}%22"
+                with(firebaseDatabaseAPI.get("$NODE_DECKS/$NODE_DECKS_PUBLIC.json?$userOwnerFilter&access_token=$userAccessToken").one()) {
+                    decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
+                        val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
+                        deckParser.toDeck(deckUuid, true)
+                    })
+                }
+                decks.sortBy(Deck::name)
+                Platform.runLater {
+                    onSuccess?.invoke()
+                    Logger.d("Decks: ${decks.map(Deck::name).toSet()}")
+                }
+            }
         }
-        val userAccessToken = TESLTrackerAuth.userAccessToken
-        val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS"
-        with(firebaseDatabaseAPI.get("$userDecksPath/$NODE_DECKS_PRIVATE.json?access_token=$userAccessToken").one()) {
-            decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
-                val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
-                deckParser.toDeck(deckUuid, true)
-            })
-        }
-        val userOwnerFilter = "orderBy=%22owner%22&equalTo=%22${TESLTrackerAuth.userUuid}%22"
-        with(firebaseDatabaseAPI.get("$NODE_DECKS/$NODE_DECKS_PUBLIC.json?$userOwnerFilter&access_token=$userAccessToken").one()) {
-            decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
-                val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
-                deckParser.toDeck(deckUuid, true)
-            })
-        }
-        decks.sortBy(Deck::name)
-        onSuccess?.invoke()
-        Logger.d("Decks: ${decks.map(Deck::name).toSet()}")
     }
 
     fun getPatches(onSuccess: (List<Patch>) -> Unit) {
@@ -139,7 +151,6 @@ object TESLTrackerData {
 
     fun saveDeck(uuid: String, name: String, cls: DeckClass, type: DeckType, cost: Int, patch: String,
                  cards: Map<String, Int>, owner: String, onSuccess: (Deck) -> Unit) {
-        Logger.d("Saving Deck")
         val newDeck = Deck(uuid, name, owner, false, type, cls, cost, LocalDateTime.now().withNano(0),
                 LocalDateTime.now().withNano(0), patch, listOf(), 0, cards, listOf(), listOf())
         val deckPath = "$NODE_DECKS/$NODE_DECKS_IMPORTED/$uuid"

@@ -11,6 +11,7 @@ import com.ediposouza.model.DeckClass
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
+import com.ediposouza.util.Mixpanel
 import com.ediposouza.util.ScreenFuncs
 import com.google.gson.Gson
 import javafx.application.Platform
@@ -68,6 +69,7 @@ object ArenaState : StateHandler.TESLState {
                 value == 1 && cardPicksToSelect == null -> {
                     resetState()
                     classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
+                    Mixpanel.postEventArenaStart(classSelect ?: DeckClass.NEUTRAL)
                 }
             }
         }
@@ -81,6 +83,7 @@ object ArenaState : StateHandler.TESLState {
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
+                Mixpanel.postEventShowDeckTrackerFromArenaDeck()
             }
         }
 
@@ -266,6 +269,7 @@ object ArenaState : StateHandler.TESLState {
         if (Rectangle(cardPos.x, cardPos.y, cardSize.width, cardSize.height).contains(mousePos)) {
             picks.add(card ?: Card.DUMMY)
             Logger.i("${card?.name} Picked")
+            Mixpanel.postEventArenaPick(card ?: Card.DUMMY)
             if (pickNumber == 30) {
                 finishPicks = true
             }

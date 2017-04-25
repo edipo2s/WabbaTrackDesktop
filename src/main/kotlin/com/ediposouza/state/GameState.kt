@@ -7,6 +7,7 @@ import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.*
 import com.ediposouza.ui.DeckTrackerWidget
 import com.ediposouza.util.Logger
+import com.ediposouza.util.Mixpanel
 import com.ediposouza.util.ScreenFuncs
 import javafx.application.Platform
 import java.awt.image.BufferedImage
@@ -249,10 +250,13 @@ object GameState : StateHandler.TESLState {
                     if (playerGoFirst != null) {
                         val win = this
                         Logger.i("--Player Win!".takeIf { win } ?: "--Player Lose!")
-                        if (playerDeckClass != null) {
-                            val result = "Win".takeIf { win } ?: "Loss"
-                            Logger.d("${playerDeckClass?.name} vs ${opponentDeckClass?.name} - $result")
-                            saveMatch(win)
+                        playerDeckClass?.let { playerCls ->
+                            opponentDeckClass?.let { opponentCls ->
+                                val result = "Win".takeIf { win } ?: "Loss"
+                                Logger.d("${playerCls.name} vs ${opponentCls.name} - $result")
+                                Mixpanel.postEventGameResult(playerCls, opponentCls, result)
+                                saveMatch(win)
+                            }
                         }
                         resetState()
                     }

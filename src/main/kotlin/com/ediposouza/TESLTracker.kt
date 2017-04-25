@@ -132,15 +132,15 @@ class TESLTracker : App(LoggerView::class) {
         }
 
         configureSystemTrayIcon()
+        if (!TESLTrackerAuth.hasLoginCredentialsSaved()) {
+            Logger.d("Starting auto-login")
+            doLogin()
+        } else {
+            Mixpanel.trackUser()
+        }
+        mainWidget.isVisible = true
+//      loadImportedDecks()
         CompletableFuture.runAsync {
-            Platform.runLater {
-                if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
-                    Logger.d("Starting auto-login")
-                    doLogin()
-                }
-                mainWidget.isVisible = true
-//                loadImportedDecks()
-            }
             startElderScrollDetection()
         }
         CompletableFuture.runAsync {
@@ -177,14 +177,16 @@ class TESLTracker : App(LoggerView::class) {
                     addMenuItem("-- Import from Legends-Decks --") {
                         Platform.runLater {
                             val result = TextInputDialog("").apply {
-                                title = "Importing deck from Legends-Decks"
+                                title = "$APP_NAME - Importing deck from Legends-Decks"
                                 contentText = "Url:"
                             }.showAndWait()
                             if (result.isPresent) {
                                 val url = result.get()
                                 CompletableFuture.runAsync {
                                     LegendsDeckImporter.import(url) { deck ->
+                                        Mixpanel.postEventDeckImported(deck.name)
                                         showDeckInDeckTracker(deck)
+                                        Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
                                     }
                                 }
                             }
@@ -287,13 +289,11 @@ class TESLTracker : App(LoggerView::class) {
                         }
                     }
                 }
+                updateMenuDecks()
                 Platform.runLater {
                     SwingUtilities.invokeLater {
                         trayIcon.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
                     }
-                }
-                CompletableFuture.runAsync {
-                    updateMenuDecks()
                 }
             } else {
                 if (retry < 3) {
@@ -308,6 +308,7 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     private fun updateMenuDecks() {
+        Logger.d("Starting updating decks database")
         TESLTrackerData.updateDecksDB {
             menuMyDecks.forEach {
                 if (it is Menu) {
@@ -337,6 +338,7 @@ class TESLTracker : App(LoggerView::class) {
                     if (it is Menu) {
                         it.addMenuItem(deck.name) {
                             showDeckInDeckTracker(deck)
+                            Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
                         }
                     }
                 }
@@ -363,9 +365,7 @@ class TESLTracker : App(LoggerView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
-                CompletableFuture.runAsync {
-                    TESLTrackerData.checkForUpdate()
-                }
+                Mixpanel.postEventGameDetected()
                 StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")
@@ -377,6 +377,9 @@ class TESLTracker : App(LoggerView::class) {
 
     private fun startElderScrollRecognition() {
         Logger.i("Start screenshot game!")
+        CompletableFuture.runAsync {
+            TESLTrackerData.checkForUpdate()
+        }
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {
                 ScreenHandler.lastScreenRecognized = ""
