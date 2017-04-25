@@ -68,7 +68,7 @@ object CredentialsProvider {
             return null
         }
         // set up authorization code flow
-        val scopes = setOf(AnalyticsScopes.ANALYTICS_READONLY, SCOPE_PROFILE_EMAIL, SCOPE_FIREBASE_DATABASE)
+        val scopes = setOf(SCOPE_PROFILE_EMAIL, SCOPE_FIREBASE_DATABASE)
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
                 .setDataStoreFactory(dataStoreFactory).build()
         // authorize

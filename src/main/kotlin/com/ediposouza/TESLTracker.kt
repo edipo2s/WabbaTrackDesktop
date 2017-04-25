@@ -35,6 +35,8 @@ class TESLTracker : App(LoggerView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
+        val APP_VERSION = "0.1"
+        val FILE_NAME = "WabbaTrack.exe"
         val SHOW_TEST_MENU = false
 
         lateinit var referenceConfig: ReferenceConfig
@@ -45,6 +47,37 @@ class TESLTracker : App(LoggerView::class) {
         val legendsIcon: Image by lazy { Image(iconName) }
 
         private var lastScreenshotDHash = ""
+        private var loginMenuItems: List<Any>? = null
+
+        private var hasUpdateReady: Boolean = false
+            set(value) {
+                field = value
+                if (value) {
+                    loginMenuItems?.forEach {
+                        if (it is MenuItem) {
+                            it.label = "Restart and Update App"
+                        }
+                        if (it is javafx.scene.control.MenuItem) {
+                            Platform.runLater {
+                                it.text = "Restart and Update App"
+                            }
+                        }
+                    }
+                }
+            }
+
+        fun showRestartToUpdateNow() {
+            hasUpdateReady = true
+        }
+
+        fun doExit() {
+            val currentTESLState = StateHandler.currentTESLState
+            if (currentTESLState is ArenaState) {
+                currentTESLState.saveArenaPicks()
+            }
+            Platform.exit()
+            System.exit(0)
+        }
 
     }
 
@@ -55,7 +88,6 @@ class TESLTracker : App(LoggerView::class) {
     lateinit var trayIcon: TrayIcon
     lateinit var trayPopupMenu: PopupMenu
     lateinit var menuDecks: List<Any>
-    var loginMenuItems: List<Any>? = null
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
     val mainWidget by lazy { MainWidget() }
     var logging: Boolean = false
@@ -63,13 +95,17 @@ class TESLTracker : App(LoggerView::class) {
             field = value
             loginMenuItems?.forEach {
                 if (it is MenuItem) {
-                    it.label = "Logging..".takeIf { value } ?: "Login"
                     it.isEnabled = !value
+                    if (!hasUpdateReady) {
+                        it.label = "Logging..".takeIf { value } ?: "Login"
+                    }
                 }
                 if (it is javafx.scene.control.MenuItem) {
                     Platform.runLater {
-                        it.text = "Logging..".takeIf { value } ?: "Login"
                         it.isDisable = value
+                        if (!hasUpdateReady) {
+                            it.text = "Logging..".takeIf { value } ?: "Login"
+                        }
                     }
                 }
             }
@@ -101,6 +137,7 @@ class TESLTracker : App(LoggerView::class) {
                     doLogin()
                 }
                 mainWidget.isVisible = true
+                TESLTrackerData.checkForUpdate()
             }
             startElderScrollDetection()
         }
@@ -114,7 +151,12 @@ class TESLTracker : App(LoggerView::class) {
             trayIcon = this
             trayPopupMenu = PopupMenu().apply {
                 loginMenuItems = addMenuItem("Login") {
-                    doLogin()
+                    if (!TESLTrackerAuth.isUserLogged()) {
+                        doLogin()
+                    }
+                    if (hasUpdateReady) {
+                        TESLTrackerData.restartAppToUpdate()
+                    }
                 }
                 logging = logging
                 menuDecks = addMenu("Decks")
@@ -139,16 +181,11 @@ class TESLTracker : App(LoggerView::class) {
                 }
                 addMenuItem("About") {
                     Platform.runLater {
-                        alert(Alert.AlertType.INFORMATION, "About", "TES Legends Tracker \nby Edipo2s")
+                        alert(Alert.AlertType.INFORMATION, "About", "$APP_NAME $APP_VERSION \nby Edipo2s")
                     }
                 }
                 addMenuItem("Exit") {
-                    val currentTESLState = StateHandler.currentTESLState
-                    if (currentTESLState is ArenaState) {
-                        currentTESLState.saveArenaPicks()
-                    }
-                    Platform.exit()
-                    System.exit(0)
+                    doExit()
                 }
                 if (SHOW_TEST_MENU) {
                     addMenu("Test") {
@@ -292,6 +329,7 @@ class TESLTracker : App(LoggerView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
+                TESLTrackerData.checkForUpdate()
                 StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")

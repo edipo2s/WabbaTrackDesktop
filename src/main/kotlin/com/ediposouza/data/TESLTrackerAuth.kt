@@ -66,6 +66,8 @@ object TESLTrackerAuth {
         }
     }
 
+    fun isUserLogged() = userUuid != null
+
     fun hasLoginCredentialsSaved(): Boolean = CredentialsProvider.hasCredentialsSaved()
 
 }

@@ -1,14 +1,14 @@
 package com.ediposouza.data
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.extensions.getMD5
 import com.ediposouza.model.*
 import com.ediposouza.util.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import tornadofx.Rest
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
+import java.io.*
+import java.net.URL
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -20,6 +20,10 @@ object TESLTrackerData {
     val NODE_USERS = "users"
     val NODE_USERS_DECKS = "decks"
     val NODE_USERS_MATCHES = "matches"
+
+    val NODE_WABBATRACK = "wabbatrack"
+
+    val UPDATE_FILE_NAME = "lastVersion.exe"
 
     var firebaseDatabaseAPI: Rest = Rest().apply {
         baseURI = "https://tes-legends-assistant.firebaseio.com/"
@@ -93,7 +97,7 @@ object TESLTrackerData {
     fun updateDecksDB(onSuccess: (() -> Unit)? = null) {
         Logger.d("Updating decks database")
         decks.clear()
-        if (TESLTrackerAuth.userUuid == null) {
+        if (!TESLTrackerAuth.isUserLogged()) {
             Logger.e("Do login to get decks")
             return
         }
@@ -118,7 +122,7 @@ object TESLTrackerData {
     }
 
     fun saveMatch(newMatch: Match, onSuccess: () -> Unit) {
-        if (TESLTrackerAuth.userUuid == null) {
+        if (!TESLTrackerAuth.isUserLogged()) {
             Logger.e("Do login to save Matches")
             return
         }
@@ -164,6 +168,70 @@ object TESLTrackerData {
                     Logger.e("Error while reAuth User")
                 }
             }
+        }
+    }
+
+    fun checkForUpdate(retry: Int = 0) {
+        with(firebaseDatabaseAPI.get("$NODE_WABBATRACK.json").one()) {
+            val lastVersion = entries.find { it.key == "lastVersion" }?.value.toString()
+            if (lastVersion == TESLTracker.APP_VERSION) {
+                Logger.d("App is updated")
+                return
+            }
+            val md5 = entries.find { it.key == "md5" }?.value.toString()
+            val downloadedUpdateFile = File(UPDATE_FILE_NAME)
+            if (downloadedUpdateFile.exists()) {
+                if (downloadedUpdateFile.getMD5() == md5) {
+                    TESLTracker.showRestartToUpdateNow()
+                    return
+                } else {
+                    downloadedUpdateFile.delete()
+                }
+            }
+            Logger.i("New version detect, downloading version $lastVersion")
+            val url = entries.find { it.key == "url" }?.value.toString()
+            downloadFile(url, UPDATE_FILE_NAME) {
+                Logger.d("Download Success")
+                if (downloadedUpdateFile.getMD5() == md5) {
+                    TESLTracker.showRestartToUpdateNow()
+                } else {
+                    downloadedUpdateFile.delete()
+                    if (retry < 3) {
+                        checkForUpdate(retry + 1)
+                    }
+                }
+            }
+        }
+    }
+
+    fun restartAppToUpdate() {
+        val mainFile = File(TESLTracker.FILE_NAME)
+        if (mainFile.delete()) {
+            File(UPDATE_FILE_NAME).renameTo(mainFile)
+            Runtime.getRuntime().exec(TESLTracker.FILE_NAME)
+            TESLTracker.doExit()
+        }
+    }
+
+    private fun downloadFile(fileUrl: String, fileName: String, onSuccess: () -> Unit) {
+        val data = ByteArray(1024)
+        var bis: BufferedInputStream? = null
+        var fos: FileOutputStream? = null
+        try {
+            bis = BufferedInputStream(URL(fileUrl.replace("\"", "")).openStream())
+            fos = FileOutputStream(fileName)
+            do {
+                val count = bis.read(data, 0, 1024)
+                if (count > 0) {
+                    fos.write(data, 0, count)
+                }
+            } while (count != -1)
+            onSuccess()
+        } catch (e: Exception) {
+            Logger.e("Error while downloading update: \n ${e.message}")
+        } finally {
+            bis?.close()
+            fos?.close()
         }
     }
 

@@ -3,9 +3,13 @@ package com.ediposouza.extensions
 import com.ediposouza.ui.MainWidget
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
+import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.io.IOUtils
 import java.awt.Menu
 import java.awt.MenuItem
 import java.awt.PopupMenu
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import javax.imageio.ImageIO
 
@@ -52,4 +56,15 @@ fun Menu.addMenuItem(menuItemLabel: String, onClick: () -> Unit) {
 
 fun InputStream.toFXImage(): Image {
     return SwingFXUtils.toFXImage(ImageIO.read(this), null)
+}
+
+fun File.getMD5(): String? {
+    val fis = FileInputStream(this)
+    try {
+        return DigestUtils.md5Hex(IOUtils.toByteArray(fis))
+    } catch (e: Exception) {
+        return null
+    } finally {
+        IOUtils.closeQuietly(fis)
+    }
 }
