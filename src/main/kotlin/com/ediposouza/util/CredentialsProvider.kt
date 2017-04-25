@@ -14,6 +14,7 @@
 
 package com.ediposouza.util
 
+import com.ediposouza.TESLTracker
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
@@ -59,8 +60,7 @@ object CredentialsProvider {
     @Throws(IOException::class)
     fun authorize(httpTransport: HttpTransport, jsonFactory: JsonFactory): Credential? {
         // load client secrets
-        val keysFileStream = InputStreamReader(("{\"installed\":{\"client_id\":\"***REMOVED***\"," +
-                "\"client_secret\":\"***REMOVED***\"}}").byteInputStream())
+        val keysFileStream = InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json"))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, keysFileStream)
         keysFileStream.close()
         if (clientSecrets.details.clientId.startsWith("Enter") || clientSecrets.details.clientSecret.startsWith("Enter ")) {
@@ -68,8 +68,9 @@ object CredentialsProvider {
             return null
         }
         // set up authorization code flow
-        val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets,
-                setOf(SCOPE_PROFILE_EMAIL, SCOPE_FIREBASE_DATABASE)).setDataStoreFactory(dataStoreFactory).build()
+        val scopes = setOf(AnalyticsScopes.ANALYTICS_READONLY, SCOPE_PROFILE_EMAIL, SCOPE_FIREBASE_DATABASE)
+        val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
+                .setDataStoreFactory(dataStoreFactory).build()
         // authorize
         return AuthorizationCodeInstalledApp(flow, LocalServerReceiver()).authorize("user")
     }
