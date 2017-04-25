@@ -14,6 +14,7 @@ import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
 import javafx.application.Platform
 import javafx.scene.control.Alert
+import javafx.scene.control.TextInputDialog
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import javafx.stage.StageStyle
@@ -87,7 +88,8 @@ class TESLTracker : App(LoggerView::class) {
 
     lateinit var trayIcon: TrayIcon
     lateinit var trayPopupMenu: PopupMenu
-    lateinit var menuDecks: List<Any>
+    lateinit var menuMyDecks: List<Any>
+    lateinit var menuImportedDecks: List<Any>
     val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
     val mainWidget by lazy { MainWidget() }
     var logging: Boolean = false
@@ -137,9 +139,12 @@ class TESLTracker : App(LoggerView::class) {
                     doLogin()
                 }
                 mainWidget.isVisible = true
-                TESLTrackerData.checkForUpdate()
+//                loadImportedDecks()
             }
             startElderScrollDetection()
+        }
+        CompletableFuture.runAsync {
+            TESLTrackerData.checkForUpdate()
         }
     }
 
@@ -159,13 +164,31 @@ class TESLTracker : App(LoggerView::class) {
                     }
                 }
                 logging = logging
-                menuDecks = addMenu("Decks")
-                menuDecks.forEach {
+                menuMyDecks = addMenu("My Decks")
+                menuMyDecks.forEach {
                     if (it is Menu) {
                         it.isEnabled = false
                     }
                     if (it is javafx.scene.control.Menu) {
                         it.isDisable = true
+                    }
+                }
+                menuImportedDecks = addMenu("Imported Decks") {
+                    addMenuItem("-- Import from Legends-Decks --") {
+                        Platform.runLater {
+                            val result = TextInputDialog("").apply {
+                                title = "Importing deck from Legends-Decks"
+                                contentText = "Url:"
+                            }.showAndWait()
+                            if (result.isPresent) {
+                                val url = result.get()
+                                CompletableFuture.runAsync {
+                                    LegendsDeckImporter.import(url) { deck ->
+                                        showDeckInDeckTracker(deck)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 addMenuItem("Show Log") {
@@ -286,7 +309,7 @@ class TESLTracker : App(LoggerView::class) {
 
     private fun updateMenuDecks() {
         TESLTrackerData.updateDecksDB {
-            menuDecks.forEach {
+            menuMyDecks.forEach {
                 if (it is Menu) {
                     it.isEnabled = true
                 }
@@ -294,7 +317,7 @@ class TESLTracker : App(LoggerView::class) {
                     it.isDisable = false
                 }
             }
-            menuDecks.forEach {
+            menuMyDecks.forEach {
                 if (it is Menu) {
                     it.removeAll()
                 }
@@ -302,20 +325,31 @@ class TESLTracker : App(LoggerView::class) {
                     it.items.clear()
                 }
             }
+            menuMyDecks.forEach {
+                if (it is Menu) {
+                    it.addMenuItem("-- Update list --") {
+                        updateMenuDecks()
+                    }
+                }
+            }
             TESLTrackerData.decks.forEach { deck ->
-                menuDecks.forEach {
+                menuMyDecks.forEach {
                     if (it is Menu) {
                         it.addMenuItem(deck.name) {
-                            GameState.setDeckCardsSlot(deck.cards.map {
-                                CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
-                            })
-                            Platform.runLater {
-                                GameState.deckTracker.isVisible = true
-                            }
+                            showDeckInDeckTracker(deck)
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun showDeckInDeckTracker(deck: Deck) {
+        GameState.setDeckCardsSlot(deck.cards.map {
+            CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
+        })
+        Platform.runLater {
+            GameState.deckTracker.isVisible = true
         }
     }
 
@@ -329,7 +363,9 @@ class TESLTracker : App(LoggerView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
-                TESLTrackerData.checkForUpdate()
+                CompletableFuture.runAsync {
+                    TESLTrackerData.checkForUpdate()
+                }
                 StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")

@@ -17,11 +17,22 @@ fun String.toIntSafely() = this.toIntOrNull() ?: 0
 
 fun String?.equalsOrNull(other: String): Boolean? = if (this == other) true else null
 
-fun PopupMenu.addMenu(label: String, menuOp: Menu.() -> Unit) {
-    MainWidget.contextMenu.items.add(javafx.scene.control.Menu(label))
-    add(Menu(label).apply {
+fun PopupMenu.addMenu(label: String, menuOp: Menu.() -> Unit): List<Any> {
+    val contextMenuItem = javafx.scene.control.Menu(label)
+    MainWidget.contextMenu.items.add(contextMenuItem)
+    val menu = Menu(label).apply {
         menuOp()
-    })
+    }
+    add(menu)
+    return listOf(menu, contextMenuItem)
+}
+
+fun PopupMenu.addMenu(label: String): List<Any> {
+    val menu = Menu(label)
+    add(menu)
+    val contextMenuItem = javafx.scene.control.Menu(label)
+    MainWidget.contextMenu.items.add(contextMenuItem)
+    return listOf(menu, contextMenuItem)
 }
 
 fun PopupMenu.addMenuItem(label: String, onClick: () -> Unit): List<Any> {
@@ -34,14 +45,6 @@ fun PopupMenu.addMenuItem(label: String, onClick: () -> Unit): List<Any> {
         setOnAction { onClick() }
     })
     return listOf(menuItem, contextMenuItem)
-}
-
-fun PopupMenu.addMenu(label: String): List<Any> {
-    val menu = Menu(label)
-    add(menu)
-    val contextMenuItem = javafx.scene.control.Menu(label)
-    MainWidget.contextMenu.items.add(contextMenuItem)
-    return listOf(menu, contextMenuItem)
 }
 
 fun Menu.addMenuItem(menuItemLabel: String, onClick: () -> Unit) {

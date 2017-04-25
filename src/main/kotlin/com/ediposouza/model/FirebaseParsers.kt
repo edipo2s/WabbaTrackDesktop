@@ -1,7 +1,12 @@
 package com.ediposouza.model
 
 import com.ediposouza.extensions.toIntSafely
+import com.ediposouza.teslesgendstracker.data.Patch
+import com.ediposouza.teslesgendstracker.data.PatchChange
+import com.ediposouza.teslesgendstracker.data.PatchType
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 abstract class FirebaseParsers {
 
@@ -147,35 +152,36 @@ abstract class FirebaseParsers {
 //            val cls: Int = 0
 //
 //    )
-//
-//    class PatchParser {
-//
-//        companion object {
-//
-//            private const val KEY_PATCH_ATTR = "attr"
-//            private const val KEY_PATCH_SET = "set"
-//            private const val KEY_PATCH_CHANGE = "change"
-//
-//        }
-//
-//        val changes: Map<String, Map<String, Any>> = mapOf()
-//        val desc: String = ""
-//        val legendsDeck: String = ""
-//        val type: String = ""
-//
-//        @Suppress("UNCHECKED_CAST")
-//        fun toPatch(uuidDate: String): Patch {
-//            val date = LocalDate.parse(uuidDate, DateTimeFormatter.ofPattern(PATCH_UUID_PATTERN))
-//            val patchCardChanges = changes.map {
-//                val attr = it.value[KEY_PATCH_ATTR].toString()
-//                val set = it.value[KEY_PATCH_SET].toString()
-//                val change = it.value[KEY_PATCH_CHANGE].toString()
-//                PatchChange(attr, set, it.key, change)
-//            }
-//            return Patch(uuidDate, date, desc, legendsDeck, PatchType.of(type), patchCardChanges)
-//        }
-//
-//    }
+
+    class PatchParser {
+
+        companion object {
+
+            private const val KEY_PATCH_ATTR = "attr"
+            private const val KEY_PATCH_SET = "set"
+            private const val KEY_PATCH_CHANGE = "change"
+            private const val PATCH_UUID_PATTERN = "yyyy_MM_dd"
+
+        }
+
+        val changes: Map<String, Map<String, Any>> = mapOf()
+        val desc: String = ""
+        val legendsDeck: String = ""
+        val type: String = ""
+
+        @Suppress("UNCHECKED_CAST")
+        fun toPatch(uuidDate: String): Patch {
+            val date = LocalDate.parse(uuidDate, DateTimeFormatter.ofPattern(PATCH_UUID_PATTERN))
+            val patchCardChanges = changes.map {
+                val attr = it.value[KEY_PATCH_ATTR].toString()
+                val set = it.value[KEY_PATCH_SET].toString()
+                val change = it.value[KEY_PATCH_CHANGE].toString()
+                PatchChange(attr, set, it.key, change)
+            }
+            return Patch(uuidDate, date, desc, legendsDeck, PatchType.of(type), patchCardChanges)
+        }
+
+    }
 
     class MatchParser(
 

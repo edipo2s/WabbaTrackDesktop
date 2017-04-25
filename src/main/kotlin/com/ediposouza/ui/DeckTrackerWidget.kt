@@ -43,7 +43,7 @@ import javax.swing.SwingUtilities
 class DeckTrackerWidget : JFrame() {
 
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
-    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: 1.0f
+    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: 0.9f
     private lateinit var deckTrackerSize: Dimension
 
     val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
