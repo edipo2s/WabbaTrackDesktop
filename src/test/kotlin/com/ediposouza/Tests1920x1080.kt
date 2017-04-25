@@ -31,6 +31,7 @@ class Tests1920x1080 : BaseRecognizeTests() {
         recognizeScreen("ScreenMainModeCasual.png", DHash.SCREEN_MAIN_MODE_CASUAL, BufferedImage::getScreenMainModeCrop)
         recognizeScreen("ScreenMainModeRanked.png", DHash.SCREEN_MAIN_MODE_RANKED, BufferedImage::getScreenMainModeCrop)
         recognizeScreen("ScreenMainModePratice.png", DHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
+        recognizeScreen("ScreenMainModePratice2.png", DHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
     }
 
     @Test
@@ -150,30 +151,30 @@ class Tests1920x1080 : BaseRecognizeTests() {
     @Test
     fun testInitialCardsDraw() {
         var croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(1)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("crushingblow")
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("histgrove")
         croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(2)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("preserveroftheroot")
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("shadowfenpriest")
         croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(3)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("crushingblow")
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("piercingjavelin")
     }
 
     @Test
     fun testGameCardDraw() {
         val croppedImage = getFileImage("Game/CardDraw.png").getGameCardDrawCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("shadowfenpriest")
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("execute")
     }
 
     @Test
     fun testGameCardDrawProphecy() {
         val croppedImage = getFileImage("Game/CardProphecy.png").getGameCardDrawProphecyCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("fightersguildrecruit")
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("fateweaver")
     }
 
     @Test
     fun testGameOpponentClass() {
-        recognizeOpponent("Game/CardDraw.png", "Endurance", BufferedImage::getGameOpponentClassCrop)
-        recognizeOpponent("Game/CardGenerated.png", "Battlemage", BufferedImage::getGameOpponentClassCrop)
-        recognizeOpponent("Game/PlayFirst.png", "Monk", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/CardDraw.png", "Strength", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/CardGenerated.png", "Archer", BufferedImage::getGameOpponentClassCrop)
+        recognizeOpponent("Game/PlayFirst.png", "Battlemage", BufferedImage::getGameOpponentClassCrop)
     }
 
     @Test
