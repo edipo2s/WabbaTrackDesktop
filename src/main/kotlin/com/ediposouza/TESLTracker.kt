@@ -12,6 +12,8 @@ import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert
@@ -29,12 +31,14 @@ import tornadofx.alert
 import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.image.BufferedImage
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 import java.io.InputStream
 import java.net.URLDecoder
 import java.util.concurrent.CompletableFuture
 import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
-
 
 /**
  * Created by ediposouza on 06/03/17.
@@ -110,12 +114,24 @@ class TESLTracker : App(LoggerView::class) {
     val ELDER_SCROLL_SPS = 2f    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
-    lateinit var trayIcon: TrayIcon
-    lateinit var trayPopupMenu: PopupMenu
-    lateinit var menuMyDecks: List<Any>
-    lateinit var menuImportedDecks: List<Any>
-    val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
-    val mainWidget by lazy { MainWidget() }
+    private lateinit var trayIcon: TrayIcon
+    private lateinit var trayPopupMenu: PopupMenu
+    private lateinit var menuMyDecks: List<Any>
+    private lateinit var menuImportedDecks: List<Any>
+    private val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
+    private val mainWidget by lazy { MainWidget() }
+    private val importDecksFromLegendsDecksLabel = "-- Import from Legends-Decks --"
+    private val saveDecksImportedLock = "lock"
+    private var decksImported = mutableListOf<Deck>()
+    private val decksImportedFile by lazy {
+        File(File(jarPath).parentFile, "data").let {
+            if (!it.exists()) {
+                it.mkdirs()
+            }
+            File(it, "decksImported.json")
+        }
+    }
+
     var logging: Boolean = false
         set(value) {
             field = value
@@ -138,6 +154,13 @@ class TESLTracker : App(LoggerView::class) {
         }
 
     var waitingScreenshotChangeWasLogged = false
+
+    init {
+        if (decksImportedFile.exists()) {
+            val listDeckType = object : TypeToken<ArrayList<Deck>>() {}.type
+            decksImported = Gson().fromJson(FileReader(decksImportedFile).readText(), listDeckType)
+        }
+    }
 
     override fun start(stage: Stage) {
         super.start(stage.apply {
@@ -167,8 +190,12 @@ class TESLTracker : App(LoggerView::class) {
             startElderScrollDetection()
         }
         CompletableFuture.runAsync {
+            Thread.sleep(500)
             keyProvider.register(KeyStroke.getKeyStroke("control shift W")) {
                 mainWidget.isVisible = !mainWidget.isVisible
+            }
+            Platform.runLater {
+                updateMenuDecksImported()
             }
             TESLTrackerData.checkForUpdate()
         }
@@ -200,27 +227,8 @@ class TESLTracker : App(LoggerView::class) {
                     }
                 }
                 menuImportedDecks = addMenu("Imported Decks") {
-                    addMenuItem("-- Import from Legends-Decks --") {
-                        Platform.runLater {
-                            val result = TextInputDialog("").apply {
-                                title = "$APP_NAME - Importing deck from Legends-Decks"
-                                contentText = "Url:"
-                            }.showAndWait()
-                            if (result.isPresent) {
-                                val url = result.get()
-                                loading.show()
-                                CompletableFuture.runAsync {
-                                    LegendsDeckImporter.import(url) { deck ->
-                                        Platform.runLater {
-                                            loading.close()
-                                        }
-                                        Mixpanel.postEventDeckImported(deck.name)
-                                        showDeckInDeckTracker(deck)
-                                        Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
-                                    }
-                                }
-                            }
-                        }
+                    addMenuItem(importDecksFromLegendsDecksLabel) {
+                        importDeckFromLegendsClick()
                     }
                 }
                 addMenuItem("Show Log") {
@@ -367,14 +375,77 @@ class TESLTracker : App(LoggerView::class) {
                 }
             }
             TESLTrackerData.decks.forEach { deck ->
-                menuMyDecks.forEach {
-                    if (it is Menu) {
-                        it.addMenuItem(deck.name) {
-                            showDeckInDeckTracker(deck)
-                            Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
-                        }
+                (menuMyDecks.first() as Menu).addMenuItem(deck.name) {
+                    showDeckInDeckTracker(deck)
+                    Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
+                }
+            }
+        }
+    }
+
+    private fun updateMenuDecksImported() {
+        Logger.d("Loading imported decks")
+        decksImported.forEach {
+            menuImportedDecks.forEach {
+                if (it is Menu) {
+                    it.removeAll()
+                }
+                if (it is javafx.scene.control.Menu) {
+                    it.items.clear()
+                }
+            }
+            menuImportedDecks.forEach {
+                if (it is Menu) {
+                    it.addMenuItem(importDecksFromLegendsDecksLabel) {
+                        importDeckFromLegendsClick()
                     }
                 }
+            }
+            decksImported.forEach { deck ->
+                (menuImportedDecks.first() as Menu).addMenuItem(deck.name) {
+                    showDeckInDeckTracker(deck)
+                    Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
+                }
+            }
+        }
+    }
+
+    private fun importDeckFromLegendsClick() {
+        Platform.runLater {
+            val result = TextInputDialog("").apply {
+                title = "$APP_NAME - Importing deck from Legends-Decks"
+                contentText = "Url:"
+            }.showAndWait()
+            if (result.isPresent) {
+                val url = result.get()
+                loading.show()
+                CompletableFuture.runAsync {
+                    LegendsDeckImporter.import(url) { deck ->
+                        Platform.runLater {
+                            loading.close()
+                            decksImported.add(deck)
+                            updateMenuDecksImported()
+                            saveDecksImported()
+                        }
+                        Mixpanel.postEventDeckImported(deck.name)
+                        showDeckInDeckTracker(deck)
+                        Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun saveDecksImported() {
+        synchronized(saveDecksImportedLock) {
+            try {
+                val picksJson = Gson().toJson(decksImported)
+                FileWriter(decksImportedFile).apply {
+                    write(picksJson)
+                    flush()
+                }
+            } catch (e: Exception) {
+                Logger.e(e)
             }
         }
     }

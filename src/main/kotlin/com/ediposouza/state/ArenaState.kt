@@ -105,7 +105,6 @@ object ArenaState : StateHandler.TESLState {
     var lastPickNumberRecognized: Int? = null
     var cardPicksToSelect: Triple<CardPick, CardPick, CardPick>? = null
 
-
     init {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)

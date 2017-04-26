@@ -3,6 +3,7 @@ package com.ediposouza.ui
 import com.ediposouza.TESLTracker
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.util.ImageFuncs
+import com.ediposouza.util.Logger
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
 import javafx.geometry.Pos
@@ -16,6 +17,7 @@ import tornadofx.add
 import tornadofx.imageview
 import java.awt.Dimension
 import java.awt.Window
+import java.util.concurrent.CompletableFuture
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
@@ -31,6 +33,7 @@ class MainWidget : JFrame() {
     }
 
     private lateinit var mainSize: Dimension
+    private var animationRunning = false
 
     init {
         type = Window.Type.UTILITY
@@ -51,10 +54,40 @@ class MainWidget : JFrame() {
                 SwingUtilities.invokeLater {
                     pack()
                     isVisible = true
+                    startShowAnimation()
                 }
             }
         }
 
+    }
+
+    override fun setVisible(b: Boolean) {
+        super.setVisible(b)
+        if (isVisible) {
+            startShowAnimation()
+        }
+    }
+
+    private fun startShowAnimation() {
+        if (animationRunning) {
+            return
+        }
+        animationRunning = true
+        Logger.d("start Floating icon animation")
+        val initialXLocation = location.x
+        val animXLocation = location.x - 50
+        CompletableFuture.runAsync {
+            while (location.x > animXLocation) {
+                setLocation(location.x - 2, location.y)
+                Thread.sleep(20)
+            }
+            Thread.sleep(200)
+            while (location.x < initialXLocation) {
+                setLocation(location.x + 2, location.y)
+                Thread.sleep(20)
+            }
+            animationRunning = false
+        }
     }
 
     private fun createFxScene(): Scene {
