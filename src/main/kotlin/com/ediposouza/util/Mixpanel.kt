@@ -9,6 +9,7 @@ import com.mixpanel.mixpanelapi.ClientDelivery
 import com.mixpanel.mixpanelapi.MessageBuilder
 import com.mixpanel.mixpanelapi.MixpanelAPI
 import org.json.JSONObject
+import oshi.SystemInfo
 import java.io.InputStreamReader
 import java.util.concurrent.CompletableFuture
 

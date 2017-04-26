@@ -23,7 +23,7 @@ object GameState : StateHandler.TESLState {
 
     const val GAME_RECOGNIZER_SPS = 1    //Screenshot Per Second
     const val GAME_RECOGNIZER_DRAW_SPS = 2    //Screenshot Per Second
-    const val GAME_RECOGNIZER_DRAW_FIRST_SPS = 4    //Screenshot Per Second
+    const val GAME_RECOGNIZER_DRAW_FIRST_SPS = 3    //Screenshot Per Second
     const val GAME_RECOGNIZER_CARD_DELAY = 4    //Screenshot Per Second
 
     const val playerGoFirstLock = "lock"
@@ -259,6 +259,7 @@ object GameState : StateHandler.TESLState {
                             }
                         }
                         resetState()
+                        threadRunning = false
                     }
                 }
             }

@@ -136,8 +136,8 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
     override val ARENA_PICK_CARD_SECOND_X = 0
     override val ARENA_PICK_CARD_THIRD_X = 0
 
-    override val ARENA_PICK_SELECT_HEIGHT = 0
-    override val ARENA_PICK_SELECT_WIDTH = 0
+    override val ARENA_PICK_SELECT_HEIGHT = 440
+    override val ARENA_PICK_SELECT_WIDTH = 280
     override val ARENA_PICK_SELECT_FIRST_X = 0
     override val ARENA_PICK_SELECT_SECOND_X = 0
     override val ARENA_PICK_SELECT_THIRD_X = 0
