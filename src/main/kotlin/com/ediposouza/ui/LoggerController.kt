@@ -21,11 +21,11 @@ class LoggerController : Controller() {
     private val saveLogLock = "lock"
 
     private val logsFileWriter by lazy {
-        FileWriter(File(File(TESLTracker.jarPath).parentFile, "data").let {
+        FileWriter(File(File(TESLTracker.jarPath).parentFile, "data/logs").let {
             if (!it.exists()) {
                 it.mkdirs()
             }
-            File(it, "logs_${LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm"))}.txt")
+            File(it, "logs_${LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"))}h.txt")
         })
     }
 

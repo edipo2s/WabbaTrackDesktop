@@ -27,10 +27,12 @@ import tornadofx.App
 import tornadofx.FX
 import tornadofx.alert
 import java.awt.*
+import java.awt.event.KeyEvent
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.net.URLDecoder
 import java.util.concurrent.CompletableFuture
+import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
 
 
@@ -46,6 +48,7 @@ class TESLTracker : App(LoggerView::class) {
         val FILE_NAME = "WabbaTrack.exe"
         val SHOW_TEST_MENU = false
 
+        val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
 
@@ -96,6 +99,7 @@ class TESLTracker : App(LoggerView::class) {
             if (currentTESLState is ArenaState) {
                 currentTESLState.saveArenaPicks()
             }
+            keyProvider.stop()
             Platform.exit()
             System.exit(0)
         }
@@ -158,12 +162,14 @@ class TESLTracker : App(LoggerView::class) {
         } else {
             Mixpanel.trackUser()
         }
-        mainWidget.isVisible = true
 //      loadImportedDecks()
         CompletableFuture.runAsync {
             startElderScrollDetection()
         }
         CompletableFuture.runAsync {
+            keyProvider.register(KeyStroke.getKeyStroke("control shift W")) {
+                mainWidget.isVisible = !mainWidget.isVisible
+            }
             TESLTrackerData.checkForUpdate()
         }
     }
@@ -227,6 +233,9 @@ class TESLTracker : App(LoggerView::class) {
                         GameState.deckTracker.isVisible = true
                         GameState.shouldShowDeckTracker = true
                     }
+                }
+                addMenuItem("Show/Hide Floating Icon", KeyEvent.VK_W) {
+                    mainWidget.isVisible = !mainWidget.isVisible
                 }
                 addMenuItem("About") {
                     Platform.runLater {
@@ -380,6 +389,7 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     private fun startElderScrollDetection() {
+        mainWidget.isVisible = true
         TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
         with(screenSize) {

@@ -7,6 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.IOUtils
 import java.awt.Menu
 import java.awt.MenuItem
+import java.awt.MenuShortcut
 import java.awt.PopupMenu
 import java.io.File
 import java.io.FileInputStream
@@ -35,10 +36,13 @@ fun PopupMenu.addMenu(label: String): List<Any> {
     return listOf(menu, contextMenuItem)
 }
 
-fun PopupMenu.addMenuItem(label: String, onClick: () -> Unit): List<Any> {
+fun PopupMenu.addMenuItem(label: String, shortcutKey: Int? = null, onClick: () -> Unit): List<Any> {
     val menuItem = MenuItem(label)
     add(menuItem.apply {
         addActionListener { onClick() }
+        shortcutKey?.let {
+            shortcut = MenuShortcut(it, true)
+        }
     })
     val contextMenuItem = javafx.scene.control.MenuItem(label)
     MainWidget.contextMenu.items.add(contextMenuItem.apply {

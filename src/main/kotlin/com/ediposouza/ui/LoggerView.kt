@@ -16,8 +16,6 @@ import tornadofx.singleAssign
  */
 class LoggerView : View("WabbaTrack Log") {
 
-    val TRAY_ICON = "ic_legend.png"
-
     override val root = BorderPane()
 
     private val loggerController by inject<LoggerController>()
