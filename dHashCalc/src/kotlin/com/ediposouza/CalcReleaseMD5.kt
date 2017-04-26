@@ -1,5 +1,6 @@
 package com.ediposouza
 
+import com.ediposouza.extensions.getMD5
 import java.io.File
 
 /**

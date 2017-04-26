@@ -154,6 +154,18 @@ fun BufferedImage.getGamePlayerSecondCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getGamePlayerRankCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_PLAYER_RANK_X, GAME_PLAYER_RANK_Y, GAME_PLAYER_RANK_WIDTH, GAME_PLAYER_RANK_HEIGHT)
+    }
+}
+
+fun BufferedImage.getGameOpponentRankCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(GAME_OPPONENT_RANK_X, GAME_OPPONENT_RANK_Y, GAME_OPPONENT_RANK_WIDTH, GAME_OPPONENT_RANK_HEIGHT)
+    }
+}
+
 fun BufferedImage.getGamePlayerClassCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(GAME_PLAYER_CLASS_X, GAME_PLAYER_CLASS_Y, GAME_PLAYER_CLASS_WIDTH, GAME_PLAYER_CLASS_HEIGHT)

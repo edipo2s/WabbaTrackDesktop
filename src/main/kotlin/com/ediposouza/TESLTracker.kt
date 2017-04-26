@@ -46,7 +46,7 @@ class TESLTracker : App(LoggerView::class) {
         val FILE_NAME = "WabbaTrack.exe"
         val SHOW_TEST_MENU = false
 
-        lateinit var referenceConfig: ReferenceConfig
+        var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
 
         val iconName: String = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"

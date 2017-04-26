@@ -102,6 +102,20 @@ class GameRecognizeTests : BaseRecognizeTests() {
         recognizePlayer("Game/PlayerClass/PlayerWillpower.png", "Willpower", BufferedImage::getGamePlayerClassCrop)
     }
 
+    @Test
+    fun testGamePlayerRank() {
+        var croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGamePlayerRankCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("1")
+        croppedImage = getFileImage("Game/PlayerRank/rank2.png").getGamePlayerRankCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("2")
+        croppedImage = getFileImage("Game/PlayerRank/rank3.png").getGamePlayerRankCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("3")
+        croppedImage = getFileImage("Game/PlayerRank/rank4.png").getGamePlayerRankCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("4")
+        croppedImage = getFileImage("Game/PlayerRank/rank5.png").getGamePlayerRankCrop()
+        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("5")
+    }
+
     private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
         val croppedImage = crop(getFileImage(testFileName))
         assertThat(recognizeImage(croppedImage, DHash.GAME_OPPONENT_CLASS_LIST)).isEqualTo(result)

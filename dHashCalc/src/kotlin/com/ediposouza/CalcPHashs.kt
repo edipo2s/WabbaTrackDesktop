@@ -11,7 +11,7 @@ import javax.imageio.ImageIO
 /**
  * Created by ediposouza on 06/03/17.
  */
-object CalcDHashs {
+object CalcPHashs {
 
     val CALC_CARDS_HASH = false
     val CALC_ARENA_PICKS_HASH = false
@@ -22,6 +22,8 @@ object CalcDHashs {
     val CROP_FOLDER_SCREENS = "Screens"
 
     @JvmStatic fun main(args: Array<String>) {
+        getDHashFolderFiles("/Game/PlayerRank", CROP_FOLDER_GAME, BufferedImage::getGameOpponentRankCrop)
+        return
         Logger.d("--Cards--")
         if (CALC_CARDS_HASH) {
             getDHashFolderFiles("/Cards", CROP_FOLDER_CARDS, BufferedImage::getCardCrop)
@@ -52,6 +54,7 @@ object CalcDHashs {
         getDHashFile("/Game/Win2.png", CROP_FOLDER_GAME, BufferedImage::getGameWin2Crop)
         getDHashFile("/Game/Loss.png", CROP_FOLDER_GAME, BufferedImage::getGameLossCrop)
         getDHashFile("/Game/Loss2.png", CROP_FOLDER_GAME, BufferedImage::getGameLoss2Crop)
+        getDHashFolderFiles("/Game/PlayerRank", CROP_FOLDER_GAME, BufferedImage::getGameOpponentRankCrop)
         getDHashFolderFiles("/Game/PlayerClass", CROP_FOLDER_GAME, BufferedImage::getGamePlayerClassCrop)
         getDHashFolderFiles("/Game/OpponentClass", CROP_FOLDER_GAME, BufferedImage::getGameOpponentClassCrop)
     }

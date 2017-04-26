@@ -28,6 +28,7 @@ object GameState : StateHandler.TESLState {
 
     const val playerGoFirstLock = "lock"
     const val playerDeckClassLock = "lock"
+    const val playerRankLock = "lock"
     const val opponentDeckClassLock = "lock"
     const val cardDrawLock = "lock"
     const val cardDrawProphecyLock = "lock"
@@ -43,6 +44,7 @@ object GameState : StateHandler.TESLState {
     var firstCardDrawsTracked: Boolean = false
     var playerGoFirst: Boolean? = null
     var playerDeckClass: DeckClass? = null
+    var playerRank: Int? = null
     var opponentDeckClass: DeckClass? = null
     var lastCardDraw: Card? = null
     var matchMode: MatchMode? = null
@@ -107,6 +109,9 @@ object GameState : StateHandler.TESLState {
                         if (playerDeckClass == null) {
                             processPlayerDeck(this)
                         }
+                        if (playerRank == null) {
+                            processPlayerRank(this)
+                        }
                         if (opponentDeckClass == null) {
                             processOpponentDeck(this)
                         }
@@ -160,6 +165,19 @@ object GameState : StateHandler.TESLState {
                     if (playerDeckClass == null) {
                         playerDeckClass = this
                         Logger.i("--PlayerDeckClass: $this!")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processPlayerRank(screenshot: BufferedImage) {
+        CompletableFuture.runAsync {
+            GameHandler.processPlayerRank(screenshot)?.run {
+                synchronized(playerRankLock) {
+                    if (playerRank == null) {
+                        playerRank = this
+                        Logger.i("--PlayerRank: $this!")
                     }
                 }
             }
@@ -282,7 +300,7 @@ object GameState : StateHandler.TESLState {
             val newUuid = LocalDateTime.now().withNano(0).toString()
             val currentSeason = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM"))
             TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, MatchDeck("", playerDeckClass!!, DeckType.OTHER),
-                    MatchDeck("", opponentDeckClass!!, DeckType.OTHER), matchMode!!, currentSeason, 0, false, win)) {
+                    MatchDeck("", opponentDeckClass!!, DeckType.OTHER), matchMode!!, currentSeason, playerRank ?: 0, false, win)) {
                 Logger.i("Match saved!")
             }
         }

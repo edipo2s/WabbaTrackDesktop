@@ -30,6 +30,12 @@ object GameHandler {
         }
     }
 
+    fun processPlayerRank(screenshot: BufferedImage): Int? {
+        return screenshot.getGamePlayerRankCrop().let {
+            Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_RANK_LIST)?.let(String::toIntOrNull)
+        }
+    }
+
     fun processOpponentDeckClass(screenshot: BufferedImage): DeckClass? {
         return screenshot.getGameOpponentClassCrop().let {
             Recognizer.recognizeImageInMap(it, DHash.GAME_OPPONENT_CLASS_LIST)?.let {

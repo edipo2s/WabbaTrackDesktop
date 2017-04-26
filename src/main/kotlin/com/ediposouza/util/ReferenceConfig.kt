@@ -124,6 +124,16 @@ abstract class ReferenceConfig {
     open val GAME_PLAYER_SECOND_X = 0
     open val GAME_PLAYER_SECOND_Y = 0
 
+    open val GAME_PLAYER_RANK_HEIGHT = 0
+    open val GAME_PLAYER_RANK_WIDTH = 0
+    open val GAME_PLAYER_RANK_X = 0
+    open val GAME_PLAYER_RANK_Y = 0
+
+    open val GAME_OPPONENT_RANK_HEIGHT = 0
+    open val GAME_OPPONENT_RANK_WIDTH = 0
+    open val GAME_OPPONENT_RANK_X = 0
+    open val GAME_OPPONENT_RANK_Y = 0
+
     open val GAME_PLAYER_CLASS_HEIGHT = 0
     open val GAME_PLAYER_CLASS_WIDTH = 0
     open val GAME_PLAYER_CLASS_X = 0
