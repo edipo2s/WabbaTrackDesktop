@@ -3,6 +3,7 @@ package com.ediposouza.extensions
 import com.ediposouza.ui.MainWidget
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.IOUtils
 import java.awt.Menu
@@ -36,6 +37,27 @@ fun PopupMenu.addMenu(label: String): List<Any> {
     return listOf(menu, contextMenuItem)
 }
 
+fun Menu.addMenu(label: String, icon: Image? = null, menuOp: Menu.() -> Unit): List<Any> {
+    val contextMenuItem = javafx.scene.control.Menu(label).apply {
+        icon?.let {
+            graphic = ImageView(it).apply {
+                fitHeight = 15.0
+                fitWidth = 30.0
+            }
+        }
+    }
+    val mainContextMenu = MainWidget.contextMenu.items.find { it.text == this.label } as? javafx.scene.control.Menu
+    mainContextMenu?.items?.add(contextMenuItem)
+    val menu = Menu(label).apply {
+        menuOp()
+//        icon?.let {
+//            setGraphic(it)
+//        }
+    }
+    add(menu)
+    return listOf(menu, contextMenuItem)
+}
+
 fun PopupMenu.addMenuItem(label: String, shortcutKey: Int? = null, onClick: () -> Unit): List<Any> {
     val menuItem = MenuItem(label)
     add(menuItem.apply {
@@ -55,8 +77,8 @@ fun Menu.addMenuItem(menuItemLabel: String, onClick: () -> Unit) {
     add(MenuItem(menuItemLabel).apply {
         addActionListener { onClick() }
     })
-    val mainContextMenu = MainWidget.contextMenu.items.find { it.text == label } as javafx.scene.control.Menu
-    mainContextMenu.items.add(javafx.scene.control.MenuItem(menuItemLabel).apply {
+    val mainContextMenu = MainWidget.contextMenu.items.find { it.text == label } as? javafx.scene.control.Menu
+    mainContextMenu?.items?.add(javafx.scene.control.MenuItem(menuItemLabel).apply {
         setOnAction { onClick() }
     })
 }

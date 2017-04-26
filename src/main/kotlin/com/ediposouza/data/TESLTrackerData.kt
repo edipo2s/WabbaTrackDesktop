@@ -127,7 +127,7 @@ object TESLTrackerData {
                 with(firebaseDatabaseAPI.get("$NODE_DECKS/$NODE_DECKS_PUBLIC.json?$userOwnerFilter&access_token=$userAccessToken").one()) {
                     decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
                         val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
-                        deckParser.toDeck(deckUuid, true)
+                        deckParser.toDeck(deckUuid, false)
                     })
                 }
                 decks.sortBy(Deck::name)
@@ -145,6 +145,21 @@ object TESLTrackerData {
                 val matchParser = Gson().fromJson(patchAttrsJson.toString(), FirebaseParsers.PatchParser::class.java)
                 matchParser.toPatch(patchUuid)
             })
+        }
+    }
+
+    fun deleteDecks(deck: Deck, onSuccess: () -> Unit) {
+        CompletableFuture.runAsync {
+            if (!TESLTrackerAuth.isUserLogged()) {
+                Logger.e("Do login to get decks")
+            } else {
+                val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS/$NODE_DECKS_PRIVATE"
+                val decksPath = userDecksPath.takeIf { deck.private } ?: "$NODE_DECKS/$NODE_DECKS_PUBLIC"
+                val userAccessToken = TESLTrackerAuth.userAccessToken
+                with(firebaseDatabaseAPI.delete("$decksPath/${deck.uuid}.json?access_token=$userAccessToken").consume()) {
+                    onSuccess()
+                }
+            }
         }
     }
 

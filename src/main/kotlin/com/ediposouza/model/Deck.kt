@@ -1,6 +1,11 @@
 package com.ediposouza.model
 
+import com.ediposouza.TESLTracker
+import com.ediposouza.extensions.toFXImage
+import javafx.scene.image.Image
+import java.awt.image.BufferedImage
 import java.time.LocalDateTime
+import javax.imageio.ImageIO
 
 /**
  * Created by Edipo on 29/03/2017.
@@ -108,6 +113,19 @@ data class Deck(
                deckSoulCost: Int, deckPatchUuid: String, deckCards: Map<String, Int>): Deck {
         return Deck(uuid, deckName, owner, deckPrivate, deckTypeSelected, deckCls, deckSoulCost,
                 createdAt, LocalDateTime.now(), deckPatchUuid, likes, views, deckCards, updates, comments)
+    }
+
+    fun getClassIcon(): Image {
+        val attr1Name = cls.attr1.name.toLowerCase().capitalize()
+        val attr2Name = cls.attr2.name.toLowerCase().capitalize()
+        val attr1Img = ImageIO.read(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$attr1Name.png"))
+        val attr2Img = ImageIO.read(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$attr2Name.png"))
+        val distance = 10
+        val clsImg = BufferedImage(attr1Img.width * 2 + distance, attr1Img.height, BufferedImage.TYPE_INT_ARGB).apply {
+            graphics.drawImage(attr1Img, 0, 0, null)
+            graphics.drawImage(attr2Img, attr1Img.width + distance, 0, null)
+        }
+        return clsImg.toFXImage()
     }
 
     override fun toString(): String {

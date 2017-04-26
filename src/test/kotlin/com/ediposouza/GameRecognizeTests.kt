@@ -105,15 +105,17 @@ class GameRecognizeTests : BaseRecognizeTests() {
     @Test
     fun testGamePlayerRank() {
         var croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGamePlayerRankCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("1")
-        croppedImage = getFileImage("Game/PlayerRank/rank2.png").getGamePlayerRankCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("2")
-        croppedImage = getFileImage("Game/PlayerRank/rank3.png").getGamePlayerRankCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("3")
-        croppedImage = getFileImage("Game/PlayerRank/rank4.png").getGamePlayerRankCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("4")
-        croppedImage = getFileImage("Game/PlayerRank/rank5.png").getGamePlayerRankCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("5")
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("3")
+        croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("1")
+        croppedImage = getFileImage("Game/PlayerRank/rank2.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("2")
+        croppedImage = getFileImage("Game/PlayerRank/rank3.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("3")
+        croppedImage = getFileImage("Game/PlayerRank/rank4.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("4")
+        croppedImage = getFileImage("Game/PlayerRank/rank5.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("5")
     }
 
     private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {

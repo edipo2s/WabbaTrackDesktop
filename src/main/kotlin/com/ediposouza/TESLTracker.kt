@@ -375,9 +375,19 @@ class TESLTracker : App(LoggerView::class) {
                 }
             }
             TESLTrackerData.decks.forEach { deck ->
-                (menuMyDecks.first() as Menu).addMenuItem(deck.name) {
-                    showDeckInDeckTracker(deck)
-                    Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
+                (menuMyDecks.first() as Menu).addMenu(deck.name, deck.getClassIcon()) {
+                    addMenuItem("Load") {
+                        showDeckInDeckTracker(deck)
+                        Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
+                    }
+                    addMenuItem("Delete") {
+                        TESLTrackerData.deleteDecks(deck) {
+                            SwingUtilities.invokeLater {
+                                trayIcon.displayMessage(APP_NAME, "${deck.name} deleted.", TrayIcon.MessageType.NONE)
+                            }
+                            updateMenuDecks()
+                        }
+                    }
                 }
             }
         }
@@ -402,9 +412,16 @@ class TESLTracker : App(LoggerView::class) {
                 }
             }
             decksImported.forEach { deck ->
-                (menuImportedDecks.first() as Menu).addMenuItem(deck.name) {
-                    showDeckInDeckTracker(deck)
-                    Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
+                (menuImportedDecks.first() as Menu).addMenu(deck.name, deck.getClassIcon()) {
+                    addMenuItem("Load") {
+                        showDeckInDeckTracker(deck)
+                        Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
+                    }
+                    addMenuItem("Delete") {
+                        decksImported.remove(deck)
+                        saveDecksImported()
+                        updateMenuDecksImported()
+                    }
                 }
             }
         }
