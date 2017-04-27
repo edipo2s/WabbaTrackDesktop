@@ -14,6 +14,7 @@ import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tulskiy.keymaster.common.Provider
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert

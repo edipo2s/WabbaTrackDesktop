@@ -53,59 +53,44 @@ class Tests1920x1080 : BaseRecognizeTests() {
 //    fun testScreenArenaDash() {
 //        recognizeScreen("ScreenArenaDash.png", DHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
 //    }
-//
-//    @Test
-//    fun testScreenArenaPickFalse() {
-//        recognizePickScreen("ArenaPick/ArenaPick.png", null, { it })
-//    }
-//
-//    @Test
-//    fun testScreenArenaCardPicks() {
-//        recognizePickScreen("ArenaPick/ArenaPick01.png", DHash.SCREEN_ARENA_PICK_01, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick02.png", DHash.SCREEN_ARENA_PICK_02, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick03.png", DHash.SCREEN_ARENA_PICK_03, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick04.png", DHash.SCREEN_ARENA_PICK_04, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick05.png", DHash.SCREEN_ARENA_PICK_05, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick06.png", DHash.SCREEN_ARENA_PICK_06, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick07.png", DHash.SCREEN_ARENA_PICK_07, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick08.png", DHash.SCREEN_ARENA_PICK_08, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick09.png", DHash.SCREEN_ARENA_PICK_09, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick10.png", DHash.SCREEN_ARENA_PICK_10, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick11.png", DHash.SCREEN_ARENA_PICK_11, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick12.png", DHash.SCREEN_ARENA_PICK_12, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick13.png", DHash.SCREEN_ARENA_PICK_13, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick14.png", DHash.SCREEN_ARENA_PICK_14, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick15.png", DHash.SCREEN_ARENA_PICK_15, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick16.png", DHash.SCREEN_ARENA_PICK_16, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick17.png", DHash.SCREEN_ARENA_PICK_17, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick18.png", DHash.SCREEN_ARENA_PICK_18, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick19.png", DHash.SCREEN_ARENA_PICK_19, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick20.png", DHash.SCREEN_ARENA_PICK_20, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick21.png", DHash.SCREEN_ARENA_PICK_21, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick22.png", DHash.SCREEN_ARENA_PICK_22, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick23.png", DHash.SCREEN_ARENA_PICK_23, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick24.png", DHash.SCREEN_ARENA_PICK_24, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick25.png", DHash.SCREEN_ARENA_PICK_25, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick26.png", DHash.SCREEN_ARENA_PICK_26, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick27.png", DHash.SCREEN_ARENA_PICK_27, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick28.png", DHash.SCREEN_ARENA_PICK_28, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick29.png", DHash.SCREEN_ARENA_PICK_29, BufferedImage::getScreenArenaPickNumberCrop)
-//        recognizePickScreen("ArenaPick/ArenaPick30.png", DHash.SCREEN_ARENA_PICK_30, BufferedImage::getScreenArenaPickNumberCrop)
-//    }
-//
-//    @Test
-//    fun testArenaPickClass() {
-//        recognizeArenaPickClass("ArenaClass/PickArcher.png", "Archer")
-//        recognizeArenaPickClass("ArenaClass/PickAssassin.png", "Assassin")
-//        recognizeArenaPickClass("ArenaClass/PickBattlemage.png", "Battlemage")
-//        recognizeArenaPickClass("ArenaClass/PickCrusader.png", "Crusader")
-//        recognizeArenaPickClass("ArenaClass/PickMage.png", "Mage")
-//        recognizeArenaPickClass("ArenaClass/PickMonk.png", "Monk")
-//        recognizeArenaPickClass("ArenaClass/PickScout.png", "Scout")
-//        recognizeArenaPickClass("ArenaClass/PickSorcerer.png", "Sorcerer")
-//        recognizeArenaPickClass("ArenaClass/PickSpellsword.png", "Spellsword")
-//        recognizeArenaPickClass("ArenaClass/PickWarrior.png", "Warrior")
-//    }
+
+    @Test
+    fun testScreenArenaCardPicks() {
+        recognizePickScreen("ArenaPick/ArenaPick01.png", DHash.SCREEN_ARENA_PICK_01, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick02.png", DHash.SCREEN_ARENA_PICK_02, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick03.png", DHash.SCREEN_ARENA_PICK_03, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick04.png", DHash.SCREEN_ARENA_PICK_04, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick05.png", DHash.SCREEN_ARENA_PICK_05, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick06.png", DHash.SCREEN_ARENA_PICK_06, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick07.png", DHash.SCREEN_ARENA_PICK_07, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick08.png", DHash.SCREEN_ARENA_PICK_08, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick09.png", DHash.SCREEN_ARENA_PICK_09, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick10.png", DHash.SCREEN_ARENA_PICK_10, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick11.png", DHash.SCREEN_ARENA_PICK_11, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick12.png", DHash.SCREEN_ARENA_PICK_12, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick13.png", DHash.SCREEN_ARENA_PICK_13, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick14.png", DHash.SCREEN_ARENA_PICK_14, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick15.png", DHash.SCREEN_ARENA_PICK_15, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick16.png", DHash.SCREEN_ARENA_PICK_16, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick17.png", DHash.SCREEN_ARENA_PICK_17, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick18.png", DHash.SCREEN_ARENA_PICK_18, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick19.png", DHash.SCREEN_ARENA_PICK_19, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick20.png", DHash.SCREEN_ARENA_PICK_20, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick21.png", DHash.SCREEN_ARENA_PICK_21, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick22.png", DHash.SCREEN_ARENA_PICK_22, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick23.png", DHash.SCREEN_ARENA_PICK_23, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick24.png", DHash.SCREEN_ARENA_PICK_24, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick25.png", DHash.SCREEN_ARENA_PICK_25, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick26.png", DHash.SCREEN_ARENA_PICK_26, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick27.png", DHash.SCREEN_ARENA_PICK_27, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick28.png", DHash.SCREEN_ARENA_PICK_28, BufferedImage::getScreenArenaPickNumberCrop)
+        recognizePickScreen("ArenaPick/ArenaPick29.png", DHash.SCREEN_ARENA_PICK_29, BufferedImage::getScreenArenaPickNumberCrop)
+    }
+
+    @Test
+    fun testArenaPickClass() {
+        recognizeArenaPickClass("ArenaPick/ArenaPick29.png", "Sorcerer")
+    }
 
     private fun recognizeScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
         cropFun(getFileImage(testFileName))?.apply {

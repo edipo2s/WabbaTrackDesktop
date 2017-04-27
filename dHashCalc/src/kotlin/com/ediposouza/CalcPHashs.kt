@@ -22,8 +22,6 @@ object CalcPHashs {
     val CROP_FOLDER_SCREENS = "Screens"
 
     @JvmStatic fun main(args: Array<String>) {
-        getDHashFolderFiles("/Game/PlayerRank", CROP_FOLDER_GAME, BufferedImage::getGameOpponentRankCrop)
-        return
         Logger.d("--Cards--")
         if (CALC_CARDS_HASH) {
             getDHashFolderFiles("/Cards", CROP_FOLDER_CARDS, BufferedImage::getCardCrop)

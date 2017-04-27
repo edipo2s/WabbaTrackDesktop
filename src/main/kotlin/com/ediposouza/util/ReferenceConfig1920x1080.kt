@@ -48,10 +48,10 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
     override val SCREEN_ARENA_PICKS_X = 0
     override val SCREEN_ARENA_PICKS_Y = 0
 
-    override val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 0
-    override val SCREEN_ARENA_PICK_NUMBER_WIDTH = 0
-    override val SCREEN_ARENA_PICK_NUMBER_X = 0
-    override val SCREEN_ARENA_PICK_NUMBER_Y = 0
+    override val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 40
+    override val SCREEN_ARENA_PICK_NUMBER_WIDTH = 38
+    override val SCREEN_ARENA_PICK_NUMBER_X = 1705
+    override val SCREEN_ARENA_PICK_NUMBER_Y = 960
 
     override val SCREEN_ARENA_DASHBOARD_HEIGHT = 0
     override val SCREEN_ARENA_DASHBOARD_WIDTH = 0
@@ -134,10 +134,10 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
 
     // -- Arena --
 
-    override val ARENA_PICK_CLASS_HEIGHT = 0
-    override val ARENA_PICK_CLASS_WIDTH = 0
-    override val ARENA_PICK_CLASS_X = 0
-    override val ARENA_PICK_CLASS_Y = 0
+    override val ARENA_PICK_CLASS_HEIGHT = 67
+    override val ARENA_PICK_CLASS_WIDTH = 258
+    override val ARENA_PICK_CLASS_X = 1607
+    override val ARENA_PICK_CLASS_Y = 27
 
     override val ARENA_PICK_CARD_HEIGHT = 0
     override val ARENA_PICK_CARD_WIDTH = 0

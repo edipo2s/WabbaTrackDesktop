@@ -8,13 +8,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
 }
 
 apply plugin: 'kotlin'
@@ -24,7 +24,7 @@ dependencies {
     compile files('libs/luciad-webp-0.6.0.jar')
     compile files('libs/oshi-core-3.4.2.jar')
 
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '$kotlin_version'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: "$kotlin_version"
     compile group: 'no.tornado', name: 'tornadofx', version: '1.7.0'
     compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
     compile group: 'org.scijava', name: 'native-lib-loader', version: '2.1.3'

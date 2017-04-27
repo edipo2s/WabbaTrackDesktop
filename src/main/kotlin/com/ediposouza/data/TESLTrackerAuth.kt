@@ -42,7 +42,7 @@ object TESLTrackerAuth {
             Logger.d("Validating a token:")
             userAccessToken = credential?.accessToken
             CredentialsProvider.oauth2?.run {
-                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
+                //                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
 //                Logger.d(tokeninfo.toPrettyString())
                 Logger.d("Obtaining User Profile Information:")
                 val userinfo = userinfo().get().execute()
