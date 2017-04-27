@@ -66,14 +66,17 @@ object GameState : StateHandler.TESLState {
     }
 
     override fun resetState() {
-        playerGoFirst = null
-        playerDeckClass = null
-        opponentDeckClass = null
-        lastCardDraw = null
-        matchMode = null
         firstCardDraws = null
         firstCardDrawsWithoutMulligan = null
         firstCardDrawsTracked = false
+        playerGoFirst = null
+        playerDeckClass = null
+        playerRank = null
+        opponentDeckClass = null
+        lastCardDraw = null
+        matchMode = null
+        cardGenerated = null
+        cardGeneratedDetected = null
         deckTracker.resetDraws()
     }
 
@@ -123,10 +126,10 @@ object GameState : StateHandler.TESLState {
         }
     }
 
-    fun setDeckCardsSlot(cardsSlot: List<CardSlot>) {
+    fun setDeckCardsSlot(cardsSlot: List<CardSlot>, deckName: String? = null) {
         deckCardsSlot = cardsSlot
         Platform.runLater {
-            deckTracker.setDeckCardsSlot(cardsSlot)
+            deckTracker.setDeckCardsSlot(cardsSlot, deckName)
         }
     }
 
@@ -299,7 +302,7 @@ object GameState : StateHandler.TESLState {
                 matchMode != null && matchMode != MatchMode.PRATICE) {
             val newUuid = LocalDateTime.now().withNano(0).toString()
             val currentSeason = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM"))
-            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, MatchDeck("", playerDeckClass!!, DeckType.OTHER),
+            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, MatchDeck(deckTracker.deckName ?: "", playerDeckClass!!, DeckType.OTHER),
                     MatchDeck("", opponentDeckClass!!, DeckType.OTHER), matchMode!!, currentSeason, playerRank ?: 0, false, win)) {
                 Logger.i("Match saved!")
             }

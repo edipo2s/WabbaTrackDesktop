@@ -46,6 +46,7 @@ class DeckTrackerWidget : JFrame() {
     private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: 0.9f
     private lateinit var deckTrackerSize: Dimension
 
+    var deckName: String? = null
     val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
     val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.webp") }
 
@@ -226,8 +227,9 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
-    fun setDeckCardsSlot(cardsSlot: List<CardSlot>) {
+    fun setDeckCardsSlot(cardsSlot: List<CardSlot>, name: String? = null) {
         isVisible = true
+        deckName = name
         deckCardsSlot.apply {
             clear()
             if (TESLTrackerData.cards.size > 0) {
@@ -279,7 +281,7 @@ class DeckTrackerWidget : JFrame() {
                 ImageFuncs.getScreenScaledSize(cellBaseWidth.toInt(), cellBaseHeight.toInt())
             }
         }
-        deckCoverName.text = deckClassName ?: ""
+        deckCoverName.text = deckName ?: deckClassName ?: ""
         deckCoverPane.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,

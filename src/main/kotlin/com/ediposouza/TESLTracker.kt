@@ -471,7 +471,7 @@ class TESLTracker : App(LoggerView::class) {
     private fun showDeckInDeckTracker(deck: Deck) {
         GameState.setDeckCardsSlot(deck.cards.map {
             CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
-        })
+        }, deck.name)
         Platform.runLater {
             GameState.deckTracker.isVisible = true
         }
