@@ -1,9 +1,7 @@
 package com.ediposouza
 
 import com.ediposouza.extensions.*
-import com.ediposouza.util.ImageFuncs
-import com.ediposouza.util.Logger
-import com.ediposouza.util.Recognizer
+import com.ediposouza.util.*
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -26,7 +24,6 @@ object CalcPHashs {
         if (CALC_CARDS_HASH) {
             getDHashFolderFiles("/Cards", CROP_FOLDER_CARDS, BufferedImage::getCardCrop)
         }
-
         Logger.d("--Screens--")
         getDHashFile("/Screens/Main.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainCrop)
         getDHashFile("/Screens/MainModeCasual.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
@@ -38,9 +35,6 @@ object CalcPHashs {
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaPicks.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPicksCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
-        if (CALC_ARENA_PICKS_HASH) {
-            getDHashFolderFiles("/Screens/ArenaPick", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickNumberCrop)
-        }
 
         Logger.d("--Arena Class Select--")
         getDHashFolderFiles("/ArenaClass", CROP_FOLDER_ARENA, BufferedImage::getArenaPickClassCrop)
@@ -55,6 +49,13 @@ object CalcPHashs {
         getDHashFolderFiles("/Game/PlayerRank", CROP_FOLDER_GAME, BufferedImage::getGameOpponentRankCrop)
         getDHashFolderFiles("/Game/PlayerClass", CROP_FOLDER_GAME, BufferedImage::getGamePlayerClassCrop)
         getDHashFolderFiles("/Game/OpponentClass", CROP_FOLDER_GAME, BufferedImage::getGameOpponentClassCrop)
+
+        if (CALC_ARENA_PICKS_HASH) {
+            getDHashFolderFiles("/Screens/ArenaPick1366", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPickNumberCrop)
+            TESLTracker.referenceConfig = ReferenceConfig1920x1080()
+            getDHashFolderFiles("/Screens/ArenaPick1920", "${CROP_FOLDER_SCREENS}1920", BufferedImage::getScreenArenaPickNumberCrop)
+            TESLTracker.referenceConfig = ReferenceConfig1366x768()
+        }
     }
 
     fun getDHashFile(relativePath: String, cropFolder: String = "", cropFun: (BufferedImage) -> BufferedImage?) {

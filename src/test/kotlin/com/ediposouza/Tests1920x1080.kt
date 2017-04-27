@@ -44,15 +44,15 @@ class Tests1920x1080 : BaseRecognizeTests() {
         recognizeScreen("ScreenArenaClasses.png", DHash.SCREEN_ARENA_CLASSES, BufferedImage::getScreenArenaClassesCrop)
     }
 
-//    @Test
-//    fun testScreenArenaPicks() {
-//        recognizeScreen("ScreenArenaPicks.png", DHash.SCREEN_ARENA_PICKS, BufferedImage::getScreenArenaPicksCrop)
-//    }
-//
-//    @Test
-//    fun testScreenArenaDash() {
-//        recognizeScreen("ScreenArenaDash.png", DHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
-//    }
+    @Test
+    fun testScreenArenaPicks() {
+        recognizeScreen("ArenaPick/ArenaPick01.png", DHash.SCREEN_ARENA_PICKS, BufferedImage::getScreenArenaPicksCrop)
+    }
+
+    @Test
+    fun testScreenArenaDash() {
+        recognizeScreen("ScreenArenaDash.png", DHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
+    }
 
     @Test
     fun testScreenArenaCardPicks() {
@@ -106,7 +106,6 @@ class Tests1920x1080 : BaseRecognizeTests() {
 
     private fun recognizeArenaPickClass(testFileName: String, cls: String) {
         val croppedImage = getFileImage(testFileName).getArenaPickClassCrop()
-        croppedImage.saveCroppedImage()
         assertThat(recognizeImage(croppedImage, DHash.CLASS_PICK_LIST)).isEqualTo(cls)
     }
 
@@ -168,6 +167,14 @@ class Tests1920x1080 : BaseRecognizeTests() {
         recognizePlayer("Game/PlayFirst.png", "Assassin", BufferedImage::getGamePlayerClassCrop)
     }
 
+    @Test
+    fun testGamePlayerRank() {
+        var croppedImage = getFileImage("Game/rank3.png").getGamePlayerRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("3")
+        croppedImage = getFileImage("Game/rank3.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("4")
+    }
+
     private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
         val croppedImage = crop(getFileImage(testFileName))
         assertThat(recognizeImage(croppedImage, DHash.GAME_OPPONENT_CLASS_LIST)).isEqualTo(result)
@@ -180,24 +187,38 @@ class Tests1920x1080 : BaseRecognizeTests() {
 
     // -- Arena Tests --
 
-//    @Test
-//    fun testArenaPicks() {
-//        recognizeArenaPick("ArenaPick/ArenaPick01.png", "fifthlegiontrainer", "septimguardsman", "snowwolf")
-//        recognizeArenaPick("ArenaPick/ArenaPick02.png", "icespike", "voraciousspriggan", "lightningbolt")
-//        recognizeArenaPick("ArenaPick/ArenaPick03.png", "redoranenforcer", "lightningbolt", "camlornsentinel")
-//        recognizeArenaPick("ArenaPick/ArenaPick04.png", "sparkingspider", "dwarvensphere", "highlandlurcher")
-//        recognizeArenaPick("ArenaPick/ArenaPick05.png", "varaniscourier", "crystaltowercrafter", "fightersguildrecruit")
-//        recognizeArenaPick("ArenaPick/ArenaPick06.png", "drestormentor", "fateweaver", "elixirofdeflection")
-//        recognizeArenaPick("ArenaPick/ArenaPick07.png", "chaurusreaper", "highlandlurcher", "steelsword")
-//        recognizeArenaPick("ArenaPick/ArenaPick08.png", "anxileelinvader", "chaurusreaper", "nimbleally")
-//        recognizeArenaPick("ArenaPick/ArenaPick09.png", "lightningbolt", "reachmanshaman", "arrowintheknee")
-//        recognizeArenaPick("ArenaPick/ArenaPick10.png", "firebolt", "darkharvester", "dunmernightblade")
-//        recognizeArenaPick("ArenaPick/ArenaPick11.png", "nibenbaycutthroat", "nimbleally", "shockingwamasu")
-//        recognizeArenaPick("ArenaPick/ArenaPick12.png", "highrocksummoner", "dunesmuggler", "dreughshellarmor")
-//        recognizeArenaPick("ArenaPick/ArenaPick13.png", "momentofclarity", "greentouchedspriggan", "wildbeastcaller")
-//        recognizeArenaPick("ArenaPick/ArenaPick14.png", "telvanniarcanist", "blacksapprotector", "shriekingharpy")
-//        recognizeArenaPick("ArenaPick/ArenaPick15.png", "icespike", "nibenbaycutthroat", "bardedguar")
-//    }
+    @Test
+    fun testArenaPicks() {
+        recognizeArenaPick("ArenaPick/ArenaPick01.png", "falkreathdefiler", "highrocksummoner", "watchcommander")
+        recognizeArenaPick("ArenaPick/ArenaPick02.png", "abeceannavigator", "histspeaker", "stealerofsecrets")
+        recognizeArenaPick("ArenaPick/ArenaPick03.png", "treeminder", "stormholdhenchman", "daggersinthedark")
+        recognizeArenaPick("ArenaPick/ArenaPick04.png", "deadlydraugr", "lillandrilhexmage", "gristlehidedreugh")
+        recognizeArenaPick("ArenaPick/ArenaPick05.png", "knifetothethroat", "stalwartally", "stalkingshadowscale")
+        recognizeArenaPick("ArenaPick/ArenaPick06.png", "glenumbrasorceress", "firestorm", "lowlandtroll")
+        recognizeArenaPick("ArenaPick/ArenaPick07.png", "farsightnereid", "healinghands", "reachmanshaman")
+        recognizeArenaPick("ArenaPick/ArenaPick08.png", "camlornhero", "mapleshield", "healinghands")
+        recognizeArenaPick("ArenaPick/ArenaPick09.png", "lowlandtroll", "skilledblacksmith", "mummify")
+        recognizeArenaPick("ArenaPick/ArenaPick10.png", "windkeepspellsword", "oldgatewarden", "stalkingshadowscale")
+        recognizeArenaPick("ArenaPick/ArenaPick11.png", "knifetothethroat", "shockingwamasu", "lesserward")
+        recognizeArenaPick("ArenaPick/ArenaPick12.png", "stampedingmammoth", "hallsofthedwemer", "heroicrebirth")
+        recognizeArenaPick("ArenaPick/ArenaPick13.png", "healinghands", "lesserward", "reachmanshaman")
+        recognizeArenaPick("ArenaPick/ArenaPick14.png", "gloomwraith", "spearofembers", "drestormentor")
+        recognizeArenaPick("ArenaPick/ArenaPick15.png", "daggersinthedark", "lurkingmummy", "palaceconspirator")
+        recognizeArenaPick("ArenaPick/ArenaPick16.png", "crystaltowercrafter", "stonetoothscrapper", "stalkingshadowscale")
+        recognizeArenaPick("ArenaPick/ArenaPick17.png", "lionguardstrategist", "strongholdincubator", "nightshadow")
+        recognizeArenaPick("ArenaPick/ArenaPick18.png", "lightningbolt", "shockingwamasu", "spiderworker")
+        recognizeArenaPick("ArenaPick/ArenaPick19.png", "dwarvensphere", "palaceconspirator", "swampleviathan")
+        recognizeArenaPick("ArenaPick/ArenaPick20.png", "lurkingmummy", "dragontailsavior", "lillandrilhexmage")
+        recognizeArenaPick("ArenaPick/ArenaPick21.png", "palaceconspirator", "lesserward", "dragontailsavior")
+        recognizeArenaPick("ArenaPick/ArenaPick22.png", "suppress", "dresrenegade", "yewshield")
+        recognizeArenaPick("ArenaPick/ArenaPick23.png", "deadlydraugr", "wrothgarartisan", "treeminder")
+        recognizeArenaPick("ArenaPick/ArenaPick24.png", "frenziedwitchman", "enchantedplate", "lightningbolt")
+        recognizeArenaPick("ArenaPick/ArenaPick25.png", "fharundefender", "redoranenforcer", "healinghands")
+        recognizeArenaPick("ArenaPick/ArenaPick26.png", "stonetoothscrapper", "swampleviathan", "steelsword")
+        recognizeArenaPick("ArenaPick/ArenaPick27.png", "youngmammoth", "elixirofconflict", "royalsage")
+        recognizeArenaPick("ArenaPick/ArenaPick28.png", "spiderworker", "treeminder", "lightningbolt")
+        recognizeArenaPick("ArenaPick/ArenaPick29.png", "soulsplit", "spiderworker", "redoranenforcer")
+    }
 
     private fun recognizeArenaPick(testFileName: String, card1: String, card2: String, card3: String) {
         val croppedImage1 = getFileImage(testFileName).getArenaCardCrop(1)

@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/WabbaTrack.iml" filepath="$PROJECT_DIR$/.idea/modules/WabbaTrack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WabbaTrack_main.iml" filepath="$PROJECT_DIR$/.idea/modules/WabbaTrack_main.iml" group="WabbaTrack" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WabbaTrack_test.iml" filepath="$PROJECT_DIR$/.idea/modules/WabbaTrack_test.iml" group="WabbaTrack" />
       <module fileurl="file://$PROJECT_DIR$/dHashCalc/dHashCalc.iml" filepath="$PROJECT_DIR$/dHashCalc/dHashCalc.iml" />
     </modules>
   </component>

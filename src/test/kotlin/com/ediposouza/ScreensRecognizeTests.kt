@@ -119,7 +119,6 @@ class ScreenClassRecognizeTests : BaseRecognizeTests() {
 
     private fun recognizeArenaPickClass(testFileName: String, cls: String) {
         val croppedImage = getFileImage(testFileName).getArenaPickClassCrop()
-        croppedImage.saveCroppedImage()
         assertThat(recognizeImage(croppedImage, DHash.CLASS_PICK_LIST)).isEqualTo(cls)
     }
 

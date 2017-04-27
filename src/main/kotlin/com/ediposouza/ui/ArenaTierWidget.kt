@@ -73,10 +73,10 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         background = java.awt.Color(0, 0, 0, 0)
 
         with(TESLTracker.referenceConfig) {
-            val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_FIRST_X, ARENA_PICK_NUMBER_Y)
-            val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_SECOND_X, ARENA_PICK_NUMBER_Y)
-            val tierValueThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_NUMBER_THIRD_X, ARENA_PICK_NUMBER_Y)
-            tierValueSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_NUMBER_WIDTH, ARENA_PICK_NUMBER_HEIGHT)
+            val tierValueFirstPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_WIDGET_FIRST_X, ARENA_PICK_WIDGET_Y)
+            val tierValueSecondPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_WIDGET_SECOND_X, ARENA_PICK_WIDGET_Y)
+            val tierValueThirdPos = ImageFuncs.getScreenScaledPosition(ARENA_PICK_WIDGET_THIRD_X, ARENA_PICK_WIDGET_Y)
+            tierValueSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_WIDGET_WIDTH, ARENA_PICK_WIDGET_HEIGHT)
             setLocation(when (pickNumber) {
                 1 -> tierValueFirstPos.x
                 2 -> tierValueSecondPos.x

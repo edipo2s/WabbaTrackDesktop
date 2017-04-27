@@ -24,7 +24,14 @@ abstract class ReferenceConfig {
     open val DECK_TRACKER_CARD_HEIGHT = 0
     open val DECK_TRACKER_CARD_WIDTH = 0
 
-    val FULL_CARD_HEIGHT = 275
+    open val ARENA_PICK_WIDGET_FIRST_X = 0
+    open val ARENA_PICK_WIDGET_SECOND_X = 0
+    open val ARENA_PICK_WIDGET_THIRD_X = 0
+    open val ARENA_PICK_WIDGET_Y = 0
+    open val ARENA_PICK_WIDGET_HEIGHT = 0
+    open val ARENA_PICK_WIDGET_WIDTH = 0
+
+    val FULL_CARD_HEIGHT = 255
     val FULL_CARD_WIDTH = 212
     val FULL_CARD_X = 80
     val FULL_CARD_Y = 100
@@ -164,12 +171,5 @@ abstract class ReferenceConfig {
     open val ARENA_PICK_SELECT_SECOND_X = 0
     open val ARENA_PICK_SELECT_THIRD_X = 0
     open val ARENA_PICK_SELECT_Y = 0
-
-    open val ARENA_PICK_NUMBER_HEIGHT = 0
-    open val ARENA_PICK_NUMBER_WIDTH = 0
-    open val ARENA_PICK_NUMBER_FIRST_X = 0
-    open val ARENA_PICK_NUMBER_SECOND_X = 0
-    open val ARENA_PICK_NUMBER_THIRD_X = 0
-    open val ARENA_PICK_NUMBER_Y = 0
 
 }

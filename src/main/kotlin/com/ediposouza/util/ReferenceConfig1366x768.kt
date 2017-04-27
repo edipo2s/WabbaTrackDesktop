@@ -17,9 +17,16 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     override val DECK_TRACKER_WIDTH = 250
     override val DECK_TRACKER_X = 0
-    override val DECK_TRACKER_Y = 20
+    override val DECK_TRACKER_Y = 30
     override val DECK_TRACKER_CARD_HEIGHT = 30
     override val DECK_TRACKER_CARD_WIDTH = 150
+
+    override val ARENA_PICK_WIDGET_FIRST_X = 225
+    override val ARENA_PICK_WIDGET_SECOND_X = 465
+    override val ARENA_PICK_WIDGET_THIRD_X = 705
+    override val ARENA_PICK_WIDGET_Y = 435
+    override val ARENA_PICK_WIDGET_HEIGHT = 75
+    override val ARENA_PICK_WIDGET_WIDTH = 75
 
     // -- Screens --
 
@@ -48,10 +55,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_ARENA_PICKS_X = 330
     override val SCREEN_ARENA_PICKS_Y = 650
 
-    override val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 30
-    override val SCREEN_ARENA_PICK_NUMBER_WIDTH = 25
-    override val SCREEN_ARENA_PICK_NUMBER_X = 1215
-    override val SCREEN_ARENA_PICK_NUMBER_Y = 680
+    override val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 14
+    override val SCREEN_ARENA_PICK_NUMBER_WIDTH = 18
+    override val SCREEN_ARENA_PICK_NUMBER_X = 1218
+    override val SCREEN_ARENA_PICK_NUMBER_Y = 689
 
     override val SCREEN_ARENA_DASHBOARD_HEIGHT = 50
     override val SCREEN_ARENA_DASHBOARD_WIDTH = 105
@@ -80,12 +87,12 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_LOSS2_X = 550
     override val GAME_LOSS2_Y = 250
 
-    override val GAME_CARD_DRAW_HEIGHT = 157
+    override val GAME_CARD_DRAW_HEIGHT = 145
     override val GAME_CARD_DRAW_WIDTH = 120
     override val GAME_CARD_DRAW_X = 1003
     override val GAME_CARD_DRAW_Y = 358
 
-    override val GAME_CARD_DRAW_PROPHECY_HEIGHT = 115
+    override val GAME_CARD_DRAW_PROPHECY_HEIGHT = 107
     override val GAME_CARD_DRAW_PROPHECY_WIDTH = 92
     override val GAME_CARD_DRAW_PROPHECY_X = 943
     override val GAME_CARD_DRAW_PROPHECY_Y = 453
@@ -95,7 +102,7 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_CARD_GENERATED_X = 1105
     override val GAME_CARD_GENERATED_Y = 455
 
-    override val CARD_INITIAL_DRAW_HEIGHT = 160
+    override val CARD_INITIAL_DRAW_HEIGHT = 145
     override val CARD_INITIAL_DRAW_WIDTH = 120
     override val CARD_INITIAL_DRAW_FIRST_X = 412
     override val CARD_INITIAL_DRAW_SECOND_X = 623
@@ -135,11 +142,11 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     // -- Arena --
 
     override val ARENA_PICK_CLASS_HEIGHT = 45
-    override val ARENA_PICK_CLASS_WIDTH = 180
-    override val ARENA_PICK_CLASS_X = 1140
+    override val ARENA_PICK_CLASS_WIDTH = 129
+    override val ARENA_PICK_CLASS_X = 1191
     override val ARENA_PICK_CLASS_Y = 20
 
-    override val ARENA_PICK_CARD_HEIGHT = 155
+    override val ARENA_PICK_CARD_HEIGHT = 143
     override val ARENA_PICK_CARD_WIDTH = 118
     override val ARENA_PICK_CARD_START_Y = 152
     override val ARENA_PICK_CARD_FIRST_X = 284
@@ -152,12 +159,5 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val ARENA_PICK_SELECT_SECOND_X = 460
     override val ARENA_PICK_SELECT_THIRD_X = 690
     override val ARENA_PICK_SELECT_Y = 100
-
-    override val ARENA_PICK_NUMBER_FIRST_X = 225
-    override val ARENA_PICK_NUMBER_SECOND_X = 465
-    override val ARENA_PICK_NUMBER_THIRD_X = 705
-    override val ARENA_PICK_NUMBER_Y = 435
-    override val ARENA_PICK_NUMBER_HEIGHT = 75
-    override val ARENA_PICK_NUMBER_WIDTH = 75
 
 }

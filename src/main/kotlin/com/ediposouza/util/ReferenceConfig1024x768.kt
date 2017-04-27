@@ -143,11 +143,11 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val ARENA_PICK_SELECT_THIRD_X = 0
     override val ARENA_PICK_SELECT_Y = 0
 
-    override val ARENA_PICK_NUMBER_HEIGHT = 0
-    override val ARENA_PICK_NUMBER_WIDTH = 0
-    override val ARENA_PICK_NUMBER_FIRST_X = 0
-    override val ARENA_PICK_NUMBER_SECOND_X = 0
-    override val ARENA_PICK_NUMBER_THIRD_X = 0
-    override val ARENA_PICK_NUMBER_Y = 0
+    override val ARENA_PICK_WIDGET_HEIGHT = 0
+    override val ARENA_PICK_WIDGET_WIDTH = 0
+    override val ARENA_PICK_WIDGET_FIRST_X = 0
+    override val ARENA_PICK_WIDGET_SECOND_X = 0
+    override val ARENA_PICK_WIDGET_THIRD_X = 0
+    override val ARENA_PICK_WIDGET_Y = 0
 
 }

@@ -11,6 +11,7 @@ import com.google.api.services.oauth2.Oauth2
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import tornadofx.Rest
+import tornadofx.toPrettyString
 import java.io.InputStreamReader
 
 /**
@@ -37,19 +38,19 @@ object TESLTrackerAuth {
             val credential = CredentialsProvider.authorize(httpTransport, jsonFactory)
             CredentialsProvider.oauth2 = Oauth2.Builder(httpTransport, jsonFactory, credential)
                     .setApplicationName(TESLTracker.APP_NAME).build()
-//            Logger.d("Validating a token: \n Access Token: ${credential?.accessToken}")
+            Logger.d("Validating a token: \n Access Token: ${credential?.accessToken}")
 
             Logger.d("Validating a token:")
             userAccessToken = credential?.accessToken
             CredentialsProvider.oauth2?.run {
-                //                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
-//                Logger.d(tokeninfo.toPrettyString())
+                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
+                Logger.d(tokeninfo.toPrettyString())
                 Logger.d("Obtaining User Profile Information:")
                 val userinfo = userinfo().get().execute()
                 userName = userinfo.name
                 userEmail = userinfo.email
                 userPhoto = userinfo.picture
-//                Logger.d(userinfo.toPrettyString())
+                Logger.d(userinfo.toPrettyString())
             }
 
             val body = Gson().toJson(FirebaseAuth(userAccessToken ?: ""))
@@ -60,7 +61,7 @@ object TESLTrackerAuth {
                 processor.addHeader("Content-Type", "application/json")
             }.one().apply {
                 userUuid = getString("localId")
-//                Logger.d("FirebaseID: $userUuid")
+                Logger.d("FirebaseID: $userUuid\n${toPrettyString()}")
             }
             Mixpanel.trackUser()
             return true
