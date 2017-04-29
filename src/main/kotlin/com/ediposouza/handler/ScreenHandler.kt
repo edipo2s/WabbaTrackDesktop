@@ -16,7 +16,6 @@ import java.util.concurrent.CompletableFuture
 object ScreenHandler {
 
     var screenRecognized = false
-    var casualModeConfirmed = false
     var lastScreenRecognized = ""
 
     fun process(screenshot: BufferedImage) {
@@ -35,25 +34,21 @@ object ScreenHandler {
         }
         CompletableFuture.runAsync {
             if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_CASUAL)) {
-                Logger.i("Match Mode set to Casual!", false)
-                if (casualModeConfirmed) {
-                    GameState.matchMode = MatchMode.CASUAL
-                } else {
-                    casualModeConfirmed = true
-                }
+                Logger.i("Casual Match Mode detected!", false)
+                GameState.matchMode = MatchMode.CASUAL
                 screenRecognized = true
             }
         }
         CompletableFuture.runAsync {
             if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_RANKED)) {
-                Logger.i("Match Mode set to Ranked!", false)
+                Logger.i("Ranked Match Mode detected!", false)
                 GameState.matchMode = MatchMode.RANKED
                 screenRecognized = true
             }
         }
         CompletableFuture.runAsync {
             if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_PRATICE)) {
-                Logger.i("Match Mode set to Pratice!", false)
+                Logger.i("Pratice Match Mode detected!", false)
                 GameState.matchMode = MatchMode.PRATICE
                 screenRecognized = true
             }
@@ -64,7 +59,6 @@ object ScreenHandler {
                 Logger.i("Game Screen Detected!", true)
                 StateHandler.currentTESLState = GameState
                 screenRecognized = true
-                casualModeConfirmed = false
             }
         }
         // Arena

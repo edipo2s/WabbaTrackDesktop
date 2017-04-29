@@ -36,6 +36,7 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.io.InputStream
+import java.net.URI
 import java.net.URLDecoder
 import java.util.concurrent.CompletableFuture
 import javax.swing.KeyStroke
@@ -51,6 +52,7 @@ class TESLTracker : App(LoggerView::class) {
         val APP_NAME = "WabbaTrack"
         val APP_VERSION = "0.1"
         val FILE_NAME = "WabbaTrack.exe"
+        val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
         val SHOW_TEST_MENU = false
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
@@ -100,13 +102,18 @@ class TESLTracker : App(LoggerView::class) {
         }
 
         fun doExit() {
-            val currentTESLState = StateHandler.currentTESLState
-            if (currentTESLState is ArenaState) {
-                currentTESLState.saveArenaPicks()
+            try {
+                val currentTESLState = StateHandler.currentTESLState
+                if (currentTESLState is ArenaState) {
+                    currentTESLState.saveArenaPicks()
+                }
+                keyProvider.stop()
+            } catch (e: Exception) {
+                Logger.e(e)
+            } finally {
+                Platform.exit()
+                System.exit(0)
             }
-            keyProvider.stop()
-            Platform.exit()
-            System.exit(0)
         }
 
     }
@@ -186,7 +193,6 @@ class TESLTracker : App(LoggerView::class) {
         } else {
             Mixpanel.trackUser()
         }
-//      loadImportedDecks()
         CompletableFuture.runAsync {
             startElderScrollDetection()
         }
@@ -210,7 +216,9 @@ class TESLTracker : App(LoggerView::class) {
             trayIcon = this
             trayPopupMenu = PopupMenu().apply {
                 loginMenuItems = addMenuItem("Login") {
-                    if (!TESLTrackerAuth.isUserLogged()) {
+                    if (TESLTrackerAuth.isUserLogged()) {
+                        Desktop.getDesktop().browse(URI("$WABBATRACK_URL?id=${TESLTrackerAuth.userUuid}"))
+                    } else {
                         doLogin()
                     }
                     if (hasUpdateReady) {
@@ -323,11 +331,11 @@ class TESLTracker : App(LoggerView::class) {
                 Logger.d("Success logged")
                 loginMenuItems?.forEach {
                     if (it is MenuItem) {
-                        it.label = TESLTrackerAuth.userName
+                        it.label = "Open Match Statistics - ${TESLTrackerAuth.userName}"
                     }
                     if (it is javafx.scene.control.MenuItem) {
                         Platform.runLater {
-                            it.text = TESLTrackerAuth.userName
+                            it.text = "Open Match Statistics - ${TESLTrackerAuth.userName}"
                         }
                     }
                 }

@@ -54,7 +54,7 @@ object TESLTrackerAuth {
 //                Logger.d(tokeninfo.toPrettyString())
                 Logger.d("Obtaining User Profile Information:")
                 val userinfo = userinfo().get().execute()
-                userName = userinfo.name
+                userName = "${userinfo.givenName} ${userinfo.familyName}"
                 userEmail = userinfo.email
                 userPhoto = userinfo.picture
 //                Logger.d(userinfo.toPrettyString())
