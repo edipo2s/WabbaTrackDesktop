@@ -119,14 +119,14 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_PLAYER_SECOND_X = 920
     override val GAME_PLAYER_SECOND_Y = 115
 
-    override val GAME_PLAYER_RANK_HEIGHT = 63
-    override val GAME_PLAYER_RANK_WIDTH = 56
-    override val GAME_PLAYER_RANK_X = 222
+    override val GAME_PLAYER_RANK_HEIGHT = 43
+    override val GAME_PLAYER_RANK_WIDTH = 36
+    override val GAME_PLAYER_RANK_X = 232
     override val GAME_PLAYER_RANK_Y = 558
 
-    override val GAME_OPPONENT_RANK_HEIGHT = 63
-    override val GAME_OPPONENT_RANK_WIDTH = 56
-    override val GAME_OPPONENT_RANK_X = 222
+    override val GAME_OPPONENT_RANK_HEIGHT = 43
+    override val GAME_OPPONENT_RANK_WIDTH = 36
+    override val GAME_OPPONENT_RANK_X = 232
     override val GAME_OPPONENT_RANK_Y = 67
 
     override val GAME_PLAYER_CLASS_HEIGHT = 35

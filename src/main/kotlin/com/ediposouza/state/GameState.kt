@@ -323,7 +323,8 @@ object GameState : StateHandler.TESLState {
             val currentSeason = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM"))
             val playerDeck = MatchDeck(deckTracker.deckName ?: "", playerDeckClass!!, DeckType.OTHER)
             val opponentDeck = MatchDeck("", opponentDeckClass!!, DeckType.OTHER)
-            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, playerDeck, opponentDeck, matchMode!!,
+            val mode = playerRank?.let { MatchMode.RANKED } ?: matchMode!!
+            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, playerDeck, opponentDeck, mode,
                     currentSeason, playerRank ?: 0, opponentRank ?: 0, false, win)) {
                 Logger.i("Match saved!")
             }
