@@ -30,7 +30,6 @@ import tornadofx.App
 import tornadofx.FX
 import tornadofx.alert
 import java.awt.*
-import java.awt.event.KeyEvent
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileReader
@@ -243,7 +242,7 @@ class TESLTracker : App(LoggerView::class) {
                         GameState.shouldShowDeckTracker = true
                     }
                 }
-                addMenuItem("Show/Hide Floating Icon", KeyEvent.VK_W) {
+                addMenuItem("Show/Hide Floating Icon  (Crtl+Shift+W)") {
                     mainWidget.isVisible = !mainWidget.isVisible
                 }
                 addMenuItem("About") {

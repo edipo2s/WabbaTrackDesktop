@@ -12,7 +12,6 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
 
     override val APP_MAIN_HEIGHT = 90
     override val APP_MAIN_WIDTH = 90
-    override val APP_MAIN_X = 1800
     override val APP_MAIN_Y = 970
 
     override val DECK_TRACKER_WIDTH = 350

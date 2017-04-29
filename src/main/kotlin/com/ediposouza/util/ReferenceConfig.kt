@@ -13,9 +13,9 @@ abstract class ReferenceConfig {
 
     // -- APP --
 
+    val APP_MAIN_X by lazy { SCREEN_REFERENCE_WIDTH - APP_MAIN_WIDTH / 2 }
     open val APP_MAIN_HEIGHT = 0
     open val APP_MAIN_WIDTH = 0
-    open val APP_MAIN_X = 0
     open val APP_MAIN_Y = 0
 
     open val DECK_TRACKER_WIDTH = 0
