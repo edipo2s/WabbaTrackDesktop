@@ -104,7 +104,9 @@ class GameRecognizeTests : BaseRecognizeTests() {
 
     @Test
     fun testGamePlayerRank() {
-        var croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGamePlayerRankCrop()
+        var croppedImage = getFileImage("Game/PlayerRank/rankLegend.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("0")
+        croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGamePlayerRankCrop()
         assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("3")
         croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGameOpponentRankCrop()
         assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("1")

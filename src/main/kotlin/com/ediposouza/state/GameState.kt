@@ -46,6 +46,7 @@ object GameState : StateHandler.TESLState {
     var playerGoFirst: Boolean? = null
     var playerDeckClass: DeckClass? = null
     var playerRank: Int? = null
+    var playerRankLegend: Boolean? = null
     var opponentDeckClass: DeckClass? = null
     var opponentRank: Int? = null
     var lastCardDraw: Card? = null
@@ -186,6 +187,7 @@ object GameState : StateHandler.TESLState {
                 synchronized(playerRankLock) {
                     if (playerRank == null) {
                         playerRank = this
+                        playerRankLegend = playerRank == 0
                         Logger.i("--PlayerRank: $this!")
                     }
                 }
@@ -325,7 +327,7 @@ object GameState : StateHandler.TESLState {
             val opponentDeck = MatchDeck("", opponentDeckClass!!, DeckType.OTHER)
             val mode = playerRank?.let { MatchMode.RANKED } ?: matchMode!!
             TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, playerDeck, opponentDeck, mode,
-                    currentSeason, playerRank ?: 0, opponentRank ?: 0, false, win)) {
+                    currentSeason, playerRank ?: 0, opponentRank ?: 0, playerRankLegend ?: false, win)) {
                 Logger.i("Match saved!")
             }
         }
