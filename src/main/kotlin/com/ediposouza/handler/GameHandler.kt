@@ -44,6 +44,12 @@ object GameHandler {
         }
     }
 
+    fun processOpponentRank(screenshot: BufferedImage): Int? {
+        return screenshot.getGameOpponentRankCrop().let {
+            Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_RANK_LIST)?.let(String::toIntOrNull)
+        }
+    }
+
     fun processFirstCardDraws(screenshot: BufferedImage): Triple<String, String, String>? {
         return screenshot.getGameInitialCardDrawCrop(1).let {
             Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { first ->

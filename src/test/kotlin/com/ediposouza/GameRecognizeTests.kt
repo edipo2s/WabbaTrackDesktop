@@ -116,6 +116,8 @@ class GameRecognizeTests : BaseRecognizeTests() {
         assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("4")
         croppedImage = getFileImage("Game/PlayerRank/rank5.png").getGameOpponentRankCrop()
         assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("5")
+        croppedImage = getFileImage("Game/PlayerRank/rank6.png").getGameOpponentRankCrop()
+        assertThat(recognizeImage(croppedImage, DHash.GAME_PLAYER_RANK_LIST)).isEqualTo("6")
     }
 
     private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {

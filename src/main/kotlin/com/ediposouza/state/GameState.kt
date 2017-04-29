@@ -30,6 +30,7 @@ object GameState : StateHandler.TESLState {
     const val playerDeckClassLock = "lock"
     const val playerRankLock = "lock"
     const val opponentDeckClassLock = "lock"
+    const val opponentRankLock = "lock"
     const val cardDrawLock = "lock"
     const val cardDrawProphecyLock = "lock"
     const val cardGenerateLock = "lock"
@@ -46,6 +47,7 @@ object GameState : StateHandler.TESLState {
     var playerDeckClass: DeckClass? = null
     var playerRank: Int? = null
     var opponentDeckClass: DeckClass? = null
+    var opponentRank: Int? = null
     var lastCardDraw: Card? = null
     var matchMode: MatchMode? = null
     var cardGenerated: Card? = null
@@ -73,6 +75,7 @@ object GameState : StateHandler.TESLState {
         playerDeckClass = null
         playerRank = null
         opponentDeckClass = null
+        opponentRank = null
         lastCardDraw = null
         matchMode = null
         cardGenerated = null
@@ -117,6 +120,9 @@ object GameState : StateHandler.TESLState {
                         }
                         if (opponentDeckClass == null) {
                             processOpponentDeck(this)
+                        }
+                        if (opponentRank == null) {
+                            processOpponentRank(this)
                         }
                         processEndMatch(this)
                     }
@@ -194,6 +200,19 @@ object GameState : StateHandler.TESLState {
                     if (opponentDeckClass == null) {
                         opponentDeckClass = this
                         Logger.i("--OpponentDeckClass: $this!")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processOpponentRank(screenshot: BufferedImage) {
+        CompletableFuture.runAsync {
+            GameHandler.processOpponentRank(screenshot)?.run {
+                synchronized(opponentRankLock) {
+                    if (opponentRank == null) {
+                        opponentRank = this
+                        Logger.i("--OpponentRank: $this!")
                     }
                 }
             }
@@ -302,8 +321,10 @@ object GameState : StateHandler.TESLState {
                 matchMode != null && matchMode != MatchMode.PRATICE) {
             val newUuid = LocalDateTime.now().withNano(0).toString()
             val currentSeason = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy_MM"))
-            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, MatchDeck(deckTracker.deckName ?: "", playerDeckClass!!, DeckType.OTHER),
-                    MatchDeck("", opponentDeckClass!!, DeckType.OTHER), matchMode!!, currentSeason, playerRank ?: 0, false, win)) {
+            val playerDeck = MatchDeck(deckTracker.deckName ?: "", playerDeckClass!!, DeckType.OTHER)
+            val opponentDeck = MatchDeck("", opponentDeckClass!!, DeckType.OTHER)
+            TESLTrackerData.saveMatch(Match(newUuid, playerGoFirst!!, playerDeck, opponentDeck, matchMode!!,
+                    currentSeason, playerRank ?: 0, opponentRank ?: 0, false, win)) {
                 Logger.i("Match saved!")
             }
         }

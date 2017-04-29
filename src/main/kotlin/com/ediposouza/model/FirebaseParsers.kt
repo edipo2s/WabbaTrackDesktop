@@ -191,6 +191,7 @@ abstract class FirebaseParsers {
             val legend: Boolean = false,
             val mode: Int = 0,
             val rank: Int = 0,
+            val opponentRank: Int = 0,
             val season: String = "",
             val win: Boolean = false
 
@@ -216,7 +217,7 @@ abstract class FirebaseParsers {
                     DeckClass.values()[opponent[KEY_MATCH_DECK_CLASS].toString().toInt()],
                     DeckType.values()[opponent[KEY_MATCH_DECK_TYPE].toString().toInt()])
             val matchMode = MatchMode.values()[mode]
-            return Match(uuid, first, playerDeck, opponentDeck, matchMode, season, rank, legend, win)
+            return Match(uuid, first, playerDeck, opponentDeck, matchMode, season, rank, opponentRank, legend, win)
         }
 
         fun fromMatch(match: Match): MatchParser {
@@ -229,11 +230,12 @@ abstract class FirebaseParsers {
                 mapOf(KEY_MATCH_DECK_CLASS to cls.ordinal, KEY_MATCH_DECK_TYPE to type.ordinal)
             }
             return MatchParser(match.first, player, opponent, match.legend, match.mode.ordinal,
-                    match.rank, match.season, match.win)
+                    match.rank, match.opponentRank, match.season, match.win)
         }
 
         override fun toString(): String {
-            return "MatchParser(first=$first, player=$player, opponent=$opponent, legend=$legend, mode=$mode, rank=$rank, win=$win)"
+            return "MatchParser(first=$first, player=$player, opponent=$opponent, legend=$legend, mode=$mode, " +
+                    "rank=$rank, opponentRank=$opponentRank, win=$win)"
         }
 
     }

@@ -31,6 +31,7 @@ data class Match(
         val mode: MatchMode,
         val season: String,
         val rank: Int,
+        val opponentRank: Int,
         val legend: Boolean,
         val win: Boolean
 
