@@ -339,6 +339,7 @@ class TESLTracker : App(LoggerView::class) {
                 }
             } else {
                 if (retry < 3) {
+                    Thread.sleep(500)
                     Logger.e("Error while logging. Retrying...")
                     doLogin(retry + 1)
                 } else {
@@ -441,9 +442,11 @@ class TESLTracker : App(LoggerView::class) {
                     LegendsDeckImporter.import(url) { deck ->
                         Platform.runLater {
                             loading.close()
-                            decksImported.add(deck)
-                            updateMenuDecksImported()
-                            saveDecksImported()
+                            if (decksImported.find { it.name == deck.name } == null) {
+                                decksImported.add(deck)
+                                updateMenuDecksImported()
+                                saveDecksImported()
+                            }
                         }
                         Mixpanel.postEventDeckImported(deck.name)
                         showDeckInDeckTracker(deck)

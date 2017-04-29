@@ -22,7 +22,9 @@ object Mixpanel {
 
     private val messageBuilder by lazy {
         val json = JsonParser().parse(keysFileStream).asJsonObject
-        MessageBuilder(json.get("mixpanel_api_key").asString)
+        val mixpanelKey = json.get("mixpanel_api_key").asString
+        keysFileStream.close()
+        MessageBuilder(mixpanelKey)
     }
 
     private val mixpanelAPI by lazy { MixpanelAPI() }

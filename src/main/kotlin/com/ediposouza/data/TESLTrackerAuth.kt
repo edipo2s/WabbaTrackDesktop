@@ -56,6 +56,7 @@ object TESLTrackerAuth {
             Logger.d("Getting firebase ID:")
             val json = JsonParser().parse(keysFileStream).asJsonObject
             val apiKey = json.get("api_key").asString
+            keysFileStream.close()
             firebaseLoginAPI.post("verifyAssertion?key=$apiKey", body.byteInputStream()) { processor ->
                 processor.addHeader("Content-Type", "application/json")
             }.one().apply {

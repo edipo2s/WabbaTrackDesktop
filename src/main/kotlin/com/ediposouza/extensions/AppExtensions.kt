@@ -77,10 +77,19 @@ fun Menu.addMenuItem(menuItemLabel: String, onClick: () -> Unit) {
     add(MenuItem(menuItemLabel).apply {
         addActionListener { onClick() }
     })
-    val mainContextMenu = MainWidget.contextMenu.items.find { it.text == label } as? javafx.scene.control.Menu
-    mainContextMenu?.items?.add(javafx.scene.control.MenuItem(menuItemLabel).apply {
+    val menuItem = javafx.scene.control.MenuItem(menuItemLabel).apply {
         setOnAction { onClick() }
-    })
+    }
+    val mainContextMenu = MainWidget.contextMenu.items.find { it.text == label } as? javafx.scene.control.Menu
+    if (mainContextMenu != null) {
+        mainContextMenu.items.add(menuItem)
+    } else {
+        MainWidget.contextMenu.items.filter { it is javafx.scene.control.Menu }.forEach {
+            val subMenu = it as javafx.scene.control.Menu
+            val mainContextSubMenu = subMenu.items.find { it.text == this.label } as? javafx.scene.control.Menu
+            mainContextSubMenu?.items?.add(menuItem)
+        }
+    }
 }
 
 fun InputStream.toFXImage(): Image {
