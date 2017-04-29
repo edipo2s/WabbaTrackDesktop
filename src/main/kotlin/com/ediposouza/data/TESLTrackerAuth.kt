@@ -18,6 +18,8 @@ import java.io.InputStreamReader
  */
 object TESLTrackerAuth {
 
+    private val keysFileStream by lazy { InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json")) }
+
     var userAccessToken: String? = null
     var userUuid: String? = null
     var userName: String? = null
@@ -28,7 +30,13 @@ object TESLTrackerAuth {
         baseURI = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/"
     }
 
-    private val keysFileStream by lazy { InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json")) }
+    val apiKey by lazy {
+        val json = JsonParser().parse(keysFileStream).asJsonObject
+        json.get("api_key").asString.apply {
+            keysFileStream.close()
+        }
+
+    }
 
     fun login(): Boolean {
         try {
@@ -54,9 +62,6 @@ object TESLTrackerAuth {
 
             val body = Gson().toJson(FirebaseAuth(userAccessToken ?: ""))
             Logger.d("Getting firebase ID:")
-            val json = JsonParser().parse(keysFileStream).asJsonObject
-            val apiKey = json.get("api_key").asString
-            keysFileStream.close()
             firebaseLoginAPI.post("verifyAssertion?key=$apiKey", body.byteInputStream()) { processor ->
                 processor.addHeader("Content-Type", "application/json")
             }.one().apply {

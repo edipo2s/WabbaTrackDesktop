@@ -18,6 +18,7 @@ import com.tulskiy.keymaster.common.Provider
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.control.ProgressIndicator
 import javafx.scene.control.TextInputDialog
 import javafx.scene.image.Image
@@ -382,11 +383,18 @@ class TESLTracker : App(LoggerView::class) {
                         Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
                     }
                     addMenuItem("Delete") {
-                        TESLTrackerData.deleteDecks(deck) {
-                            SwingUtilities.invokeLater {
-                                trayIcon.displayMessage(APP_NAME, "${deck.name} deleted.", TrayIcon.MessageType.NONE)
+                        Platform.runLater {
+                            alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
+                                    ButtonType.YES, ButtonType.NO) { bt ->
+                                if (bt == ButtonType.YES) {
+                                    TESLTrackerData.deleteDecks(deck) {
+                                        SwingUtilities.invokeLater {
+                                            trayIcon.displayMessage(APP_NAME, "${deck.name} deleted.", TrayIcon.MessageType.NONE)
+                                        }
+                                        updateMenuDecks()
+                                    }
+                                }
                             }
-                            updateMenuDecks()
                         }
                     }
                 }
@@ -419,9 +427,16 @@ class TESLTracker : App(LoggerView::class) {
                         Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
                     }
                     addMenuItem("Delete") {
-                        decksImported.remove(deck)
-                        saveDecksImported()
-                        updateMenuDecksImported()
+                        Platform.runLater {
+                            alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
+                                    ButtonType.YES, ButtonType.NO) { bt ->
+                                if (bt == ButtonType.YES) {
+                                    decksImported.remove(deck)
+                                    saveDecksImported()
+                                    updateMenuDecksImported()
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -40,8 +40,8 @@ object GameState : StateHandler.TESLState {
     private var deckCardsSlot: List<CardSlot> = listOf()
 
     var threadRunning: Boolean = false
-    var firstCardDraws: Triple<String, String, String>? = null
-    var firstCardDrawsWithoutMulligan: Triple<String, String, String>? = null
+    var firstCardDraws: Triple<String?, String?, String?>? = null
+    var firstCardDrawsWithoutMulligan: Triple<String?, String?, String?>? = null
     var firstCardDrawsTracked: Boolean = false
     var playerGoFirst: Boolean? = null
     var playerDeckClass: DeckClass? = null
@@ -142,7 +142,7 @@ object GameState : StateHandler.TESLState {
     private fun processCardFirstDraws(screenshot: BufferedImage) {
         CompletableFuture.runAsync {
             if (!firstCardDrawsTracked) {
-                GameHandler.processFirstCardDraws(screenshot)?.run {
+                GameHandler.processFirstCardDraws(screenshot).run {
                     if (firstCardDrawsWithoutMulligan != this) {
                         firstCardDraws = this
                     }
