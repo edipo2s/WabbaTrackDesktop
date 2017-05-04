@@ -218,13 +218,12 @@ class TESLTracker : App(LoggerView::class) {
             trayIcon = this
             trayPopupMenu = PopupMenu().apply {
                 loginMenuItems = addMenuItem("Login") {
-                    if (TESLTrackerAuth.isUserLogged()) {
+                    if (hasUpdateReady) {
+                        TESLTrackerData.restartAppToUpdate()
+                    } else if (TESLTrackerAuth.isUserLogged()) {
                         Desktop.getDesktop().browse(URI("$WABBATRACK_URL?id=${TESLTrackerAuth.userUuid}"))
                     } else {
                         doLogin()
-                    }
-                    if (hasUpdateReady) {
-                        TESLTrackerData.restartAppToUpdate()
                     }
                 }
                 logging = logging

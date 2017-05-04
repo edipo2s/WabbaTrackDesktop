@@ -253,7 +253,7 @@ object TESLTrackerData {
                 Logger.d("App is updated")
                 return
             }
-            val md5 = entries.find { it.key == "md5" }?.value.toString()
+            val md5 = entries.find { it.key == "md5" }?.value.toString().replace("\"", "")
             val downloadedUpdateFile = File(UPDATE_FILE_NAME)
             if (downloadedUpdateFile.exists()) {
                 if (downloadedUpdateFile.getMD5() == md5) {
@@ -267,9 +267,11 @@ object TESLTrackerData {
             val url = entries.find { it.key == "url" }?.value.toString()
             downloadFile(url, UPDATE_FILE_NAME) {
                 Logger.d("Download Success")
-                if (downloadedUpdateFile.getMD5() == md5) {
+                val downloadedMD5 = downloadedUpdateFile.getMD5()
+                if (downloadedMD5 == md5) {
                     TESLTracker.showRestartToUpdateNow()
                 } else {
+                    Logger.e("Update file md5 don't match \nActual: $downloadedMD5 \nExpected: $md5")
                     downloadedUpdateFile.delete()
                     if (retry < 3) {
                         checkForUpdate(retry + 1)
