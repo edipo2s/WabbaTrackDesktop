@@ -4,9 +4,14 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.util.ImageFuncs
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
+import java.awt.AlphaComposite
+import java.awt.Color
+import java.awt.RenderingHints
+import java.awt.geom.RoundRectangle2D
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
+
 
 /**
  * Created by Edipo on 19/03/2017.
@@ -16,6 +21,21 @@ val SAVE_CROP_IMAGES = false
 
 fun BufferedImage.toFXImage(): Image {
     return SwingFXUtils.toFXImage(this, null)
+}
+
+fun BufferedImage.withRoundedCorner(cornerRadius: Float): BufferedImage {
+    return BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).apply {
+        createGraphics().apply {
+            composite = AlphaComposite.Src
+            setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+            color = Color.WHITE
+            fill(RoundRectangle2D.Float(0f, 0f, width.toFloat(), height.toFloat(), cornerRadius, cornerRadius))
+
+            composite = AlphaComposite.SrcAtop
+            drawImage(this@withRoundedCorner, 0, 0, null)
+            dispose()
+        }
+    }
 }
 
 fun BufferedImage.saveCroppedImage() {

@@ -5,6 +5,7 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.extensions.toFXImage
+import com.ediposouza.extensions.withRoundedCorner
 import com.ediposouza.model.*
 import com.ediposouza.state.GameState
 import com.ediposouza.util.ImageFuncs
@@ -18,7 +19,6 @@ import javafx.embed.swing.JFXPanel
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
-import javafx.scene.SnapshotParameters
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
@@ -28,7 +28,6 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
-import javafx.scene.shape.Rectangle
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.javafx.JavaFx
 import kotlinx.coroutines.experimental.launch
@@ -50,8 +49,8 @@ class DeckTrackerWidget : JFrame() {
     private lateinit var deckTrackerSize: Dimension
 
     var deckName: String? = null
-    val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
-    val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.webp") }
+    private val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
+    private val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.webp") }
 
     val contextMenu = ContextMenu(
             MenuItem("Hide").apply {
@@ -185,6 +184,21 @@ class DeckTrackerWidget : JFrame() {
                 minHeight = cellSize.height * 1.5
                 makeDraggable(this@DeckTrackerWidget)
             })
+            add(listview<CardSlot> {
+                items = deckCardsSlot
+                background = Background.EMPTY
+                prefHeightProperty().bind(Bindings.size(deckCardsSlot).multiply(cellSize.height + 1.1))
+                prefWidth = cellSize.width * 1.3
+                setCellFactory {
+                    CardSlotCell(this@DeckTrackerWidget, cellSize).apply {
+                        background = Background.EMPTY
+                        prefWidthProperty().bind(this@listview.widthProperty().subtract(2))
+                    }
+                }
+                fixedCellSize = cellSize.height + 1.0
+                makeDraggable(this@DeckTrackerWidget)
+//                style = "-fx-background-color: #00FF00; "
+            })
             add(BorderPane().apply {
                 left = VBox().apply {
                     add(HBox().apply {
@@ -209,25 +223,11 @@ class DeckTrackerWidget : JFrame() {
                         "-fx-background-radius: 5.0;"
                 makeDraggable(this@DeckTrackerWidget)
             })
-            add(listview<CardSlot> {
-                items = deckCardsSlot
-                background = Background.EMPTY
-                prefHeight = deckTrackerSize.height.toDouble()
-                prefWidth = deckTrackerSize.width.toDouble()
-                setCellFactory {
-                    CardSlotCell(this@DeckTrackerWidget, cellSize).apply {
-                        background = Background.EMPTY
-                        prefWidthProperty().bind(this@listview.widthProperty().subtract(2))
-                        prefHeight = cellSize.height.toDouble() + 1
-                    }
-                }
-                makeDraggable(this@DeckTrackerWidget)
-//                    style = "-fx-background-color: #00FF00; "
-            })
             background = Background.EMPTY
         }
 
         return Scene(layout).apply {
+            preferredSize = deckTrackerSize
             fill = Color.TRANSPARENT
             stylesheets.add(TESLTracker::class.java.getResource("/UI/deckTrackerWidget.css").toExternalForm())
         }
@@ -347,20 +347,9 @@ class DeckTrackerWidget : JFrame() {
                             } catch (e: Exception) {
                                 Logger.e(e)
                             }
-                            image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
+                            image = cardFullImage?.getCardForSlotCrop()?.withRoundedCorner(60f)?.toFXImage()
                             fitHeight = cardSize.height.toDouble()
                             fitWidth = cardSize.width.toDouble() * 0.8
-                            clip = Rectangle(fitWidth, fitHeight).apply {
-                                arcWidth = 20.0
-                                arcHeight = 20.0
-                            }
-                            SnapshotParameters().apply {
-                                fill = Color.TRANSPARENT
-                                val roundedImage = snapshot(this, null)
-                                clip = null
-                                effect = DropShadow(20.0, Color.BLACK)
-                                image = roundedImage
-                            }
                             opacity = 0.85.takeIf { item.currentQtd > 0 } ?: 0.2
                         }
                         padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.2)
@@ -395,14 +384,10 @@ class DeckTrackerWidget : JFrame() {
                                 text = "$cardQtd"
                             }
                             style = "-fx-font: 16px 'Planewalker';"
-                            padding = Insets(0.0, 5.0, 0.0, 0.0)
+                            padding = Insets(0.0, 3.0, 0.0, 0.0)
                             prefWidth = cardSize.height.toDouble() / 2
                         }
                     })
-                    background = Background.EMPTY
-                    maxWidth = cardSize.width.toDouble() + cardSize.height
-                    style = "-fx-background-color: #000000AA; " +
-                            "-fx-background-radius: 25.0;"
                     add(borderpane {
                         changeIndicator = this
                         background = Background.EMPTY
@@ -410,16 +395,6 @@ class DeckTrackerWidget : JFrame() {
                         style = "-fx-background-color: #FFFF00AA; " +
                                 "-fx-background-radius: 25.0;"
                     })
-                    setOnMouseEntered {
-                        val cardPosX = deckTrackerWidget.location.x
-                        val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
-                        cardWidget = CardWidget(item.card, cardPosX, cardPosY)
-                        cardWidget?.isVisible = true
-                    }
-                    setOnMouseExited {
-                        cardWidget?.isVisible = false
-                        cardWidget = null
-                    }
                     if (item.recentChanged) {
                         item.recentChanged = false
                         changeIndicator?.opacity = 1.0
@@ -434,7 +409,19 @@ class DeckTrackerWidget : JFrame() {
                             }
                         }
                     }
+                    background = Background.EMPTY
+                    maxWidth = cardSize.width.toDouble() + cardSize.height
+                    style = "-fx-background-color: #000000AA; " +
+                            "-fx-background-radius: 25.0;"
                 }
+                hoverProperty().addListener({ _, _, _ ->
+                    if (isHover) {
+                        val cardPosX = deckTrackerWidget.location.x
+                        val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
+                        cardWidget = CardWidget(item.card, cardPosX, cardPosY)
+                    }
+                    cardWidget?.isVisible = isHover
+                })
             }
         }
     }

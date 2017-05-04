@@ -54,8 +54,8 @@ class TESLTracker : App(LoggerView::class) {
         val APP_NAME = "WabbaTrack"
         val APP_VERSION = "0.1"
         val FILE_NAME = "WabbaTrack.exe"
+        val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
-        val SHOW_TEST_MENU = false
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
@@ -222,6 +222,7 @@ class TESLTracker : App(LoggerView::class) {
                         TESLTrackerData.restartAppToUpdate()
                     } else if (TESLTrackerAuth.isUserLogged()) {
                         Desktop.getDesktop().browse(URI("$WABBATRACK_URL?id=${TESLTrackerAuth.userUuid}"))
+                        Mixpanel.postEventShowStatistics()
                     } else {
                         doLogin()
                     }
@@ -262,7 +263,7 @@ class TESLTracker : App(LoggerView::class) {
                 addMenuItem("Exit") {
                     doExit()
                 }
-                if (SHOW_TEST_MENU) {
+                if (File(DEBUG_FILE_NAME).exists()) {
                     addMenu("Test") {
                         addMenuItem("Show Log") {
                             Platform.runLater {

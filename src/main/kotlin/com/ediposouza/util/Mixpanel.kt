@@ -46,9 +46,8 @@ object Mixpanel {
         }
     }
 
-    fun postEventGameDetected() {
-        postEvent("GameDetected")
-    }
+    fun postEventShowStatistics() = postEvent("ShowStatistics")
+    fun postEventGameDetected() = postEvent("GameDetected")
 
     fun postEventGameResult(playerCls: DeckClass, opponentCls: DeckClass, result: String) {
         postEvent("GameResult", mutableMapOf(
@@ -76,23 +75,10 @@ object Mixpanel {
         ))
     }
 
-    fun postEventShowDeckTrackerFromArenaDeck() {
-        postEvent("ShowDeckTracker", mutableMapOf(
-                "mode" to "ArenaDeck"
-        ))
-    }
-
-    fun postEventHideDeckTracker() {
-        postEvent("HideDeckTracker")
-    }
-
-    fun postEventArenaStart(cls: DeckClass) {
-        postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
-    }
-
-    fun postEventArenaPick(card: Card) {
-        postEvent("ArenaPick", mutableMapOf("Card" to card.shortName))
-    }
+    fun postEventShowDeckTrackerFromArenaDeck() = postEvent("ShowDeckTracker", mutableMapOf("mode" to "ArenaDeck"))
+    fun postEventHideDeckTracker() = postEvent("HideDeckTracker")
+    fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
+    fun postEventArenaPick(card: Card) = postEvent("ArenaPick", mutableMapOf("Card" to card.shortName))
 
     private fun postEvent(eventName: String, eventProps: MutableMap<String, String> = mutableMapOf()) {
         CompletableFuture.runAsync {
