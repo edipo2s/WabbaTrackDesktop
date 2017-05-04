@@ -9,6 +9,7 @@ import com.ediposouza.model.*
 import com.ediposouza.state.GameState
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
+import com.ediposouza.util.Mixpanel
 import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
@@ -28,11 +29,13 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.javafx.JavaFx
+import kotlinx.coroutines.experimental.launch
 import tornadofx.*
 import java.awt.Dimension
 import java.awt.Window
 import java.io.InputStream
-import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
@@ -55,6 +58,7 @@ class DeckTrackerWidget : JFrame() {
                 setOnAction {
                     GameState.deckTracker.isVisible = false
                     GameState.shouldShowDeckTracker = false
+                    Mixpanel.postEventHideDeckTracker()
                 }
             },
             MenuItem("Zoom +").apply {
@@ -179,6 +183,7 @@ class DeckTrackerWidget : JFrame() {
             add(deckCoverPane.apply {
                 maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
                 minHeight = cellSize.height * 1.5
+                makeDraggable(this@DeckTrackerWidget)
             })
             add(BorderPane().apply {
                 left = VBox().apply {
@@ -202,6 +207,7 @@ class DeckTrackerWidget : JFrame() {
                 maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
                 style = "-fx-background-color: #000000AA; " +
                         "-fx-background-radius: 5.0;"
+                makeDraggable(this@DeckTrackerWidget)
             })
             add(listview<CardSlot> {
                 items = deckCardsSlot
@@ -247,10 +253,6 @@ class DeckTrackerWidget : JFrame() {
                         set(it, this.apply {
                             currentQtd -= 1
                             recentChanged = true
-                            CompletableFuture.runAsync {
-                                Thread.sleep(500L)
-                                recentChanged = false
-                            }
                         })
                     }
                 }
@@ -397,17 +399,17 @@ class DeckTrackerWidget : JFrame() {
                             prefWidth = cardSize.height.toDouble() / 2
                         }
                     })
-                    add(borderpane {
-                        changeIndicator = this
-                        background = Background.EMPTY
-                        style = "-fx-background-color: #FFFF00AA; " +
-                                "-fx-background-radius: 25.0;"
-                        opacity = 0.0
-                    })
                     background = Background.EMPTY
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                     style = "-fx-background-color: #000000AA; " +
                             "-fx-background-radius: 25.0;"
+                    add(borderpane {
+                        changeIndicator = this
+                        background = Background.EMPTY
+                        opacity = 0.0
+                        style = "-fx-background-color: #FFFF00AA; " +
+                                "-fx-background-radius: 25.0;"
+                    })
                     setOnMouseEntered {
                         val cardPosX = deckTrackerWidget.location.x
                         val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
@@ -421,13 +423,14 @@ class DeckTrackerWidget : JFrame() {
                     if (item.recentChanged) {
                         item.recentChanged = false
                         changeIndicator?.opacity = 1.0
-                        CompletableFuture.runAsync {
-                            var changeIndicatorOpacity = changeIndicator?.opacity ?: 0.0
+                        launch(JavaFx) {
+                            var changeIndicatorOpacity = 1.0
                             while (changeIndicatorOpacity > 0.0) {
-//                                Logger.d("$changeIndicatorOpacity")
-                                changeIndicator?.opacity = changeIndicatorOpacity - 0.1
-                                changeIndicatorOpacity = changeIndicator?.opacity ?: 0.0
-                                Thread.sleep(100)
+                                Platform.runLater {
+                                    changeIndicatorOpacity -= 0.1
+                                    changeIndicator?.opacity = changeIndicatorOpacity
+                                }
+                                delay(100L)
                             }
                         }
                     }

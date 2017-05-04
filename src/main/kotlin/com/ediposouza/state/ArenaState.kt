@@ -83,6 +83,9 @@ object ArenaState : StateHandler.TESLState {
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
+                Platform.runLater {
+                    GameState.deckTracker.isVisible = true
+                }
                 Mixpanel.postEventShowDeckTrackerFromArenaDeck()
             }
         }

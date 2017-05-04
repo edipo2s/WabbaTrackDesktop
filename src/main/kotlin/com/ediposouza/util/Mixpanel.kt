@@ -82,6 +82,10 @@ object Mixpanel {
         ))
     }
 
+    fun postEventHideDeckTracker() {
+        postEvent("HideDeckTracker")
+    }
+
     fun postEventArenaStart(cls: DeckClass) {
         postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
     }

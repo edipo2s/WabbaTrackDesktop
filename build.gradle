@@ -19,12 +19,16 @@ repositories {
 
 apply plugin: 'kotlin'
 
+ext.coroutines_version = '0.14'
+
 dependencies {
     compile files('libs/jnativehook-2.1.0.jar')
     compile files('libs/luciad-webp-0.6.0.jar')
     compile files('libs/oshi-core-3.4.2.jar')
 
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: "$kotlin_version"
+    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: "$coroutines_version"
+    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-javafx', version: "$coroutines_version"
     compile group: 'no.tornado', name: 'tornadofx', version: '1.7.0'
     compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
     compile group: 'org.scijava', name: 'native-lib-loader', version: '2.1.3'

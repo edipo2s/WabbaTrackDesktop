@@ -27,6 +27,8 @@ import javafx.scene.paint.Color
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.javafx.JavaFx
 import tornadofx.App
 import tornadofx.FX
 import tornadofx.alert
@@ -53,7 +55,7 @@ class TESLTracker : App(LoggerView::class) {
         val APP_VERSION = "0.1"
         val FILE_NAME = "WabbaTrack.exe"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
-        val SHOW_TEST_MENU = false
+        val SHOW_TEST_MENU = true
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
@@ -240,15 +242,14 @@ class TESLTracker : App(LoggerView::class) {
                         importDeckFromLegendsClick()
                     }
                 }
-                addMenuItem("Show Log") {
+                addMenuItem("Show/Hide Deck Tracker") {
                     Platform.runLater {
-                        FX.primaryStage.show()
-                    }
-                }
-                addMenuItem("Show Deck Tracker") {
-                    Platform.runLater {
-                        GameState.deckTracker.isVisible = true
-                        GameState.shouldShowDeckTracker = true
+                        val isShowed = GameState.deckTracker.isVisible
+                        GameState.deckTracker.isVisible = !isShowed
+                        GameState.shouldShowDeckTracker = !isShowed
+                        if (isShowed) {
+                            Mixpanel.postEventHideDeckTracker()
+                        }
                     }
                 }
                 addMenuItem("Show/Hide Floating Icon  (Crtl+Shift+W)") {
@@ -264,6 +265,11 @@ class TESLTracker : App(LoggerView::class) {
                 }
                 if (SHOW_TEST_MENU) {
                     addMenu("Test") {
+                        addMenuItem("Show Log") {
+                            Platform.runLater {
+                                FX.primaryStage.show()
+                            }
+                        }
                         addMenuItem("Show Arena Tier Test") {
                             Platform.runLater {
                                 ArenaState.setTierPicks(Triple(CardPick(Card.DUMMY, 20, listOf()),
@@ -279,7 +285,15 @@ class TESLTracker : App(LoggerView::class) {
                         }
                         addMenuItem("Show Deck Test") {
                             Platform.runLater {
-                                val cardsSlot = ArenaState.picks
+                                val cardsSlot = listOf(TESLTrackerData.getCard("ashservant") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("deathlessdraugr") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("firebolt") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("firebolt") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("lightningbolt") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("firebolt") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("lightningbolt") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY)
                                         .groupBy(Card::shortName)
                                         .map { CardSlot(it.value.first(), it.value.size) }
                                 StateHandler.currentTESLState = GameState.apply {
@@ -288,16 +302,12 @@ class TESLTracker : App(LoggerView::class) {
                             }
                         }
                         addMenuItem("Draw Test") {
-                            Platform.runLater {
-                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("firebolt")!!)
-                                CompletableFuture.runAsync {
-                                    Thread.sleep(2000L)
-                                    GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("windkeepspellsword")!!)
-                                    CompletableFuture.runAsync {
-                                        Thread.sleep(2000L)
-                                        GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("lightningbolt")!!)
-                                    }
-                                }
+                            GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("firebolt") ?: Card.DUMMY)
+                            kotlinx.coroutines.experimental.launch(JavaFx) {
+                                delay(2000L)
+                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY)
+                                delay(2000L)
+                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("lightningbolt") ?: Card.DUMMY)
                             }
                         }
                         addMenuItem("Save Match Test") {
