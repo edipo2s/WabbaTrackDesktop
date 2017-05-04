@@ -55,7 +55,7 @@ class TESLTracker : App(LoggerView::class) {
         val APP_VERSION = "0.1"
         val FILE_NAME = "WabbaTrack.exe"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
-        val SHOW_TEST_MENU = true
+        val SHOW_TEST_MENU = false
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()

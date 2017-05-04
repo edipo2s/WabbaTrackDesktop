@@ -2,7 +2,7 @@ group 'com.ediposouza'
 version '0.1'
 
 buildscript {
-    ext.kotlin_version = '1.1.2'
+    ext.kotlin_version = '1.1.2-2'
 
     repositories {
         mavenCentral()
@@ -18,6 +18,12 @@ repositories {
 }
 
 apply plugin: 'kotlin'
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
 
 ext.coroutines_version = '0.14'
 
