@@ -10,11 +10,13 @@ import com.ediposouza.util.Logger
 import com.ediposouza.util.Mixpanel
 import com.ediposouza.util.ScreenFuncs
 import javafx.application.Platform
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import java.awt.image.BufferedImage
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by ediposouza on 24/03/17.
@@ -59,7 +61,9 @@ object GameState : StateHandler.TESLState {
         showDeckTracker()
         Logger.i("GameState onResume")
         threadRunning = true
-        runStateThread()
+        launch(CommonPool) {
+            runStateThread()
+        }
     }
 
     override fun onPause() {
@@ -84,51 +88,48 @@ object GameState : StateHandler.TESLState {
         deckTracker.resetDraws()
     }
 
-    fun runStateThread() {
-        CompletableFuture.runAsync {
+    suspend fun runStateThread() {
+        val detectFirstDraws = launch(CommonPool) {
             while (!firstCardDrawsTracked) {
                 ScreenFuncs.takeScreenshot()?.apply {
                     processCardFirstDraws(this)
                     processCardDraw(this)
                 }
-                Thread.sleep(1000L / GAME_RECOGNIZER_DRAW_FIRST_SPS)
+                delay(1000L / GAME_RECOGNIZER_DRAW_FIRST_SPS)
             }
         }
-        CompletableFuture.runAsync {
+        detectFirstDraws.join()
+        launch(CommonPool) {
             while (threadRunning) {
-                if (firstCardDrawsTracked) {
-                    ScreenFuncs.takeScreenshot()?.apply {
-                        processCardDraw(this)
-                        processCardDrawProphecy(this)
-                        processCardGenerate(this)
-                    }
+                ScreenFuncs.takeScreenshot()?.apply {
+                    processCardDraw(this)
+                    processCardDrawProphecy(this)
+                    processCardGenerate(this)
                 }
-                Thread.sleep(1000L / GAME_RECOGNIZER_DRAW_SPS)
+                delay(1000L / GAME_RECOGNIZER_DRAW_SPS)
             }
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             while (threadRunning) {
-                if (firstCardDrawsTracked) {
-                    ScreenFuncs.takeScreenshot()?.apply {
-                        if (playerGoFirst == null) {
-                            processPlayerGoFirst(this)
-                        }
-                        if (playerDeckClass == null) {
-                            processPlayerDeck(this)
-                        }
-                        if (playerRank == null) {
-                            processPlayerRank(this)
-                        }
-                        if (opponentDeckClass == null) {
-                            processOpponentDeck(this)
-                        }
-                        if (opponentRank == null) {
-                            processOpponentRank(this)
-                        }
-                        processEndMatch(this)
+                ScreenFuncs.takeScreenshot()?.apply {
+                    if (playerGoFirst == null) {
+                        processPlayerGoFirst(this)
                     }
+                    if (playerDeckClass == null) {
+                        processPlayerDeck(this)
+                    }
+                    if (playerRank == null) {
+                        processPlayerRank(this)
+                    }
+                    if (opponentDeckClass == null) {
+                        processOpponentDeck(this)
+                    }
+                    if (opponentRank == null) {
+                        processOpponentRank(this)
+                    }
+                    processEndMatch(this)
                 }
-                Thread.sleep(1000L / GAME_RECOGNIZER_SPS)
+                delay(1000L / GAME_RECOGNIZER_SPS)
             }
         }
     }
@@ -141,7 +142,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processCardFirstDraws(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (!firstCardDrawsTracked) {
                 GameHandler.processFirstCardDraws(screenshot).run {
                     if (firstCardDrawsWithoutMulligan != this) {
@@ -156,7 +157,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processPlayerGoFirst(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processPlayerGoFirst(screenshot)?.run {
                 synchronized(playerGoFirstLock) {
                     if (playerGoFirst == null) {
@@ -169,7 +170,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processPlayerDeck(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processPlayerDeckClass(screenshot)?.run {
                 synchronized(playerDeckClassLock) {
                     if (playerDeckClass == null) {
@@ -182,7 +183,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processPlayerRank(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processPlayerRank(screenshot)?.run {
                 synchronized(playerRankLock) {
                     if (playerRank == null) {
@@ -196,7 +197,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processOpponentDeck(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processOpponentDeckClass(screenshot)?.run {
                 synchronized(opponentDeckClassLock) {
                     if (opponentDeckClass == null) {
@@ -209,7 +210,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processOpponentRank(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processOpponentRank(screenshot)?.run {
                 synchronized(opponentRankLock) {
                     if (opponentRank == null) {
@@ -222,14 +223,14 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processCardGenerate(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processCardGenerated(screenshot)?.run {
                 synchronized(cardGenerateLock) {
                     if (cardGeneratedDetected != this) {
                         cardGeneratedDetected = this
                         Logger.i("--Card generated!")
-                        CompletableFuture.runAsync {
-                            Thread.sleep(3000L)
+                        launch(CommonPool) {
+                            delay(3000L)
                             cardGeneratedDetected = null
                         }
                     }
@@ -239,15 +240,15 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processCardDraw(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processCardDrawProphecy(screenshot)?.run {
                 synchronized(cardDrawProphecyLock) {
                     if (lastCardDraw != this) {
                         lastCardDraw = this
                         deckTracker.trackCardDraw(this)
                         Logger.i("--$name prophecy draw!")
-                        CompletableFuture.runAsync {
-                            Thread.sleep(1000L * GAME_RECOGNIZER_CARD_DELAY)
+                        launch(CommonPool) {
+                            delay(1000L * GAME_RECOGNIZER_CARD_DELAY)
                             lastCardDraw = null
                         }
                     }
@@ -264,8 +265,8 @@ object GameState : StateHandler.TESLState {
                             deckTracker.trackCardDraw(this)
                             Logger.i("--$name draw!")
                         }
-                        CompletableFuture.runAsync {
-                            Thread.sleep(1000L * GAME_RECOGNIZER_CARD_DELAY)
+                        launch(CommonPool) {
+                            delay(1000L * GAME_RECOGNIZER_CARD_DELAY)
                             lastCardDraw = null
                             if (cardGeneratedDetected ?: false) {
                                 cardGeneratedDetected = null
@@ -286,7 +287,7 @@ object GameState : StateHandler.TESLState {
     }
 
     private fun processEndMatch(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             GameHandler.processMatchEnd(screenshot)?.run {
                 synchronized(endMatchLock) {
                     if (playerGoFirst != null) {

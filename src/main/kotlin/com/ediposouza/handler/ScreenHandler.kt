@@ -7,8 +7,9 @@ import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import java.awt.image.BufferedImage
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Edipo on 18/03/2017.
@@ -22,7 +23,7 @@ object ScreenHandler {
 //        Logger.i("Checking game screen: ${LocalTime.now()}")
         screenRecognized = false
         //Screens check
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (lastScreenRecognized != DHash.SCREEN_MAIN_MODE_CASUAL &&
                     lastScreenRecognized != DHash.SCREEN_MAIN_MODE_RANKED &&
                     lastScreenRecognized != DHash.SCREEN_MAIN_MODE_PRATICE &&
@@ -32,21 +33,21 @@ object ScreenHandler {
                 screenRecognized = true
             }
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_CASUAL)) {
                 Logger.i("Casual Match Mode detected!", false)
                 GameState.matchMode = MatchMode.CASUAL
                 screenRecognized = true
             }
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_RANKED)) {
                 Logger.i("Ranked Match Mode detected!", false)
                 GameState.matchMode = MatchMode.RANKED
                 screenRecognized = true
             }
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_PRATICE)) {
                 Logger.i("Pratice Match Mode detected!", false)
                 GameState.matchMode = MatchMode.PRATICE
@@ -54,7 +55,7 @@ object ScreenHandler {
             }
         }
         // Game
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
                 Logger.i("Game Screen Detected!", true)
                 StateHandler.currentTESLState = GameState
@@ -62,7 +63,7 @@ object ScreenHandler {
             }
         }
         // Arena
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
                 Logger.i("Arena Classes Screen Detected!", true)
                 StateHandler.currentTESLState = ArenaState.apply {
@@ -71,14 +72,14 @@ object ScreenHandler {
                 screenRecognized = true
             }
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenArenaPicksCrop().matchScreen(DHash.SCREEN_ARENA_PICKS)) {
                 Logger.i("Arena Picks Screen Detected!", true)
                 StateHandler.currentTESLState = ArenaState
                 screenRecognized = true
             }
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (screenshot.getScreenArenaDashboardCrop().matchScreen(DHash.SCREEN_ARENA_DASHBOARD)) {
                 Logger.i("Arena Dashboard Screen Detected!", true)
                 Logger.i("Match Mode set to Arena!", true)

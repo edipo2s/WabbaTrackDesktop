@@ -8,11 +8,12 @@ import com.ediposouza.util.Logger
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import javafx.application.Platform
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import tornadofx.Rest
 import java.io.*
 import java.net.URL
 import java.time.LocalDateTime
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Edipo on 19/03/2017.
@@ -65,7 +66,7 @@ object TESLTrackerData {
 
     fun updateCardDB() {
         Logger.d("Updating cards database")
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             cards.clear()
             with(firebaseDatabaseAPI.get("$NODE_CARDS.json").one()) {
                 cards.addAll(entries.flatMap { (set, setAttrsJson) ->
@@ -109,7 +110,7 @@ object TESLTrackerData {
     }
 
     fun updateDecksDB(onSuccess: (() -> Unit)? = null) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             Logger.d("Updating decks database")
             decks.clear()
             if (!TESLTrackerAuth.isUserLogged()) {
@@ -149,7 +150,7 @@ object TESLTrackerData {
     }
 
     fun deleteDecks(deck: Deck, onSuccess: () -> Unit) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (!TESLTrackerAuth.isUserLogged()) {
                 Logger.e("Do login to get decks")
             } else {
@@ -232,7 +233,7 @@ object TESLTrackerData {
 
     private fun reAuthUser(retry: Int = 0, onSuccess: () -> Unit) {
         Logger.d("start reAuth User")
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (TESLTrackerAuth.login()) {
                 onSuccess()
             } else {

@@ -51,19 +51,6 @@ object GameHandler {
     }
 
     fun processFirstCardDraws(screenshot: BufferedImage): Triple<String?, String?, String?> {
-//        return screenshot.getGameInitialCardDrawCrop(1).let {
-//            Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { first ->
-//                screenshot.getGameInitialCardDrawCrop(2).let {
-//                    Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { second ->
-//                        screenshot.getGameInitialCardDrawCrop(3).let {
-//                            Recognizer.recognizeImageInMap(it, DHashCards.LIST)?.let { third ->
-//                                Triple(first, second, third)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
         val first = Recognizer.recognizeImageInMap(screenshot.getGameInitialCardDrawCrop(1), DHashCards.LIST)
         val second = Recognizer.recognizeImageInMap(screenshot.getGameInitialCardDrawCrop(2), DHashCards.LIST)
         val third = Recognizer.recognizeImageInMap(screenshot.getGameInitialCardDrawCrop(3), DHashCards.LIST)

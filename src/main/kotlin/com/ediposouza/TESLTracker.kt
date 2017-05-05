@@ -27,8 +27,9 @@ import javafx.scene.paint.Color
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.javafx.JavaFx
+import kotlinx.coroutines.experimental.launch
 import tornadofx.App
 import tornadofx.FX
 import tornadofx.alert
@@ -40,7 +41,6 @@ import java.io.FileWriter
 import java.io.InputStream
 import java.net.URI
 import java.net.URLDecoder
-import java.util.concurrent.CompletableFuture
 import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
 
@@ -109,7 +109,9 @@ class TESLTracker : App(LoggerView::class) {
                 if (currentTESLState is ArenaState) {
                     currentTESLState.saveArenaPicks()
                 }
-                keyProvider.stop()
+                Platform.runLater {
+                    keyProvider.stop()
+                }
             } catch (e: Exception) {
                 Logger.e(e)
             } finally {
@@ -195,11 +197,11 @@ class TESLTracker : App(LoggerView::class) {
         } else {
             Mixpanel.trackUser()
         }
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             startElderScrollDetection()
         }
-        CompletableFuture.runAsync {
-            Thread.sleep(500)
+        launch(CommonPool) {
+            delay(500)
             keyProvider.register(KeyStroke.getKeyStroke("control shift W")) {
                 mainWidget.isVisible = !mainWidget.isVisible
             }
@@ -303,7 +305,7 @@ class TESLTracker : App(LoggerView::class) {
                         }
                         addMenuItem("Draw Test") {
                             GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("firebolt") ?: Card.DUMMY)
-                            kotlinx.coroutines.experimental.launch(JavaFx) {
+                            launch(CommonPool) {
                                 delay(2000L)
                                 GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY)
                                 delay(2000L)
@@ -335,7 +337,7 @@ class TESLTracker : App(LoggerView::class) {
 
     private fun doLogin(retry: Int = 0) {
         logging = true
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             if (TESLTrackerAuth.login()) {
                 logging = false
                 Logger.d("Success logged")
@@ -357,7 +359,7 @@ class TESLTracker : App(LoggerView::class) {
                 }
             } else {
                 if (retry < 3) {
-                    Thread.sleep(500)
+                    delay(500)
                     Logger.e("Error while logging. Retrying...")
                     doLogin(retry + 1)
                 } else {
@@ -470,7 +472,7 @@ class TESLTracker : App(LoggerView::class) {
             if (result.isPresent) {
                 val url = result.get()
                 loading.show()
-                CompletableFuture.runAsync {
+                launch(CommonPool) {
                     LegendsDeckImporter.import(url) { deck ->
                         Platform.runLater {
                             loading.close()
@@ -512,7 +514,7 @@ class TESLTracker : App(LoggerView::class) {
         }
     }
 
-    private fun startElderScrollDetection() {
+    suspend private fun startElderScrollDetection() {
         mainWidget.isVisible = true
         TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
@@ -529,13 +531,13 @@ class TESLTracker : App(LoggerView::class) {
                 Logger.i("Waiting Elder scroll legends..")
                 StateHandler.currentTESLState?.onPause()
             }
-            Thread.sleep(DELAY_WINDOW_DETECTION)
+            delay(DELAY_WINDOW_DETECTION)
         }
     }
 
-    private fun startElderScrollRecognition() {
+    suspend private fun startElderScrollRecognition() {
         Logger.i("Start screenshot game!")
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             TESLTrackerData.checkForUpdate()
         }
         while (true) {
@@ -546,7 +548,7 @@ class TESLTracker : App(LoggerView::class) {
         }
     }
 
-    private fun analyseScreenshot(screenshot: BufferedImage?): Boolean {
+    suspend private fun analyseScreenshot(screenshot: BufferedImage?): Boolean {
         if (screenshot == null) {
             return false
         }
@@ -557,7 +559,7 @@ class TESLTracker : App(LoggerView::class) {
             waitingScreenshotChangeWasLogged = false
             ScreenHandler.process(screenshot)
             val sps = ELDER_SCROLL_SPS.takeIf { StateHandler.currentTESLState == null } ?: 0.5f
-            Thread.sleep((1000 / sps).toLong())
+            delay((1000 / sps).toLong())
             if (!ScreenHandler.screenRecognized) {
                 return isTESLegendsScreenActive() || isTESLegendsTrackerWindow() || isTESLegendsTrackerPopupWindow()
             }

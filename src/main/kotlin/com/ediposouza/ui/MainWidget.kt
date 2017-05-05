@@ -13,11 +13,13 @@ import javafx.scene.image.Image
 import javafx.scene.layout.Background
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import tornadofx.add
 import tornadofx.imageview
 import java.awt.Dimension
 import java.awt.Window
-import java.util.concurrent.CompletableFuture
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
@@ -76,15 +78,15 @@ class MainWidget : JFrame() {
         Logger.d("start Floating icon animation")
         val initialXLocation = location.x
         val animXLocation = location.x - 50
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             while (location.x > animXLocation) {
                 setLocation(location.x - 2, location.y)
-                Thread.sleep(20)
+                delay(20)
             }
-            Thread.sleep(200)
+            delay(200)
             while (location.x < initialXLocation) {
                 setLocation(location.x + 2, location.y)
-                Thread.sleep(20)
+                delay(20)
             }
             animationRunning = false
         }

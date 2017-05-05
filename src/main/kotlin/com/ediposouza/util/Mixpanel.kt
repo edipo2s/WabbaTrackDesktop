@@ -8,10 +8,11 @@ import com.google.gson.JsonParser
 import com.mixpanel.mixpanelapi.ClientDelivery
 import com.mixpanel.mixpanelapi.MessageBuilder
 import com.mixpanel.mixpanelapi.MixpanelAPI
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import org.json.JSONObject
 import oshi.SystemInfo
 import java.io.InputStreamReader
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Edipo on 09/04/2017.
@@ -33,7 +34,7 @@ object Mixpanel {
     private val SERIAL by lazy { SystemInfo().hardware.computerSystem.serialNumber }
 
     fun trackUser() {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             val userName = TESLTrackerAuth.userName ?: GUEST
             val userProps = mutableMapOf("\$first_name" to userName)
             if (TESLTrackerAuth.isUserLogged()) {
@@ -81,7 +82,7 @@ object Mixpanel {
     fun postEventArenaPick(card: Card) = postEvent("ArenaPick", mutableMapOf("Card" to card.shortName))
 
     private fun postEvent(eventName: String, eventProps: MutableMap<String, String> = mutableMapOf()) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             val userID = TESLTrackerAuth.userUuid ?: GUEST
             val pcID = TESLTrackerAuth.userUuid ?: SERIAL
             val delivery = ClientDelivery().apply {

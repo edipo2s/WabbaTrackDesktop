@@ -15,6 +15,9 @@ import com.ediposouza.util.Mixpanel
 import com.ediposouza.util.ScreenFuncs
 import com.google.gson.Gson
 import javafx.application.Platform
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import org.jnativehook.GlobalScreen
 import org.jnativehook.NativeHookException
 import org.jnativehook.mouse.NativeMouseEvent
@@ -26,7 +29,6 @@ import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
-import java.util.concurrent.CompletableFuture
 import java.util.logging.Level
 
 /**
@@ -152,7 +154,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     fun runStateThread() {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             while (ArenaState.threadRunning && !finishPicks) {
                 ScreenFuncs.takeScreenshot()?.apply {
                     processPickNumber(this)
@@ -160,13 +162,13 @@ object ArenaState : StateHandler.TESLState {
                         processPickCards(this)
                     }
                 }
-                Thread.sleep(1000L / ARENA_RECOGNIZER_SPS)
+                delay(1000L / ARENA_RECOGNIZER_SPS)
             }
         }
     }
 
     private fun processPickNumber(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             ArenaHandler.processArenaPickNumber(screenshot)?.run {
                 synchronized(arenaPickLock) {
                     if (lastPickNumberRecognized != this) {
@@ -181,7 +183,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     fun processPickCards(screenshot: BufferedImage) {
-        CompletableFuture.runAsync {
+        launch(CommonPool) {
             ArenaHandler.processArenaPick(screenshot)?.run {
                 synchronized(cardPicksToSelectLock) {
                     cardPicksToSelect = this
