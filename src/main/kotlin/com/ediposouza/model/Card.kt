@@ -325,7 +325,7 @@ data class Card(
         val keywords: List<CardKeyword>,
         val text: String,
         val arenaTier: CardArenaTier,
-        val arenaTierPlus: CardArenaTierPlus?,
+        val arenaTierPlus: List<CardArenaTierPlus?>,
         val evolves: Boolean,
         val season: String
 
@@ -334,7 +334,7 @@ data class Card(
 
         val DUMMY = Card("Unknown", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
                 CardRarity.COMMON, false, 0, 0, 0, CardType.UNKNOWN, CardRace.ARGONIAN, listOf(), "", CardArenaTier.NONE,
-                null, false, "")
+                listOf(), false, "")
 
     }
 }

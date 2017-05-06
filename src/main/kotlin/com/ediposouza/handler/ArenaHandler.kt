@@ -76,6 +76,14 @@ object ArenaHandler {
         return CardPick(card, value + totalValueExtra, cardsSynergy)
     }
 
+    private fun calcCardSynergyPoints(arenaTierPlus: List<CardArenaTierPlus?>, draftedCard: Card, reverseCalc: Boolean = false): Int {
+        if (arenaTierPlus.isEmpty()) {
+            return 0
+        }
+        val extraSynergyPoints = arenaTierPlus.map { calcCardSynergyPoints(it, draftedCard, reverseCalc) }
+        return 0.takeIf { extraSynergyPoints.contains(0) } ?: extraSynergyPoints.first()
+    }
+
     private fun calcCardSynergyPoints(arenaTierPlus: CardArenaTierPlus?, draftedCard: Card, reverseCalc: Boolean = false): Int {
         if (arenaTierPlus == null) {
             return 0
