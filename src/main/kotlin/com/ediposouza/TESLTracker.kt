@@ -9,6 +9,7 @@ import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
+import com.ediposouza.ui.LoggerController
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
@@ -47,7 +48,7 @@ import javax.swing.SwingUtilities
 /**
  * Created by ediposouza on 06/03/17.
  */
-class TESLTracker : App(LoggerView::class) {
+class TESLTracker : App(MainWidget::class) {
 
     companion object {
 
@@ -131,7 +132,9 @@ class TESLTracker : App(LoggerView::class) {
     private lateinit var menuMyDecks: List<Any>
     private lateinit var menuImportedDecks: List<Any>
     private val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
-    private val mainWidget by lazy { MainWidget() }
+    private val mainWidget: MainWidget by lazy { MainWidget() }
+    private val loggerController by inject<LoggerController>()
+    private val loggerView: LoggerView by inject<LoggerView>()
     private val importDecksFromLegendsDecksLabel = "-- Import from Legends-Decks --"
     private val saveDecksImportedLock = "lock"
     private var decksImported = mutableListOf<Deck>()
@@ -176,20 +179,23 @@ class TESLTracker : App(LoggerView::class) {
 
     override fun start(stage: Stage) {
         super.start(stage.apply {
-            initStyle(StageStyle.UTILITY)
+            initStyle(StageStyle.TRANSPARENT)
             isAlwaysOnTop = true
-            height = 300.0
-            width = 200.0
-            x = 0.0
-            y = screenSize.height - height
+            referenceConfig = when {
+                screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
+                else -> ReferenceConfig1920x1080()
+            }
+            with(TESLTracker.referenceConfig) {
+                val mainSize = ImageFuncs.getScreenScaledSize(APP_MAIN_WIDTH, APP_MAIN_HEIGHT)
+                val mainPos = ImageFuncs.getScreenScaledPosition(APP_MAIN_X, APP_MAIN_Y)
+                height = mainSize.height.toDouble()
+                width = mainSize.width.toDouble()
+                x = mainPos.x.toDouble()
+                y = mainPos.y.toDouble()
+            }
         })
 
-        stage.close()
-        referenceConfig = when {
-            screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
-            else -> ReferenceConfig1920x1080()
-        }
-
+        loggerController.initialize()
         configureSystemTrayIcon()
         if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
             Logger.d("Starting auto-login")
@@ -210,6 +216,7 @@ class TESLTracker : App(LoggerView::class) {
             }
             TESLTrackerData.checkForUpdate()
         }
+        FX.primaryStage.scene.fill = Color.TRANSPARENT
     }
 
     private fun configureSystemTrayIcon() {
@@ -269,7 +276,14 @@ class TESLTracker : App(LoggerView::class) {
                     addMenu("Test") {
                         addMenuItem("Show Log") {
                             Platform.runLater {
-                                FX.primaryStage.show()
+                                Stage().apply {
+                                    isAlwaysOnTop = true
+                                    scene = Scene(loggerView.root)
+                                    height = 200.0
+                                    width = 180.0
+                                    x = 0.0
+                                    y = screenSize.height - height
+                                }.show()
                             }
                         }
                         addMenuItem("Show Arena Tier Test") {
@@ -515,7 +529,6 @@ class TESLTracker : App(LoggerView::class) {
     }
 
     suspend private fun startElderScrollDetection() {
-        mainWidget.isVisible = true
         TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
         with(screenSize) {

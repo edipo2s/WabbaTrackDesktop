@@ -35,7 +35,7 @@ dependencies {
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: "$kotlin_version"
     compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: "$coroutines_version"
     compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-javafx', version: "$coroutines_version"
-    compile group: 'no.tornado', name: 'tornadofx', version: '1.7.0'
+    compile group: 'no.tornado', name: 'tornadofx', version: '1.7.4'
     compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
     compile group: 'org.scijava', name: 'native-lib-loader', version: '2.1.3'
     compile group: 'com.github.tulskiy', name: 'jkeymaster', version: '1.2'

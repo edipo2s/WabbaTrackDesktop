@@ -38,6 +38,10 @@ class LoggerController : Controller() {
         }
     }
 
+    fun initialize() {
+        logText("Logger Initialized", Logger.Level.INFO)
+    }
+
     fun logText(text: String, level: Logger.Level) {
         logs.put(text, level)
         val selectedLogViewIndex = loggerView.logLevelView.selectionModel.selectedIndex

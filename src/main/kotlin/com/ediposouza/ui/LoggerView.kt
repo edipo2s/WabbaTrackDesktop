@@ -2,7 +2,6 @@ package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.util.Logger
-import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
@@ -44,8 +43,6 @@ class LoggerView : View("WabbaTrack Log") {
             top = logLevelView
             center = textArea
         }
-        Platform.runLater {
-            loggerController.logText("Logger Initialized", Logger.Level.DEBUG)
-        }
     }
+
 }

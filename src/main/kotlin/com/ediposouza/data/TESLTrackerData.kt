@@ -283,12 +283,9 @@ object TESLTrackerData {
     }
 
     fun restartAppToUpdate() {
-        val mainFile = File(TESLTracker.FILE_NAME)
-        if (mainFile.delete()) {
-            File(UPDATE_FILE_NAME).renameTo(mainFile)
-            Runtime.getRuntime().exec(TESLTracker.FILE_NAME)
-            TESLTracker.doExit()
-        }
+        val fileName = TESLTracker.FILE_NAME
+        Runtime.getRuntime().exec("del $fileName && rename $UPDATE_FILE_NAME $fileName && exec $fileName")
+        TESLTracker.doExit()
     }
 
     private fun downloadFile(fileUrl: String, fileName: String, onSuccess: () -> Unit) {
