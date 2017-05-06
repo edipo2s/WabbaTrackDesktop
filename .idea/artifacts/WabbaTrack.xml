@@ -23,7 +23,6 @@
     <root id="root">
       <element id="archive" name="WabbaTrack.jar">
         <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
-        <element id="module-output" name="WabbaTrack_main" />
         <element id="module-output" name="WabbaTrack" />
       </element>
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.3/f6c3aed1cdfa21b5c1737c915186ea93a95a58bd/jackson-core-2.1.3.jar" path-in-jar="/" />
@@ -46,13 +45,13 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/luciad-webp-0.6.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-platform/4.4.0/f396b0ceb7ababb8b4a5ea25e6742ced81e3d86f/jna-platform-4.4.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna/4.4.0/cb208278274bf12ebdb56c61bd7407e6f774d65a/jna-4.4.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/no.tornado/tornadofx/1.7.0/e581b88ec128967f0ce016f357f85e3d09ee39ae/tornadofx-1.7.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/no.tornado/tornadofx/1.7.4/2e15ff8ab324588cd87a983c2e2d73d4c1e96d58/tornadofx-1.7.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.0.1/1d7d28fa738bdbfe4fbd895d9486308999bdf440/httpclient-4.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.0.1/e813b8722c387b22e1adccf7914729db09bcb4a9/httpcore-4.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.0.4/3178f73569fd7a1e5ffc464e680f7a8cc784b85a/javax.json-1.0.4.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.1.0/2f22fa91aed07f3764431130a51366e1669e0c24/kotlin-reflect-1.1.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jre7/1.1.0/ef03cfed144ff47eed2cab1f7be4381bc18a6237/kotlin-stdlib-jre7-1.1.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jre8/1.1.0/89c9fbaa9c33c98e590959d50fca9e21bad96b9a/kotlin-stdlib-jre8-1.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.1.2/b8cc2f486359a56c0c1b1dd125141c19d8db1734/kotlin-reflect-1.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jre7/1.1.2/8fe14858be2d85bb2c8ad1e060f6dafbd45f48f4/kotlin-stdlib-jre7-1.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jre8/1.1.2/cd6d8b7a32971564fab0846009593f3bfabdcac1/kotlin-stdlib-jre8-1.1.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.1.2-2/2b22828f027e103dcd45f3aa240338bfdb53d16b/kotlin-stdlib-1.1.2-2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/0.14/7cf86d32f4c72a42d7d317c763c33b035f08bad7/kotlinx-coroutines-core-0.14.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-javafx/0.14/44c45d7f493f7e093271ba70a8f361b175a76acb/kotlinx-coroutines-javafx-0.14.jar" path-in-jar="/" />

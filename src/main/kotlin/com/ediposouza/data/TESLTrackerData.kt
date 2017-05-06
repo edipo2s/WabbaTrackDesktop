@@ -283,8 +283,16 @@ object TESLTrackerData {
     }
 
     fun restartAppToUpdate() {
+        val updFileName = "upd.bat"
         val fileName = TESLTracker.FILE_NAME
-        Runtime.getRuntime().exec("del $fileName && rename $UPDATE_FILE_NAME $fileName && exec $fileName")
+        launch(CommonPool) {
+            val script = "timeout 2 && del $fileName && rename $UPDATE_FILE_NAME $fileName && $fileName && del $updFileName"
+            FileOutputStream(File(File(TESLTracker.jarPath).parentFile, updFileName)).apply {
+                write(script.toByteArray())
+                flush()
+            }
+            Runtime.getRuntime().exec(updFileName)
+        }
         TESLTracker.doExit()
     }
 

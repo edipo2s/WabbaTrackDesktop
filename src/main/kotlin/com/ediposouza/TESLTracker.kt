@@ -277,6 +277,7 @@ class TESLTracker : App(MainWidget::class) {
                         addMenuItem("Show Log") {
                             Platform.runLater {
                                 Stage().apply {
+                                    initStyle(StageStyle.UTILITY)
                                     isAlwaysOnTop = true
                                     scene = Scene(loggerView.root)
                                     height = 200.0
