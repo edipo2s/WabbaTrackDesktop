@@ -309,6 +309,7 @@ class TESLTracker : App(MainWidget::class) {
                                         TESLTrackerData.getCard("firebolt") ?: Card.DUMMY,
                                         TESLTrackerData.getCard("lightningbolt") ?: Card.DUMMY,
                                         TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY,
+                                        TESLTrackerData.getCard("allenabenoch") ?: Card.DUMMY,
                                         TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY)
                                         .groupBy(Card::shortName)
                                         .map { CardSlot(it.value.first(), it.value.size) }

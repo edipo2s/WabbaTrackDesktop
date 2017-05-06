@@ -36,7 +36,7 @@ abstract class ReferenceConfig {
     val FULL_CARD_X = 80
     val FULL_CARD_Y = 100
     val FULL_CARD_DECK_IMAGE_X = 50
-    val FULL_CARD_DECK_IMAGE_Y = 155
+    val FULL_CARD_DECK_IMAGE_Y = 115
     val FULL_CARD_DECK_IMAGE_HEIGHT = 80
     val FULL_CARD_DECK_IMAGE_WIDTH = 290
 

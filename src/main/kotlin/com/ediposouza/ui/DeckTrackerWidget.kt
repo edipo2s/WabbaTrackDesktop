@@ -5,7 +5,6 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.extensions.toFXImage
-import com.ediposouza.extensions.withRoundedCorner
 import com.ediposouza.model.*
 import com.ediposouza.state.GameState
 import com.ediposouza.util.ImageFuncs
@@ -82,18 +81,12 @@ class DeckTrackerWidget : JFrame() {
         Label().apply {
             textFill = Color.WHITE
             effect = DropShadow(5.0, Color.BLACK)
+            style = "-fx-font: 12px 'Legends';"
         }
     }
 
     val deckAttr1Image by lazy {
         ImageView().apply {
-            effect = DropShadow(5.0, Color.BLACK)
-        }
-    }
-
-    val deckAttr1Label by lazy {
-        Label().apply {
-            textFill = Color.WHITE
             effect = DropShadow(5.0, Color.BLACK)
         }
     }
@@ -104,14 +97,33 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
-    val deckAttr2Label by lazy {
+    val infoAttr1Image by lazy {
+        ImageView().apply {
+            effect = DropShadow(5.0, Color.BLACK)
+        }
+    }
+
+    val infoAttr1Label by lazy {
         Label().apply {
             textFill = Color.WHITE
             effect = DropShadow(5.0, Color.BLACK)
         }
     }
 
-    val deckInfoLabel by lazy {
+    val infoAttr2Image by lazy {
+        ImageView().apply {
+            effect = DropShadow(5.0, Color.BLACK)
+        }
+    }
+
+    val infoAttr2Label by lazy {
+        Label().apply {
+            textFill = Color.WHITE
+            effect = DropShadow(5.0, Color.BLACK)
+        }
+    }
+
+    val infoLabel by lazy {
         Label().apply {
             textFill = Color.WHITE
             effect = DropShadow(5.0, Color.BLACK)
@@ -121,7 +133,13 @@ class DeckTrackerWidget : JFrame() {
     val deckCoverPane by lazy {
         BorderPane().apply {
             top = BorderPane().apply {
-                left = deckCoverName.apply {
+                left = VBox().apply {
+                    add(deckCoverName)
+                    add(HBox().apply {
+                        add(deckAttr1Image)
+                        add(deckAttr2Image)
+                        padding = Insets(2.0, 0.0, 0.0, 0.0)
+                    })
                     padding = Insets(2.0, 0.0, 0.0, 4.0)
                 }
                 right = ImageView().apply {
@@ -203,15 +221,15 @@ class DeckTrackerWidget : JFrame() {
                 left = VBox().apply {
                     add(HBox().apply {
                         alignment = Pos.CENTER_LEFT
-                        add(deckAttr1Image)
-                        add(deckAttr1Label)
+                        add(infoAttr1Image)
+                        add(infoAttr1Label)
                     })
                     add(HBox().apply {
                         alignment = Pos.CENTER_LEFT
-                        add(deckAttr2Image)
-                        add(deckAttr2Label)
+                        add(infoAttr2Image)
+                        add(infoAttr2Label)
                     })
-                    add(deckInfoLabel.apply {
+                    add(infoLabel.apply {
                         alignment = Pos.CENTER
                         maxWidth = cellSize.width.toDouble() + cellSize.height * 1.5
                     })
@@ -291,14 +309,28 @@ class DeckTrackerWidget : JFrame() {
         val deckAttr1 = deckClass?.attr1 ?: CardAttribute.NEUTRAL
         val deckAttr2 = deckClass?.attr2 ?: CardAttribute.NEUTRAL
         val deckAttrSize = cellSize.height * 0.5
+        val deckAttr1Name = deckAttr1.name.toLowerCase().capitalize()
+        val deckAttr2Name = deckAttr2.name.toLowerCase().capitalize()
         with(deckAttr1Image) {
-            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/${deckAttr1.name.toLowerCase().capitalize()}.png"))
+            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr1Name.png"))
+            fitHeight = deckAttrSize * 1.3
+            fitWidth = deckAttrSize * 1.3
+            isVisible = deckAttr1 != CardAttribute.NEUTRAL
+        }
+        with(deckAttr2Image) {
+            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr2Name.png"))
+            fitHeight = deckAttrSize * 1.3
+            fitWidth = deckAttrSize * 1.3
+            isVisible = deckAttr2 != CardAttribute.NEUTRAL
+        }
+        with(infoAttr1Image) {
+            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr1Name.png"))
             fitHeight = deckAttrSize
             fitWidth = deckAttrSize
             isVisible = deckAttr1 != CardAttribute.NEUTRAL
         }
-        with(deckAttr2Image) {
-            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/${deckAttr2.name.toLowerCase().capitalize()}.png"))
+        with(infoAttr2Image) {
+            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr2Name.png"))
             fitHeight = deckAttrSize
             fitWidth = deckAttrSize
             isVisible = deckAttr2 != CardAttribute.NEUTRAL
@@ -313,15 +345,15 @@ class DeckTrackerWidget : JFrame() {
             val deckAttr1 = deckClass?.attr1 ?: CardAttribute.NEUTRAL
             val cardsAttr1Qtd = filter { it.card.dualAttr1 == deckAttr1 }.sumBy { it.currentQtd }
             val cardsAttr1Chance = Bindings.format("%.1f", 100 * cardsAttr1Qtd / cardsLeftQtd).value
-            deckAttr1Label.text = ": $cardsAttr1Qtd cards - $cardsAttr1Chance% Hit"
+            infoAttr1Label.text = ": $cardsAttr1Qtd cards - $cardsAttr1Chance% Hit"
             val deckAttr2 = deckClass?.attr2 ?: CardAttribute.NEUTRAL
             val cardsAttr2Qtd = filter { it.card.dualAttr2 == deckAttr2 }.sumBy { it.currentQtd }
             val cardsAttr2Chance = Bindings.format("%.1f", 100 * cardsAttr2Qtd / cardsLeftQtd).value
-            deckAttr2Label.text = ": $cardsAttr2Qtd cards - $cardsAttr2Chance% Hit"
+            infoAttr2Label.text = ": $cardsAttr2Qtd cards - $cardsAttr2Chance% Hit"
             val deckCardsSlotProphecies = filter { it.card.keywords.contains(CardKeyword.PROPHECY) }
             val cardsPropheciesQtd = deckCardsSlotProphecies.sumBy { it.currentQtd }
             val cardsPropheciesHitChance = Bindings.format("%.1f", 100 * cardsPropheciesQtd / cardsLeftQtd).value
-            with(deckInfoLabel) {
+            with(infoLabel) {
                 text = "$cardsPropheciesQtd Prophecies - $cardsPropheciesHitChance% Hit"
             }
         }
@@ -335,56 +367,76 @@ class DeckTrackerWidget : JFrame() {
             super.updateItem(item, empty)
             if (item != null) {
                 var changeIndicator: BorderPane? = null
+                val cardSetName = item.card.set.name.toLowerCase().capitalize()
+                val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
+                val cardImagePath = "/CardsWebp/$cardSetName/$cardAttrName/${item.card.shortName}.webp"
                 graphic = StackPane().apply {
                     add(stackpane {
                         imageview {
-                            val cardSetName = item.card.set.name.toLowerCase().capitalize()
-                            val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
-                            val cardImagePath = "/CardsWebp/$cardSetName/$cardAttrName/${item.card.shortName}.webp"
                             var cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream("/CardsWebp/card_back.webp"))
                             try {
                                 cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream(cardImagePath))
                             } catch (e: Exception) {
                                 Logger.e(e)
                             }
-                            image = cardFullImage?.getCardForSlotCrop()?.withRoundedCorner(60f)?.toFXImage()
-                            fitHeight = cardSize.height.toDouble()
-                            fitWidth = cardSize.width.toDouble() * 0.8
+                            image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
+                            fitHeight = cardSize.height.toDouble() * 0.9
+                            fitWidth = cardSize.width.toDouble() * 0.5
                             opacity = 0.85.takeIf { item.currentQtd > 0 } ?: 0.2
                         }
-                        padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.2)
-                        style = "-fx-background-color: linear-gradient(to right, ${item.card.attr.colorHex}, #000000AA); " +
-                                "-fx-background-radius: 25.0;"
+                        padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.5)
+                        style = "-fx-background-radius: 25.0;"
                     })
+                    add(imageview {
+                        val deckClass = DeckClass.getClasses(listOf(item.card.dualAttr1, item.card.dualAttr2)).firstOrNull()
+                        val deckClassName = deckClass?.name?.toLowerCase()?.capitalize()
+                        val attrBorderImage = "/UI/Deck/frame${deckClassName ?: cardAttrName}.webp"
+                        image = ImageIO.read(TESLTracker::class.java.getResourceAsStream(attrBorderImage))?.toFXImage()
+                        fitHeight = cardSize.height.toDouble()
+                        fitWidth = cardSize.width.toDouble() + cardSize.height.toDouble() / 2
+                    }
+                    )
                     add(borderpane {
-                        left = imageview {
-                            val cardCost = item.card.cost
-                            image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Magicka/Magicka$cardCost.png"))
-                            fitHeight = cardSize.height.toDouble()
-                            fitWidth = cardSize.height.toDouble()
-                        }
-                        center = label {
-                            text = item.card.name
-                            textFill = when {
-                                item.currentQtd > 0 && item.currentQtd < item.qtd -> Color.YELLOW
-                                item.currentQtd <= 0 -> Color.DARKGRAY
-                                else -> Color.WHITE
+                        left = hbox {
+                            imageview {
+                                val cardCost = item.card.cost
+                                image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Magicka/Magicka$cardCost.png"))
+                                fitHeight = cardSize.height.toDouble()
+                                fitWidth = cardSize.height.toDouble()
                             }
-                            effect = DropShadow(5.0, Color.BLACK)
-                            padding = Insets(0.0, 0.0, 0.0, 3.0)
-                            minWidth = cardSize.width * 0.9
-                            maxWidth = cardSize.width * 0.9
+                            label {
+                                alignment = Pos.CENTER_LEFT
+                                text = item.card.name
+                                textFill = when {
+                                    item.currentQtd > 0 && item.currentQtd < item.qtd -> Color.YELLOW
+                                    item.currentQtd <= 0 -> Color.DARKGRAY
+                                    else -> Color.WHITE
+                                }
+                                effect = DropShadow(5.0, Color.BLACK)
+                                padding = Insets(0.0, 0.0, 0.0, 2.0)
+                                minWidth = cardSize.width * 0.6
+                                maxWidth = cardSize.width * 0.6
+                                minHeight = cardSize.height.toDouble()
+                            }
                         }
-                        right = label {
-                            alignment = Pos.CENTER
-                            textFill = Color.WHITE
-                            effect = DropShadow(5.0, Color.BLACK)
+                        right = stackpane {
                             val cardQtd = item.currentQtd
-                            if (cardQtd > 1) {
-                                text = "$cardQtd"
-                            }
-                            style = "-fx-font: 16px 'Planewalker';"
-                            padding = Insets(0.0, 3.0, 0.0, 0.0)
+                            add(imageview {
+                                image = Image(TESLTracker::class.java.getResourceAsStream("/UI/frameQtd.png"))
+                                fitHeight = cardSize.height.toDouble()
+                                fitWidth = cardSize.height.toDouble()
+                                isVisible = cardQtd > 1
+                            })
+                            add(label {
+                                alignment = Pos.CENTER
+                                textFill = Color.WHITE
+                                effect = DropShadow(5.0, Color.BLACK)
+                                if (cardQtd > 1) {
+                                    text = "$cardQtd"
+                                }
+                                padding = Insets(0.0, 2.0, 0.0, 0.0)
+                                style = "-fx-font: 12px 'Legends';"
+                            })
                             prefWidth = cardSize.height.toDouble() / 2
                         }
                     })
@@ -411,8 +463,6 @@ class DeckTrackerWidget : JFrame() {
                     }
                     background = Background.EMPTY
                     maxWidth = cardSize.width.toDouble() + cardSize.height
-                    style = "-fx-background-color: #000000AA; " +
-                            "-fx-background-radius: 25.0;"
                 }
                 hoverProperty().addListener({ _, _, _ ->
                     if (isHover) {

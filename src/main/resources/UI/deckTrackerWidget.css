@@ -1,14 +1,14 @@
 @font-face {
-    font-family: 'Planewalker';
-    src: url('Planewalker.otf');
+    font-family: 'Legends';
+    src: url('Legends.otf');
 }
 
 .label {
-    -fx-font: bold 13px 'Planewalker';
+    -fx-font: bold 11px 'Legends';
 }
 
 .button .text {
-    -fx-font-family: 'Planewalker';
+    -fx-font-family: 'Legends';
 }
 
 .list-view .scroll-bar:horizontal .increment-arrow,
