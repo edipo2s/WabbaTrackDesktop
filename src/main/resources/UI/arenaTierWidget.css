@@ -1,12 +1,12 @@
 @font-face {
-    font-family: 'Planewalker';
-    src: url('Planewalker.otf');
+    font-family: 'Legends';
+    src: url('Legends.otf');
 }
 
 .label {
-    -fx-font-family: 'Planewalker';
+    -fx-font-family: 'Legends';
 }
 
 .button .text {
-    -fx-font-family: 'Planewalker';
+    -fx-font-family: 'Legends';
 }

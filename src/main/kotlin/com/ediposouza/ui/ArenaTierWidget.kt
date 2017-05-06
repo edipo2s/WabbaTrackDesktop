@@ -38,7 +38,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     private val nameValueLabel by lazy {
         Label("").apply {
             alignment = Pos.CENTER
-            font = Font.font(16.0)
+            font = Font.font(14.0)
             padding = Insets(0.0, 2.0, 2.0, 2.0)
             textFill = Color.WHITE
         }
@@ -47,7 +47,6 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     private val synergyValueLabel by lazy {
         Label("").apply {
             alignment = Pos.TOP_LEFT
-            font = Font.font(1.0)
             padding = Insets(0.0, 3.0, 2.0, 3.0)
             textFill = Color.WHITE
         }
@@ -55,7 +54,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
     private val tierValueLabel by lazy {
         Label("0").apply {
-            font = Font.font(42.0)
+            font = Font.font(30.0)
             padding = Insets(0.0, 0.0, 5.0, 4.0)
         }
     }
@@ -138,7 +137,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     fun setPickValue(arenaTier: CardPick) {
         nameValueLabel.text = arenaTier.card.name
         with(synergyValueLabel) {
-            style = "-fx-font-size: ${1.takeIf { arenaTier.synergy.isEmpty() } ?: 12};"
+            style = "-fx-font-size: ${1.takeIf { arenaTier.synergy.isEmpty() } ?: 10};"
             text = "Synergy:" + arenaTier.synergy.groupBy(Card::shortName)
                     .map { CardSlot(it.value.first(), it.value.size) }
                     .map { (card, qtd) -> "\n ${card.name}" + ("".takeIf { qtd == 1 } ?: " x$qtd") }
