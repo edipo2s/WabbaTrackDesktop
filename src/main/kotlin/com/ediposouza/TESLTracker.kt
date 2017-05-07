@@ -280,9 +280,10 @@ class TESLTracker : App(MainWidget::class) {
                                     initStyle(StageStyle.UTILITY)
                                     isAlwaysOnTop = true
                                     scene = Scene(loggerView.root)
+                                    title = "$APP_NAME Logs"
                                     height = 200.0
                                     width = 180.0
-                                    x = 0.0
+                                    x = screenSize.width - width - 10.0
                                     y = screenSize.height - height
                                 }.show()
                             }

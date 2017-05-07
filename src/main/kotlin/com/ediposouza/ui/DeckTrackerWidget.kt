@@ -27,8 +27,8 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.javafx.JavaFx
 import kotlinx.coroutines.experimental.launch
 import tornadofx.*
 import java.awt.Dimension
@@ -51,28 +51,42 @@ class DeckTrackerWidget : JFrame() {
     private val configIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/ic_settings.png") }
     private val defaultDeckCoverStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream("/UI/Class/Default.webp") }
 
+    val jfxPanel by lazy {
+        JFXPanel().apply {
+            Platform.runLater {
+                scene = createFxScene()
+                SwingUtilities.invokeLater {
+                    pack()
+                    isVisible = true
+                }
+            }
+        }
+    }
+
     val contextMenu = ContextMenu(
-            MenuItem("Hide").apply {
+            MenuItem("Decrease Size").apply {
+                setOnAction {
+                    deckTrackerZoom -= 0.1f
+                    Platform.runLater {
+                        jfxPanel.scene = createFxScene()
+                        updateDeckCover()
+                    }
+                }
+            },
+            MenuItem("Increase Size").apply {
+                setOnAction {
+                    deckTrackerZoom += 0.1f
+                    Platform.runLater {
+                        jfxPanel.scene = createFxScene()
+                        updateDeckCover()
+                    }
+                }
+            },
+            MenuItem("Hide Deck").apply {
                 setOnAction {
                     GameState.deckTracker.isVisible = false
                     GameState.shouldShowDeckTracker = false
                     Mixpanel.postEventHideDeckTracker()
-                }
-            },
-            MenuItem("Zoom +").apply {
-                setOnAction {
-                    deckTrackerZoom -= 0.2f
-                    contentPane.removeAll()
-                    updateDeckCover()
-                    addFXScene()
-                }
-            },
-            MenuItem("Zoom -").apply {
-                setOnAction {
-                    deckTrackerZoom += 0.2f
-                    contentPane.removeAll()
-                    updateDeckCover()
-                    addFXScene()
                 }
             }
     )
@@ -138,7 +152,7 @@ class DeckTrackerWidget : JFrame() {
                     add(HBox().apply {
                         add(deckAttr1Image)
                         add(deckAttr2Image)
-                        padding = Insets(2.0, 0.0, 0.0, 0.0)
+                        padding = Insets(1.0, 0.0, 0.0, 0.0)
                     })
                     padding = Insets(2.0, 0.0, 0.0, 4.0)
                 }
@@ -172,20 +186,7 @@ class DeckTrackerWidget : JFrame() {
             size = deckTrackerSize
         }
 
-        addFXScene()
-    }
-
-    private fun addFXScene() {
-        JFXPanel().apply {
-            contentPane.add(this)
-            Platform.runLater {
-                scene = createFxScene()
-                SwingUtilities.invokeLater {
-                    pack()
-                    isVisible = true
-                }
-            }
-        }
+        contentPane.add(jfxPanel)
     }
 
     private fun createFxScene(): Scene {
@@ -366,7 +367,6 @@ class DeckTrackerWidget : JFrame() {
         override fun updateItem(item: CardSlot?, empty: Boolean) {
             super.updateItem(item, empty)
             if (item != null) {
-                var changeIndicator: BorderPane? = null
                 val cardSetName = item.card.set.name.toLowerCase().capitalize()
                 val cardAttrName = item.card.attr.name.toLowerCase().capitalize()
                 val cardImagePath = "/CardsWebp/$cardSetName/$cardAttrName/${item.card.shortName}.webp"
@@ -381,7 +381,7 @@ class DeckTrackerWidget : JFrame() {
                             }
                             image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
                             fitHeight = cardSize.height.toDouble() * 0.9
-                            fitWidth = cardSize.width.toDouble() * 0.5
+                            fitWidth = cardSize.width.toDouble() * 0.6
                             opacity = 0.85.takeIf { item.currentQtd > 0 } ?: 0.2
                         }
                         padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.5)
@@ -394,8 +394,7 @@ class DeckTrackerWidget : JFrame() {
                         image = ImageIO.read(TESLTracker::class.java.getResourceAsStream(attrBorderImage))?.toFXImage()
                         fitHeight = cardSize.height.toDouble()
                         fitWidth = cardSize.width.toDouble() + cardSize.height.toDouble() / 2
-                    }
-                    )
+                    })
                     add(borderpane {
                         left = hbox {
                             imageview {
@@ -440,38 +439,36 @@ class DeckTrackerWidget : JFrame() {
                             prefWidth = cardSize.height.toDouble() / 2
                         }
                     })
-                    add(borderpane {
-                        changeIndicator = this
-                        background = Background.EMPTY
+                    add(StackPane().apply {
                         opacity = 0.0
                         style = "-fx-background-color: #FFFF00AA; " +
                                 "-fx-background-radius: 25.0;"
-                    })
-                    if (item.recentChanged) {
-                        item.recentChanged = false
-                        changeIndicator?.opacity = 1.0
-                        launch(JavaFx) {
-                            var changeIndicatorOpacity = 1.0
-                            while (changeIndicatorOpacity > 0.0) {
-                                Platform.runLater {
-                                    changeIndicatorOpacity -= 0.1
-                                    changeIndicator?.opacity = changeIndicatorOpacity
+                        if (item.recentChanged) {
+                            item.recentChanged = false
+                            opacity = 1.0
+                            launch(CommonPool) {
+                                while (opacity > 0.0) {
+                                    Platform.runLater {
+                                        opacity -= 0.1
+                                    }
+                                    delay(100L)
                                 }
-                                delay(100L)
                             }
                         }
-                    }
+                    })
                     background = Background.EMPTY
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                 }
-                hoverProperty().addListener({ _, _, _ ->
-                    if (isHover) {
-                        val cardPosX = deckTrackerWidget.location.x
-                        val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
-                        cardWidget = CardWidget(item.card, cardPosX, cardPosY)
-                    }
-                    cardWidget?.isVisible = isHover
-                })
+                setOnMouseEntered {
+                    val cardPosX = deckTrackerWidget.location.x
+                    val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
+                    cardWidget = CardWidget(item.card, cardPosX, cardPosY)
+                    cardWidget?.isVisible = true
+                }
+                setOnMouseExited {
+                    cardWidget?.isVisible = false
+                    cardWidget = null
+                }
             }
         }
     }

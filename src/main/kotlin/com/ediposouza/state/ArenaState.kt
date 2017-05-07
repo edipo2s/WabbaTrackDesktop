@@ -4,10 +4,7 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.handler.ArenaHandler
 import com.ediposouza.handler.StateHandler
-import com.ediposouza.model.Card
-import com.ediposouza.model.CardPick
-import com.ediposouza.model.CardSlot
-import com.ediposouza.model.DeckClass
+import com.ediposouza.model.*
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
@@ -82,6 +79,7 @@ object ArenaState : StateHandler.TESLState {
             if (value) {
                 threadRunning = false
                 hidePicksTier()
+                GameState.matchMode = MatchMode.ARENA
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
