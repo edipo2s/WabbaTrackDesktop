@@ -50,8 +50,7 @@ class CardWidget(val card: Card, posX: Int, posY: Int) : JFrame() {
         setLocation(posXLeft.takeIf { posX > cardSize.width + cardMargin } ?: posXRight,
                 posY.takeIf { it < maxY } ?: maxY.toInt())
 
-        JFXPanel().apply {
-            contentPane.add(this)
+        contentPane.add(JFXPanel().apply {
             Platform.runLater {
                 scene = createFxScene()
                 SwingUtilities.invokeLater {
@@ -59,7 +58,7 @@ class CardWidget(val card: Card, posX: Int, posY: Int) : JFrame() {
                     isVisible = true
                 }
             }
-        }
+        })
 
     }
 

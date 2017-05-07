@@ -1,25 +1,32 @@
 package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.util.ImageFuncs
 import com.ediposouza.util.Logger
 import javafx.application.Platform
+import javafx.embed.swing.JFXPanel
 import javafx.geometry.Pos
+import javafx.scene.Scene
 import javafx.scene.control.ContextMenu
 import javafx.scene.image.Image
 import javafx.scene.layout.Background
 import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.javafx.JavaFx
 import kotlinx.coroutines.experimental.launch
-import tornadofx.View
 import tornadofx.add
 import tornadofx.imageview
+import java.awt.Dimension
+import java.awt.Window
+import javax.swing.JFrame
+import javax.swing.SwingUtilities
 
 /**
  * Created by Edipo on 20/03/2017.
  */
-class MainWidget : View(TESLTracker.APP_NAME) {
+class MainWidget : JFrame() {
 
     companion object {
 
@@ -27,51 +34,38 @@ class MainWidget : View(TESLTracker.APP_NAME) {
 
     }
 
+    private lateinit var mainSize: Dimension
     private var animationRunning = false
-    private var xOffset = 0.0
-    private var yOffset = 0.0
-
-    override val root = VBox().apply {
-        with(TESLTracker.referenceConfig) {
-            val mainSize = ImageFuncs.getScreenScaledSize(APP_MAIN_WIDTH, APP_MAIN_HEIGHT)
-            add(imageview {
-                image = Image(TESLTracker::class.java.getResourceAsStream("/UI/main.png"),
-                        mainSize.width.toDouble(), mainSize.height.toDouble(), true, true)
-            })
-        }
-        alignment = Pos.TOP_CENTER
-        background = Background.EMPTY
-        prefHeight = TESLTracker.screenSize.height / 2.0
-        setOnMousePressed { me ->
-            xOffset = me.sceneX
-            yOffset = me.sceneY
-            if (me.isSecondaryButtonDown) {
-                contextMenu.show(primaryStage, me.screenX, me.screenY)
-            }
-        }
-        setOnMouseDragged { me ->
-            primaryStage.x = me.screenX - xOffset
-            primaryStage.y = me.screenY - yOffset
-        }
-    }
-
-    var isVisible: Boolean
-        get() = primaryStage.isShowing
-        set(value) {
-            Platform.runLater {
-                if (value) {
-                    primaryStage.show()
-                    startShowAnimation()
-                } else {
-                    primaryStage.close()
-                }
-            }
-        }
 
     init {
-        Platform.runLater {
+        type = Window.Type.UTILITY
+        isUndecorated = true
+        isAlwaysOnTop = true
+        background = java.awt.Color(0, 0, 0, 0)
+
+        with(TESLTracker.referenceConfig) {
+            val mainPos = ImageFuncs.getScreenScaledPosition(APP_MAIN_X, APP_MAIN_Y)
+            mainSize = ImageFuncs.getScreenScaledSize(APP_MAIN_WIDTH, APP_MAIN_HEIGHT)
+            setLocation(mainPos.x, mainPos.y)
+        }
+
+        contentPane.add(JFXPanel().apply {
+            Platform.runLater {
+                scene = createFxScene()
+                SwingUtilities.invokeLater {
+                    pack()
+                    isVisible = true
+                    startShowAnimation()
+                }
+            }
+        })
+
+    }
+
+    override fun setVisible(b: Boolean) {
+        super.setVisible(b)
+        if (isVisible) {
             startShowAnimation()
-            primaryStage.icons += TESLTracker.legendsIcon
         }
     }
 
@@ -81,20 +75,39 @@ class MainWidget : View(TESLTracker.APP_NAME) {
         }
         animationRunning = true
         Logger.d("start Floating icon animation")
-        with(primaryStage.scene.window) {
-            val initialXLocation = x
-            val animXLocation = x - 50
-            launch(JavaFx) {
-                while (x > animXLocation) {
-                    x -= 2
-                    delay(15)
+        val initialXLocation = location.x
+        val animXLocation = location.x - 50
+        launch(CommonPool) {
+            while (location.x > animXLocation) {
+                setLocation(location.x - 2, location.y)
+                delay(20)
+            }
+            delay(200)
+            while (location.x < initialXLocation) {
+                setLocation(location.x + 2, location.y)
+                delay(20)
+            }
+            animationRunning = false
+        }
+    }
+
+    private fun createFxScene(): Scene {
+        val layout = VBox().apply {
+            add(imageview {
+                image = Image(TESLTracker::class.java.getResourceAsStream("/UI/main.png"),
+                        mainSize.width.toDouble(), mainSize.height.toDouble(), true, true)
+            })
+            makeDraggable(this@MainWidget)
+            alignment = Pos.TOP_CENTER
+            background = Background.EMPTY
+            prefHeight = TESLTracker.screenSize.height / 2.0
+        }
+        return Scene(layout).apply {
+            fill = Color.TRANSPARENT
+            setOnMousePressed { me ->
+                if (me.isSecondaryButtonDown) {
+                    contextMenu.show(root, me.screenX, me.screenY)
                 }
-                delay(200)
-                while (x < initialXLocation) {
-                    x += 2
-                    delay(15)
-                }
-                animationRunning = false
             }
         }
     }

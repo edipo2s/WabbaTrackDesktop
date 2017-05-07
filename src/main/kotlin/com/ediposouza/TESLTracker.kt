@@ -11,6 +11,7 @@ import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerController
 import com.ediposouza.ui.LoggerView
+import com.ediposouza.ui.MainStageView
 import com.ediposouza.ui.MainWidget
 import com.ediposouza.util.*
 import com.google.gson.Gson
@@ -48,13 +49,12 @@ import javax.swing.SwingUtilities
 /**
  * Created by ediposouza on 06/03/17.
  */
-class TESLTracker : App(MainWidget::class) {
+class TESLTracker : App(MainStageView::class) {
 
     companion object {
 
         val APP_NAME = "WabbaTrack"
         val APP_VERSION = "0.1"
-        val FILE_NAME = "WabbaTrack.exe"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
@@ -197,6 +197,9 @@ class TESLTracker : App(MainWidget::class) {
 
         loggerController.initialize()
         configureSystemTrayIcon()
+        stage.close()
+        mainWidget.isVisible = true
+
         if (TESLTrackerAuth.hasLoginCredentialsSaved()) {
             Logger.d("Starting auto-login")
             doLogin()
