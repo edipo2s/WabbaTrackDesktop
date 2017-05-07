@@ -80,6 +80,7 @@ object Mixpanel {
     fun postEventHideDeckTracker() = postEvent("HideDeckTracker")
     fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
     fun postEventArenaPick(card: Card) = postEvent("ArenaPick", mutableMapOf("Card" to card.shortName))
+    fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
 
     private fun postEvent(eventName: String, eventProps: MutableMap<String, String> = mutableMapOf()) {
         launch(CommonPool) {

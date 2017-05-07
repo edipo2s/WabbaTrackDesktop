@@ -32,6 +32,7 @@ object TESLTrackerData {
     val NODE_WABBATRACK = "wabbatrack"
 
     val UPDATE_FILE_NAME = "lastVersion.exe"
+    val UPDATER_FILE_NAME = "Updater.exe"
 
     var firebaseDatabaseAPI: Rest = Rest().apply {
         baseURI = "https://tes-legends-assistant.firebaseio.com/"
@@ -266,16 +267,19 @@ object TESLTrackerData {
             }
             Logger.i("New version detect, downloading version $lastVersion")
             val url = entries.find { it.key == "url" }?.value.toString()
-            downloadFile(url, UPDATE_FILE_NAME) {
-                Logger.d("Download Success")
-                val downloadedMD5 = downloadedUpdateFile.getMD5()
-                if (downloadedMD5 == md5) {
-                    TESLTracker.showRestartToUpdateNow()
-                } else {
-                    Logger.e("Update file md5 don't match \nActual: $downloadedMD5 \nExpected: $md5")
-                    downloadedUpdateFile.delete()
-                    if (retry < 3) {
-                        checkForUpdate(retry + 1)
+            val updaterUrl = entries.find { it.key == "updater" }?.value.toString()
+            downloadFile(updaterUrl, UPDATER_FILE_NAME) {
+                downloadFile(url, UPDATE_FILE_NAME) {
+                    Logger.d("Download Success")
+                    val downloadedMD5 = downloadedUpdateFile.getMD5()
+                    if (downloadedMD5 == md5) {
+                        TESLTracker.showRestartToUpdateNow()
+                    } else {
+                        Logger.e("Update file md5 don't match \nActual: $downloadedMD5 \nExpected: $md5")
+                        downloadedUpdateFile.delete()
+                        if (retry < 3) {
+                            checkForUpdate(retry + 1)
+                        }
                     }
                 }
             }

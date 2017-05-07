@@ -48,7 +48,7 @@ class CardWidget(val card: Card, posX: Int, posY: Int) : JFrame() {
         val posXRight = posX + cardSize.width + cardMargin
         val maxY = TESLTracker.screenSize.height - cardSize.height - cardMargin
         setLocation(posXLeft.takeIf { posX > cardSize.width + cardMargin } ?: posXRight,
-                posY.takeIf { it < maxY } ?: maxY.toInt())
+                posY.takeIf { it < maxY } ?: maxY)
 
         contentPane.add(JFXPanel().apply {
             Platform.runLater {

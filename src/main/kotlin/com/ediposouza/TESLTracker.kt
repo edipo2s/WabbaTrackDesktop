@@ -267,6 +267,11 @@ class TESLTracker : App(MainStageView::class) {
                 addMenuItem("Show/Hide Floating Icon  (Crtl+Shift+W)") {
                     mainWidget.isVisible = !mainWidget.isVisible
                 }
+                addMenuItem("Android TESLegends Tracker") {
+                    val url = "https://play.google.com/store/apps/details?id=com.ediposouza.teslesgendstracker"
+                    Desktop.getDesktop().browse(URI(url))
+                    Mixpanel.postEventAndroidTESLegendsTracker()
+                }
                 addMenuItem("About") {
                     Platform.runLater {
                         alert(Alert.AlertType.INFORMATION, "About", "$APP_NAME $APP_VERSION \nby Edipo2s")

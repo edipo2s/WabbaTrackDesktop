@@ -310,19 +310,19 @@ class DeckTrackerWidget : JFrame() {
                         cellSize.height * 1.5, false, false, false, false)))
         val deckAttr1 = deckClass?.attr1 ?: CardAttribute.NEUTRAL
         val deckAttr2 = deckClass?.attr2 ?: CardAttribute.NEUTRAL
-        val deckAttrSize = cellSize.height * 0.5
+        val deckAttrSize = cellSize.height * 0.6
         val deckAttr1Name = deckAttr1.name.toLowerCase().capitalize()
         val deckAttr2Name = deckAttr2.name.toLowerCase().capitalize()
         with(deckAttr1Image) {
             image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr1Name.png"))
-            fitHeight = deckAttrSize * 1.3
-            fitWidth = deckAttrSize * 1.3
+            fitHeight = deckAttrSize * 1.2
+            fitWidth = deckAttrSize * 1.2
             isVisible = deckAttr1 != CardAttribute.NEUTRAL
         }
         with(deckAttr2Image) {
             image = Image(TESLTracker::class.java.getResourceAsStream("/UI/Attribute/$deckAttr2Name.png"))
-            fitHeight = deckAttrSize * 1.3
-            fitWidth = deckAttrSize * 1.3
+            fitHeight = deckAttrSize * 1.2
+            fitWidth = deckAttrSize * 1.2
             isVisible = deckAttr2 != CardAttribute.NEUTRAL
         }
         with(infoAttr1Image) {
