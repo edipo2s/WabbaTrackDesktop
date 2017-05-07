@@ -151,6 +151,7 @@ class DeckTrackerWidget : JFrame() {
                     add(deckCoverName)
                     add(HBox().apply {
                         add(deckAttr1Image)
+                        add(label(" "))
                         add(deckAttr2Image)
                         padding = Insets(1.0, 0.0, 0.0, 0.0)
                     })

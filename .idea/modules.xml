@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Updater/Updater.iml" filepath="$PROJECT_DIR$/Updater/Updater.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/WabbaTrack.iml" filepath="$PROJECT_DIR$/.idea/modules/WabbaTrack.iml" />
       <module fileurl="file://$PROJECT_DIR$/dHashCalc/dHashCalc.iml" filepath="$PROJECT_DIR$/dHashCalc/dHashCalc.iml" />
     </modules>
