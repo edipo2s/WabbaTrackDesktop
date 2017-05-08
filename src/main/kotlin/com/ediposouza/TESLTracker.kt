@@ -274,7 +274,8 @@ class TESLTracker : App(MainStageView::class) {
                 }
                 addMenuItem("About") {
                     Platform.runLater {
-                        alert(Alert.AlertType.INFORMATION, "About", "$APP_NAME $APP_VERSION \nby Edipo2s")
+                        alert(Alert.AlertType.INFORMATION, "About", "$APP_NAME $APP_VERSION \n\nSpecial thanks:\n" +
+                                "CVH for Arena Tier List\nBethesda and Direwolf for Amazing Game\n\nby Edipo2s")
                     }
                 }
                 addMenuItem("Exit") {
