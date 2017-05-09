@@ -54,7 +54,7 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.1.1"
+        val APP_VERSION = "0.1.2"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
