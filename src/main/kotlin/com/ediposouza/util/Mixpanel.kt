@@ -37,7 +37,7 @@ object Mixpanel {
     fun trackUser() {
         launch(CommonPool) {
             val userName = TESLTrackerAuth.userName ?: GUEST
-            val userProps = mutableMapOf("\$first_name" to userName)
+            val userProps = mutableMapOf("\$app_version" to TESLTracker.APP_VERSION, "\$first_name" to userName)
             if (TESLTrackerAuth.isUserLogged()) {
                 userProps.put("\$email", TESLTrackerAuth.userEmail ?: "")
             }
@@ -49,7 +49,7 @@ object Mixpanel {
     }
 
     fun postEventShowStatistics() = postEvent("ShowStatistics")
-    fun postEventGameDetected() = postEvent("GameDetected", mutableMapOf("AppVersion" to TESLTracker.APP_VERSION))
+    fun postEventGameDetected() = postEvent("GameDetected")
 
     fun postEventGameResult(playerCls: DeckClass, opponentCls: DeckClass, mode: MatchMode, result: String) {
         postEvent("GameResult", mutableMapOf(

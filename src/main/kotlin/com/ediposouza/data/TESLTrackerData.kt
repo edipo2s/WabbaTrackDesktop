@@ -1,6 +1,7 @@
 package com.ediposouza.data
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.extensions.asJson
 import com.ediposouza.extensions.getMD5
 import com.ediposouza.model.*
 import com.ediposouza.teslesgendstracker.data.Patch
@@ -24,6 +25,7 @@ object TESLTrackerData {
     val NODE_PATCHES = "patches"
     val NODE_USERS = "users"
     val NODE_USERS_DECKS = "decks"
+    val NODE_USER_INFO = "info"
     val NODE_DECKS = "decks"
     val NODE_DECKS_PRIVATE = "private"
     val NODE_DECKS_PUBLIC = "public"
@@ -51,6 +53,7 @@ object TESLTrackerData {
     var cardsAllClass = listOf<String>()
     var cardsByClass = mapOf<String, List<String>>()
     var decks = mutableListOf<Deck>()
+    var userDBUpdated = false
 
     init {
         if (cardsDBFile.exists()) {
@@ -110,23 +113,47 @@ object TESLTrackerData {
         return cardsByClass[deckClass.name.toLowerCase()] ?: cardsAllClass
     }
 
+    fun updateUserDB(retry: Int = 0, onSuccess: (() -> Unit)? = null) {
+        if (!TESLTrackerAuth.isUserLogged()) {
+            Logger.e("Do login to save User")
+            return
+        }
+        val userInfo = mapOf("name" to TESLTrackerAuth.userName, "photoUrl" to TESLTrackerAuth.userPhoto, "email" to TESLTrackerAuth.userEmail)
+        val infoData = Gson().toJson(userInfo)
+        val userInfoPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USER_INFO"
+        val userAccessToken = TESLTrackerAuth.userAccessToken
+        try {
+            firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$userInfoPath.json?auth=$userAccessToken",
+                    infoData.byteInputStream()) { processor ->
+                processor.addHeader("Content-Type", "application/json")
+            }.one().apply {
+                userDBUpdated = true
+                onSuccess?.invoke()
+            }
+        } catch (e: Exception) {
+            if (retry < 3) {
+                updateUserDB(retry + 1, onSuccess)
+            }
+        }
+    }
+
     fun updateDecksDB(onSuccess: (() -> Unit)? = null) {
         launch(CommonPool) {
             Logger.d("Updating decks database")
             decks.clear()
-            if (!TESLTrackerAuth.isUserLogged()) {
+            if (!TESLTrackerAuth.isUserLogged() || !userDBUpdated) {
                 Logger.e("Do login to get decks")
             } else {
                 val userAccessToken = TESLTrackerAuth.userAccessToken
                 val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS"
-                with(firebaseDatabaseAPI.get("$userDecksPath/$NODE_DECKS_PRIVATE.json?access_token=$userAccessToken").one()) {
-                    decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
+                with(firebaseDatabaseAPI.get("$userDecksPath/$NODE_DECKS_PRIVATE.json?auth=$userAccessToken").asJson()) {
+                    decks.addAll(entrySet().map { (deckUuid, deckAttrsJson) ->
                         val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
                         deckParser.toDeck(deckUuid, true)
                     })
                 }
                 val userOwnerFilter = "orderBy=%22owner%22&equalTo=%22${TESLTrackerAuth.userUuid}%22"
-                with(firebaseDatabaseAPI.get("$NODE_DECKS/$NODE_DECKS_PUBLIC.json?$userOwnerFilter&access_token=$userAccessToken").one()) {
+                with(firebaseDatabaseAPI.get("$NODE_DECKS/$NODE_DECKS_PUBLIC.json?$userOwnerFilter&auth=$userAccessToken").one()) {
                     decks.addAll(entries.map { (deckUuid, deckAttrsJson) ->
                         val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
                         deckParser.toDeck(deckUuid, false)
@@ -158,7 +185,7 @@ object TESLTrackerData {
                 val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS/$NODE_DECKS_PRIVATE"
                 val decksPath = userDecksPath.takeIf { deck.private } ?: "$NODE_DECKS/$NODE_DECKS_PUBLIC"
                 val userAccessToken = TESLTrackerAuth.userAccessToken
-                with(firebaseDatabaseAPI.delete("$decksPath/${deck.uuid}.json?access_token=$userAccessToken").consume()) {
+                with(firebaseDatabaseAPI.delete("$decksPath/${deck.uuid}.json?auth=$userAccessToken").consume()) {
                     onSuccess()
                 }
             }
@@ -198,7 +225,7 @@ object TESLTrackerData {
         }
     }
 
-    fun saveMatch(newMatch: Match, onSuccess: () -> Unit) {
+    fun saveMatch(newMatch: Match, retry: Int = 0, onSuccess: () -> Unit) {
         if (!TESLTrackerAuth.isUserLogged()) {
             Logger.e("Do login to save Matches")
             return
@@ -207,15 +234,17 @@ object TESLTrackerData {
         val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
         val userAccessToken = TESLTrackerAuth.userAccessToken
         try {
-            firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$userMatchesPath.json?access_token=$userAccessToken",
+            firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$userMatchesPath.json?auth=$userAccessToken",
                     newMatchData.byteInputStream()) { processor ->
                 processor.addHeader("Content-Type", "application/json")
             }.one().apply {
                 onSuccess()
             }
         } catch (e: Exception) {
-            reAuthUser {
-                saveMatch(newMatch, onSuccess)
+            if (retry < 3) {
+                reAuthUser {
+                    saveMatch(newMatch, retry + 1, onSuccess)
+                }
             }
         }
     }
@@ -248,7 +277,7 @@ object TESLTrackerData {
         }
     }
 
-    fun checkForUpdate(retry: Int = 0) {
+    fun checkForUpdate(retry: Int = 0, onSuccess: (String) -> Unit) {
         with(firebaseDatabaseAPI.get("$NODE_WABBATRACK.json").one()) {
             val lastVersion = entries.find { it.key == "lastVersion" }?.value.toString().replace("\"", "")
             if (lastVersion == TESLTracker.APP_VERSION) {
@@ -266,6 +295,7 @@ object TESLTrackerData {
                 }
             }
             Logger.i("New version detect, downloading version $lastVersion")
+            onSuccess(lastVersion)
             val url = entries.find { it.key == "url" }?.value.toString()
             val updaterUrl = entries.find { it.key == "updater" }?.value.toString()
             downloadFile(updaterUrl, UPDATER_FILE_NAME) {
@@ -278,7 +308,7 @@ object TESLTrackerData {
                         Logger.e("Update file md5 don't match \nActual: $downloadedMD5 \nExpected: $md5")
                         downloadedUpdateFile.delete()
                         if (retry < 3) {
-                            checkForUpdate(retry + 1)
+                            checkForUpdate(retry + 1, onSuccess)
                         }
                     }
                 }
