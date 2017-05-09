@@ -48,25 +48,25 @@ object TESLTrackerAuth {
 //            Logger.d("Validating a token: \n Access Token: ${credential?.accessToken}")
 
             Logger.d("Validating a token:")
-            userAccessToken = credential?.accessToken
             CredentialsProvider.oauth2?.run {
-                //                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
-//                Logger.d(tokeninfo.toPrettyString())
                 Logger.d("Obtaining User Profile Information:")
                 val userinfo = userinfo().get().execute()
                 userName = "${userinfo.givenName} ${userinfo.familyName}"
                 userEmail = userinfo.email
                 userPhoto = userinfo.picture
 //                Logger.d(userinfo.toPrettyString())
+//                val tokeninfo = tokeninfo().setAccessToken(userAccessToken).execute()
+//                Logger.d(tokeninfo.toPrettyString())
             }
 
-            val body = Gson().toJson(FirebaseAuth(userAccessToken ?: ""))
+            val body = Gson().toJson(FirebaseAuth(credential?.accessToken ?: ""))
             Logger.d("Getting firebase ID:")
             firebaseLoginAPI.post("verifyAssertion?key=$apiKey", body.byteInputStream()) { processor ->
                 processor.addHeader("Content-Type", "application/json")
             }.one().apply {
                 userUuid = getString("localId")
-//                Logger.d("FirebaseID: $userUuid")
+                userAccessToken = getString("idToken")
+//                Logger.d("FirebaseID: ${toPrettyString()}")
             }
             Mixpanel.trackUser()
             return true

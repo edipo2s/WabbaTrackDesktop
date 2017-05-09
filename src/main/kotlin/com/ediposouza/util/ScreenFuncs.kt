@@ -49,6 +49,7 @@ object ScreenFuncs {
         } else {
             titleStr = "Platform is not Support"
         }
+//        Logger.d(titleStr)
         return titleStr
     }
 

@@ -37,8 +37,8 @@ object CredentialsProvider {
     private val DATA_STORE_DIR = File(System.getProperty("user.home"), ".store/tesl_tracker")
 
     /** Scopes */
-    private val SCOPE_PROFILE_EMAIL = "https://www.googleapis.com/auth/userinfo.email"
-    private val SCOPE_FIREBASE_DATABASE = "https://www.googleapis.com/auth/firebase.database"
+    val SCOPE_PROFILE_EMAIL = "https://www.googleapis.com/auth/userinfo.email"
+    val SCOPE_PROFILE_PROFILE = "https://www.googleapis.com/auth/userinfo.profile"
 
     /**
      * Global instance of the [DataStoreFactory]. The best practice is to make it a single
@@ -63,12 +63,12 @@ object CredentialsProvider {
         val keysFileStream = InputStreamReader(TESLTracker::class.java.getResourceAsStream("/client_secrets.json"))
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, keysFileStream)
         keysFileStream.close()
-        if (clientSecrets.details.clientId.startsWith("Enter") || clientSecrets.details.clientSecret.startsWith("Enter ")) {
+        if (clientSecrets.details.clientId.startsWith("Enter") || clientSecrets.details.clientSecret.startsWith("Enter")) {
             Logger.e("API Keys not set")
             return null
         }
         // set up authorization code flow
-        val scopes = setOf(SCOPE_PROFILE_EMAIL, SCOPE_FIREBASE_DATABASE)
+        val scopes = setOf(SCOPE_PROFILE_EMAIL, SCOPE_PROFILE_PROFILE)
         val flow = GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, scopes)
                 .setDataStoreFactory(dataStoreFactory).build()
         // authorize

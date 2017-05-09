@@ -220,7 +220,7 @@ class TESLTracker : App(MainStageView::class) {
             Platform.runLater {
                 updateMenuDecksImported()
             }
-            TESLTrackerData.checkForUpdate()
+            checkUpdate()
         }
         FX.primaryStage.scene.fill = Color.TRANSPARENT
     }
@@ -380,7 +380,9 @@ class TESLTracker : App(MainStageView::class) {
                         }
                     }
                 }
-                updateMenuDecks()
+                TESLTrackerData.updateUserDB {
+                    updateMenuDecks()
+                }
                 Platform.runLater {
                     SwingUtilities.invokeLater {
                         trayIcon?.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
@@ -543,6 +545,14 @@ class TESLTracker : App(MainStageView::class) {
         }
     }
 
+    private fun checkUpdate() {
+        TESLTrackerData.checkForUpdate { lastVersion ->
+            SwingUtilities.invokeLater {
+                trayIcon?.displayMessage(APP_NAME, "New version $lastVersion detected, downloading...", TrayIcon.MessageType.NONE)
+            }
+        }
+    }
+
     suspend private fun startElderScrollDetection() {
         TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
@@ -566,7 +576,7 @@ class TESLTracker : App(MainStageView::class) {
     suspend private fun startElderScrollRecognition() {
         Logger.i("Start screenshot game!")
         launch(CommonPool) {
-            TESLTrackerData.checkForUpdate()
+            checkUpdate()
         }
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {

@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Updater/Updater.iml" filepath="$PROJECT_DIR$/Updater/Updater.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/WabbaTrack.iml" filepath="$PROJECT_DIR$/.idea/modules/WabbaTrack.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dHashCalc/dHashCalc.iml" filepath="$PROJECT_DIR$/dHashCalc/dHashCalc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pHashCalc/pHashCalc.iml" filepath="$PROJECT_DIR$/pHashCalc/pHashCalc.iml" />
     </modules>
   </component>
 </project>

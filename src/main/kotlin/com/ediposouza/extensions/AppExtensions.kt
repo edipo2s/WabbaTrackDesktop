@@ -1,11 +1,14 @@
 package com.ediposouza.extensions
 
 import com.ediposouza.ui.MainWidget
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.IOUtils
+import tornadofx.Rest
 import java.awt.Menu
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -101,4 +104,9 @@ fun File.getMD5(): String? {
     } finally {
         IOUtils.closeQuietly(fis)
     }
+}
+
+fun Rest.Response.asJson(): JsonObject {
+    val text = text() ?: "{}"
+    return JsonParser().parse(text.takeIf { text != "null" } ?: "{}").asJsonObject
 }
