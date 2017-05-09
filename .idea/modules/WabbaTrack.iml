@@ -6,7 +6,7 @@
         <compilerSettings />
         <compilerArguments>
           <option name="destination" value="C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\build\kotlin-classes\main" />
-          <option name="classpath" value="C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\libs\jnativehook-2.1.0.jar;C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\libs\luciad-webp-0.6.0.jar;C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\libs\oshi-core-3.4.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.1.2-2\2b22828f027e103dcd45f3aa240338bfdb53d16b\kotlin-stdlib-1.1.2-2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlinx\kotlinx-coroutines-core\0.14\7cf86d32f4c72a42d7d317c763c33b035f08bad7\kotlinx-coroutines-core-0.14.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlinx\kotlinx-coroutines-javafx\0.14\44c45d7f493f7e093271ba70a8f361b175a76acb\kotlinx-coroutines-javafx-0.14.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\no.tornado\tornadofx\1.7.0\e581b88ec128967f0ce016f357f85e3d09ee39ae\tornadofx-1.7.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\net.java.dev.jna\jna-platform\4.4.0\f396b0ceb7ababb8b4a5ea25e6742ced81e3d86f\jna-platform-4.4.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.scijava\native-lib-loader\2.1.3\fe9cab77d88001fb11b36c2b82bc10bb2a1f7cc7\native-lib-loader-2.1.3.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.github.tulskiy\jkeymaster\1.2\9f1e8c9341a8a0c51299b961c4f6c7661c822756\jkeymaster-1.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.8.0\c4ba5371a29ac9b2ad6129b1d39ea38750043eff\gson-2.8.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.apis\google-api-services-oauth2\v2-rev125-1.22.0\986a039ff6cd86eb708680dc74abf36b1b2ba26b\google-api-services-oauth2-v2-rev125-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client-jetty\1.22.0\b94c1e7d6c73cb1c15e2e5569cc6fda08cc80099\google-oauth-client-jetty-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client-jackson2\1.22.0\cc014d64ae11117e159d334c99d9c246d9b36f44\google-http-client-jackson2-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.mixpanel\mixpanel-java\1.4.4\3ad7fcd915e70d41df5fcacdff457d1cc83036f5\mixpanel-java-1.4.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\commons-io\commons-io\2.4\b1b6ea3b7e4aa4f492509a4952029cd8e48019ad\commons-io-2.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jsoup\jsoup\1.10.2\33ee82e324f4b1e40167f3dc5e01234a1c5cab61\jsoup-1.10.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.25\da76ca59f6a57ee3102f8f9bd9cee742973efa8a\slf4j-api-1.7.25.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.glassfish\javax.json\1.0.4\3178f73569fd7a1e5ffc464e680f7a8cc784b85a\javax.json-1.0.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-jre8\1.1.0\89c9fbaa9c33c98e590959d50fca9e21bad96b9a\kotlin-stdlib-jre8-1.1.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.1.0\2f22fa91aed07f3764431130a51366e1669e0c24\kotlin-reflect-1.1.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\net.java.dev.jna\jna\4.4.0\cb208278274bf12ebdb56c61bd7407e6f774d65a\jna-4.4.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.api-client\google-api-client\1.22.0\244350c0c845c583717ade13f5666a452fd0cfa\google-api-client-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client-java6\1.22.0\6cbd19cd33d55bcaac2d842a57f5ade9260bed99\google-oauth-client-java6-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.mortbay.jetty\jetty\6.1.26\2f546e289fddd5b1fab1d4199fbb6e9ef43ee4b0\jetty-6.1.26.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client\1.22.0\d441fc58329c4a4c067acec04ac361627f66ecc8\google-http-client-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.1.3\f6c3aed1cdfa21b5c1737c915186ea93a95a58bd\jackson-core-2.1.3.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.json\json\20090211\c183aa3a2a6250293808bba12262c8920ce5a51c\json-20090211.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-jre7\1.1.0\ef03cfed144ff47eed2cab1f7be4381bc18a6237\kotlin-stdlib-jre7-1.1.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client\1.22.0\1d63f369ac78e4838a3197147012026e791008cb\google-oauth-client-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.guava\guava-jdk5\17.0\463f8378feba44df7ba7cd9272d01837dad62b36\guava-jdk5-17.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.mortbay.jetty\jetty-util\6.1.26\e5642fe0399814e1687d55a3862aa5a3417226a9\jetty-util-6.1.26.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.mortbay.jetty\servlet-api\2.5-20081211\22bff70037e1e6fa7e6413149489552ee2064702\servlet-api-2.5-20081211.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\1.3.9\40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf\jsr305-1.3.9.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpclient\4.0.1\1d7d28fa738bdbfe4fbd895d9486308999bdf440\httpclient-4.0.1.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.0.1\e813b8722c387b22e1adccf7914729db09bcb4a9\httpcore-4.0.1.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\commons-logging\commons-logging\1.1.1\5043bfebc3db072ed80fbd362e7caf00e885d8ae\commons-logging-1.1.1.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\commons-codec\commons-codec\1.3\fd32786786e2adb664d5ecc965da47629dca14ba\commons-codec-1.3.jar" />
+          <option name="classpath" value="C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\libs\jnativehook-2.1.0.jar;C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\libs\luciad-webp-0.6.0.jar;C:\Users\Edipo\Documents\IdeaProjects\WabbaTrack\libs\oshi-core-3.4.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.1.2-2\2b22828f027e103dcd45f3aa240338bfdb53d16b\kotlin-stdlib-1.1.2-2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlinx\kotlinx-coroutines-core\0.14\7cf86d32f4c72a42d7d317c763c33b035f08bad7\kotlinx-coroutines-core-0.14.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlinx\kotlinx-coroutines-javafx\0.14\44c45d7f493f7e093271ba70a8f361b175a76acb\kotlinx-coroutines-javafx-0.14.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\no.tornado\tornadofx\1.7.4\2e15ff8ab324588cd87a983c2e2d73d4c1e96d58\tornadofx-1.7.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\net.java.dev.jna\jna-platform\4.4.0\f396b0ceb7ababb8b4a5ea25e6742ced81e3d86f\jna-platform-4.4.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.scijava\native-lib-loader\2.1.3\fe9cab77d88001fb11b36c2b82bc10bb2a1f7cc7\native-lib-loader-2.1.3.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.github.tulskiy\jkeymaster\1.2\9f1e8c9341a8a0c51299b961c4f6c7661c822756\jkeymaster-1.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.threeten\threetenbp\1.3.3\3ea31c96676ff12ab56be0b1af6fff61d1a4f1f2\threetenbp-1.3.3.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.8.0\c4ba5371a29ac9b2ad6129b1d39ea38750043eff\gson-2.8.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.apis\google-api-services-oauth2\v2-rev125-1.22.0\986a039ff6cd86eb708680dc74abf36b1b2ba26b\google-api-services-oauth2-v2-rev125-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client-jetty\1.22.0\b94c1e7d6c73cb1c15e2e5569cc6fda08cc80099\google-oauth-client-jetty-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client-jackson2\1.22.0\cc014d64ae11117e159d334c99d9c246d9b36f44\google-http-client-jackson2-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.mixpanel\mixpanel-java\1.4.4\3ad7fcd915e70d41df5fcacdff457d1cc83036f5\mixpanel-java-1.4.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\commons-io\commons-io\2.4\b1b6ea3b7e4aa4f492509a4952029cd8e48019ad\commons-io-2.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jsoup\jsoup\1.10.2\33ee82e324f4b1e40167f3dc5e01234a1c5cab61\jsoup-1.10.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.25\da76ca59f6a57ee3102f8f9bd9cee742973efa8a\slf4j-api-1.7.25.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.glassfish\javax.json\1.0.4\3178f73569fd7a1e5ffc464e680f7a8cc784b85a\javax.json-1.0.4.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-jre8\1.1.2\cd6d8b7a32971564fab0846009593f3bfabdcac1\kotlin-stdlib-jre8-1.1.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.1.2\b8cc2f486359a56c0c1b1dd125141c19d8db1734\kotlin-reflect-1.1.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\net.java.dev.jna\jna\4.4.0\cb208278274bf12ebdb56c61bd7407e6f774d65a\jna-4.4.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.api-client\google-api-client\1.22.0\244350c0c845c583717ade13f5666a452fd0cfa\google-api-client-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client-java6\1.22.0\6cbd19cd33d55bcaac2d842a57f5ade9260bed99\google-oauth-client-java6-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.mortbay.jetty\jetty\6.1.26\2f546e289fddd5b1fab1d4199fbb6e9ef43ee4b0\jetty-6.1.26.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client\1.22.0\d441fc58329c4a4c067acec04ac361627f66ecc8\google-http-client-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.1.3\f6c3aed1cdfa21b5c1737c915186ea93a95a58bd\jackson-core-2.1.3.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.json\json\20090211\c183aa3a2a6250293808bba12262c8920ce5a51c\json-20090211.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-jre7\1.1.2\8fe14858be2d85bb2c8ad1e060f6dafbd45f48f4\kotlin-stdlib-jre7-1.1.2.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.oauth-client\google-oauth-client\1.22.0\1d63f369ac78e4838a3197147012026e791008cb\google-oauth-client-1.22.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.guava\guava-jdk5\17.0\463f8378feba44df7ba7cd9272d01837dad62b36\guava-jdk5-17.0.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.mortbay.jetty\jetty-util\6.1.26\e5642fe0399814e1687d55a3862aa5a3417226a9\jetty-util-6.1.26.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.mortbay.jetty\servlet-api\2.5-20081211\22bff70037e1e6fa7e6413149489552ee2064702\servlet-api-2.5-20081211.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\1.3.9\40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf\jsr305-1.3.9.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpclient\4.0.1\1d7d28fa738bdbfe4fbd895d9486308999bdf440\httpclient-4.0.1.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.0.1\e813b8722c387b22e1adccf7914729db09bcb4a9\httpcore-4.0.1.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\commons-logging\commons-logging\1.1.1\5043bfebc3db072ed80fbd362e7caf00e885d8ae\commons-logging-1.1.1.jar;C:\Users\Edipo\.gradle\caches\modules-2\files-2.1\commons-codec\commons-codec\1.3\fd32786786e2adb664d5ecc965da47629dca14ba\commons-codec-1.3.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="WabbaTrack_main" />
@@ -42,16 +42,45 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core:0.14" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.1.2-2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: com.google.errorprone:error_prone_annotations:2.0.12" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: com.google.guava:guava:20.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: com.google.truth:truth:0.31" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Gradle: org.threeten:threetenbp:1.3.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: no.tornado:tornadofx:1.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-javafx:0.14" level="project" />
+    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna-platform:4.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.scijava:native-lib-loader:2.1.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.tulskiy:jkeymaster:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.apis:google-api-services-oauth2:v2-rev125-1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client-jetty:1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.http-client:google-http-client-jackson2:1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.mixpanel:mixpanel-java:1.4.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.jsoup:jsoup:1.10.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.glassfish:javax.json:1.0.4" level="project" />
+    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.api-client:google-api-client:1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client-java6:1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.mortbay.jetty:jetty:6.1.26" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.http-client:google-http-client:1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.1.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client:1.22.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava-jdk5:17.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.mortbay.jetty:jetty-util:6.1.26" level="project" />
+    <orderEntry type="library" name="Gradle: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.3" level="project" />
     <orderEntry type="module-library">
-      <library name="Gradle: oshi-core-3.4.2">
+      <library name="Gradle: jnativehook-2.1.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/oshi-core-3.4.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../libs/jnativehook-2.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -67,47 +96,19 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: jnativehook-2.1.0">
+      <library name="Gradle: oshi-core-3.4.2">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/jnativehook-2.1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../libs/oshi-core-3.4.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.3" level="project" />
-    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.0.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:1.3.9" level="project" />
-    <orderEntry type="library" name="Gradle: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
-    <orderEntry type="library" name="Gradle: org.mortbay.jetty:jetty-util:6.1.26" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.guava:guava-jdk5:17.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.json:json:20090211" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.1.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.http-client:google-http-client:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.mortbay.jetty:jetty:6.1.26" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client-java6:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.api-client:google-api-client:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.glassfish:javax.json:1.0.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" name="Gradle: org.jsoup:jsoup:1.10.2" level="project" />
-    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.mixpanel:mixpanel-java:1.4.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.http-client:google-http-client-jackson2:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.oauth-client:google-oauth-client-jetty:1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.apis:google-api-services-oauth2:v2-rev125-1.22.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.tulskiy:jkeymaster:1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scijava:native-lib-loader:2.1.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.java.dev.jna:jna-platform:4.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: no.tornado:tornadofx:1.7.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-javafx:0.14" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.truth:truth:0.31" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.guava:guava:20.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.errorprone:error_prone_annotations:2.0.12" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.1.2-2" level="project" />
   </component>
 </module>

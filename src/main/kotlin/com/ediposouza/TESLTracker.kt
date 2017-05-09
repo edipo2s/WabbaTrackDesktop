@@ -54,7 +54,7 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.1"
+        val APP_VERSION = "0.1.1"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
@@ -80,6 +80,7 @@ class TESLTracker : App(MainStageView::class) {
             }
         }
 
+        private var trayIcon: TrayIcon? = null
         private var lastScreenshotDHash = ""
         private var loginMenuItems: List<Any>? = null
 
@@ -89,11 +90,11 @@ class TESLTracker : App(MainStageView::class) {
                 if (value) {
                     loginMenuItems?.forEach {
                         if (it is MenuItem) {
-                            it.label = "Restart and Update App"
+                            it.label = "Close and Update App"
                         }
                         if (it is javafx.scene.control.MenuItem) {
                             Platform.runLater {
-                                it.text = "Restart and Update App"
+                                it.text = "Close and Update App"
                             }
                         }
                     }
@@ -102,6 +103,9 @@ class TESLTracker : App(MainStageView::class) {
 
         fun showRestartToUpdateNow() {
             hasUpdateReady = true
+            SwingUtilities.invokeLater {
+                trayIcon?.displayMessage(APP_NAME, "Update $APP_VERSION ready to install.", TrayIcon.MessageType.NONE)
+            }
         }
 
         fun doExit() {
@@ -127,7 +131,6 @@ class TESLTracker : App(MainStageView::class) {
     val ELDER_SCROLL_SPS = 2f    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
 
-    private lateinit var trayIcon: TrayIcon
     private lateinit var trayPopupMenu: PopupMenu
     private lateinit var menuMyDecks: List<Any>
     private lateinit var menuImportedDecks: List<Any>
@@ -380,7 +383,7 @@ class TESLTracker : App(MainStageView::class) {
                 updateMenuDecks()
                 Platform.runLater {
                     SwingUtilities.invokeLater {
-                        trayIcon.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
+                        trayIcon?.displayMessage(APP_NAME, "Success logged as ${TESLTrackerAuth.userName}", TrayIcon.MessageType.NONE)
                     }
                 }
             } else {
@@ -435,7 +438,7 @@ class TESLTracker : App(MainStageView::class) {
                                 if (bt == ButtonType.YES) {
                                     TESLTrackerData.deleteDecks(deck) {
                                         SwingUtilities.invokeLater {
-                                            trayIcon.displayMessage(APP_NAME, "${deck.name} deleted.", TrayIcon.MessageType.NONE)
+                                            trayIcon?.displayMessage(APP_NAME, "${deck.name} deleted.", TrayIcon.MessageType.NONE)
                                         }
                                         updateMenuDecks()
                                     }

@@ -250,7 +250,7 @@ object TESLTrackerData {
 
     fun checkForUpdate(retry: Int = 0) {
         with(firebaseDatabaseAPI.get("$NODE_WABBATRACK.json").one()) {
-            val lastVersion = entries.find { it.key == "lastVersion" }?.value.toString()
+            val lastVersion = entries.find { it.key == "lastVersion" }?.value.toString().replace("\"", "")
             if (lastVersion == TESLTracker.APP_VERSION) {
                 Logger.d("App is updated")
                 return

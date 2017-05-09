@@ -297,8 +297,10 @@ object GameState : StateHandler.TESLState {
                             opponentDeckClass?.let { opponentCls ->
                                 val result = "Win".takeIf { win } ?: "Loss"
                                 Logger.d("${playerCls.name} vs ${opponentCls.name} - $result")
-                                Mixpanel.postEventGameResult(playerCls, opponentCls, result)
                                 saveMatch(win)
+                                matchMode?.let {
+                                    Mixpanel.postEventGameResult(playerCls, opponentCls, it, result)
+                                }
                             }
                         }
                         resetState()

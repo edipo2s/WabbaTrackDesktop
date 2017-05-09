@@ -59,11 +59,17 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         }
     }
 
-    private val contextMenu = ContextMenu(MenuItem("Detect Again").apply {
-        setOnAction {
-            ArenaState.lastPickNumberRecognized = null
-        }
-    })
+    private val contextMenu = ContextMenu(
+            MenuItem("Detect Again").apply {
+                setOnAction {
+                    ArenaState.lastPickNumberRecognized = null
+                }
+            },
+            MenuItem("Hide").apply {
+                setOnAction {
+                    this@ArenaTierWidget.isVisible = false
+                }
+            })
 
     init {
         type = Window.Type.UTILITY

@@ -4,6 +4,7 @@ import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerAuth
 import com.ediposouza.model.Card
 import com.ediposouza.model.DeckClass
+import com.ediposouza.model.MatchMode
 import com.google.gson.JsonParser
 import com.mixpanel.mixpanelapi.ClientDelivery
 import com.mixpanel.mixpanelapi.MessageBuilder
@@ -48,12 +49,13 @@ object Mixpanel {
     }
 
     fun postEventShowStatistics() = postEvent("ShowStatistics")
-    fun postEventGameDetected() = postEvent("GameDetected")
+    fun postEventGameDetected() = postEvent("GameDetected", mutableMapOf("AppVersion" to TESLTracker.APP_VERSION))
 
-    fun postEventGameResult(playerCls: DeckClass, opponentCls: DeckClass, result: String) {
+    fun postEventGameResult(playerCls: DeckClass, opponentCls: DeckClass, mode: MatchMode, result: String) {
         postEvent("GameResult", mutableMapOf(
                 "playerCls" to playerCls.name,
                 "opponentCls" to opponentCls.name,
+                "mode" to mode.name,
                 "result" to result
         ))
     }

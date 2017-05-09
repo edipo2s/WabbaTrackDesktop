@@ -10,7 +10,7 @@ object CalcReleaseMD5 {
 
     @JvmStatic fun main(args: Array<String>) {
         val currentPath = File(TESLTracker.jarPath).parentFile.parentFile.parentFile.path
-        val artifactFile = File(currentPath, "out/artifacts/lastVersion.exe")
+        val artifactFile = File(currentPath, "out/artifacts/WabbaTrack.exe")
         println(artifactFile.getMD5())
     }
 
