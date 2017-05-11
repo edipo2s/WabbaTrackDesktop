@@ -37,7 +37,10 @@ object Mixpanel {
     fun trackUser() {
         launch(CommonPool) {
             val userName = TESLTrackerAuth.userName ?: GUEST
-            val userProps = mutableMapOf("\$app_version" to TESLTracker.APP_VERSION, "\$first_name" to userName)
+            val userProps = mutableMapOf(
+                    "\$app_version" to TESLTracker.APP_VERSION,
+                    "Resolution" to "${TESLTracker.screenSize.width}x${TESLTracker.screenSize.height}",
+                    "\$first_name" to userName)
             if (TESLTrackerAuth.isUserLogged()) {
                 userProps.put("\$email", TESLTrackerAuth.userEmail ?: "")
             }
