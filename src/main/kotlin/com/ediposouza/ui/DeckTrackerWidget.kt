@@ -71,6 +71,7 @@ class DeckTrackerWidget : JFrame() {
                         jfxPanel.scene = createFxScene()
                         updateDeckCover()
                     }
+                    Mixpanel.postEventDeckTrackerDecreaseZoom()
                 }
             },
             MenuItem("Increase Size").apply {
@@ -80,6 +81,7 @@ class DeckTrackerWidget : JFrame() {
                         jfxPanel.scene = createFxScene()
                         updateDeckCover()
                     }
+                    Mixpanel.postEventDeckTrackerIncreaseZoom()
                 }
             },
             MenuItem("Hide Deck").apply {

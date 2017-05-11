@@ -271,7 +271,8 @@ object ArenaState : StateHandler.TESLState {
         if (Rectangle(cardPos.x, cardPos.y, cardSize.width, cardSize.height).contains(mousePos)) {
             picks.add(card ?: Card.DUMMY)
             Logger.i("${card?.name} Picked")
-            Mixpanel.postEventArenaPick(card ?: Card.DUMMY)
+            val cardWithHighValue = cardPicksToSelect?.toList()?.maxBy { it.value }?.card
+            Mixpanel.postEventArenaPick(card ?: Card.DUMMY, card?.shortName == cardWithHighValue?.shortName)
             if (pickNumber == 30) {
                 finishPicks = true
             }

@@ -51,6 +51,8 @@ object Mixpanel {
         }
     }
 
+    fun postEventDeckTrackerIncreaseZoom() = postEvent("DeckTrackerIncreaseZoom")
+    fun postEventDeckTrackerDecreaseZoom() = postEvent("DeckTrackerDecreaseZoom")
     fun postEventShowStatistics() = postEvent("ShowStatistics")
     fun postEventGameDetected() = postEvent("GameDetected")
 
@@ -84,8 +86,14 @@ object Mixpanel {
     fun postEventShowDeckTrackerFromArenaDeck() = postEvent("ShowDeckTracker", mutableMapOf("mode" to "ArenaDeck"))
     fun postEventHideDeckTracker() = postEvent("HideDeckTracker")
     fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
-    fun postEventArenaPick(card: Card) = postEvent("ArenaPick", mutableMapOf("Card" to card.shortName))
     fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
+
+    fun postEventArenaPick(card: Card, highValue: Boolean) {
+        postEvent("ArenaPick", mutableMapOf(
+                "Card" to card.shortName,
+                "HighValue" to "$highValue"
+        ))
+    }
 
     private fun postEvent(eventName: String, eventProps: MutableMap<String, String> = mutableMapOf()) {
         launch(CommonPool) {
