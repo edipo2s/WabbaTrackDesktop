@@ -94,12 +94,6 @@ fun BufferedImage.getScreenArenaPicksCrop(): BufferedImage {
     }
 }
 
-fun BufferedImage.getScreenArenaPickNumberCrop(): BufferedImage {
-    with(TESLTracker.referenceConfig) {
-        return crop(SCREEN_ARENA_PICK_NUMBER_X, SCREEN_ARENA_PICK_NUMBER_Y, SCREEN_ARENA_PICK_NUMBER_WIDTH, SCREEN_ARENA_PICK_NUMBER_HEIGHT)
-    }
-}
-
 fun BufferedImage.getScreenArenaDashboardCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(SCREEN_ARENA_DASHBOARD_X, SCREEN_ARENA_DASHBOARD_Y, SCREEN_ARENA_DASHBOARD_WIDTH, SCREEN_ARENA_DASHBOARD_HEIGHT)

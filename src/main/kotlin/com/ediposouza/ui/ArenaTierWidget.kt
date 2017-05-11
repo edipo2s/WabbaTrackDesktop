@@ -84,7 +84,7 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     private val contextMenu = ContextMenu(
             MenuItem("Detect Again").apply {
                 setOnAction {
-                    ArenaState.lastPickNumberRecognized = null
+                    ArenaState.cardPicksToSelect = null
                 }
             },
             MenuItem("Disable for this Draft").apply {

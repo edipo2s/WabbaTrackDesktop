@@ -4,7 +4,6 @@ import com.ediposouza.data.DHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.extensions.getArenaPickClassCrop
-import com.ediposouza.extensions.getScreenArenaPickNumberCrop
 import com.ediposouza.model.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.util.Logger
@@ -26,13 +25,8 @@ object ArenaHandler {
         return null
     }
 
-    fun processArenaPickNumber(screenshot: BufferedImage): Int? {
-        return Recognizer.recognizeScreenPickImage(screenshot.getScreenArenaPickNumberCrop())?.let {
-            DHash.SCREENS_ARENA_PICK.indexOf(it) + 1
-        }
-    }
-
     fun processArenaPick(screenshot: BufferedImage, retryNumber: Int = 0): Triple<CardPick, CardPick, CardPick>? {
+        Logger.d("Recognizing picks..")
         val arenaTier1Value = recognizeArenaPick(screenshot, 1)
         val arenaTier2Value = recognizeArenaPick(screenshot, 2)
         val arenaTier3Value = recognizeArenaPick(screenshot, 3)
@@ -57,7 +51,7 @@ object ArenaHandler {
                 return calcArenaValue(this, ArenaState.picks)
             }
         }
-        return CardPick(Card.DUMMY, 0, ArenaState.picks)
+        return CardPick(Card.DUMMY, 0, listOf())
     }
 
     private fun calcArenaValue(card: Card, picksBefore: List<Card>): CardPick {

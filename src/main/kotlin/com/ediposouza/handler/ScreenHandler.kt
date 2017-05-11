@@ -67,7 +67,7 @@ object ScreenHandler {
             if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
                 Logger.i("Arena Classes Screen Detected!", true)
                 StateHandler.currentTESLState = ArenaState.apply {
-                    resetState()
+                    pickNumber = 1
                 }
                 screenRecognized = true
             }

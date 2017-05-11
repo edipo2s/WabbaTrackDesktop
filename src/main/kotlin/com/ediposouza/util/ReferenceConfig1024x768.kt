@@ -47,11 +47,6 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val SCREEN_ARENA_PICKS_X = 0
     override val SCREEN_ARENA_PICKS_Y = 0
 
-    override val SCREEN_ARENA_PICK_NUMBER_HEIGHT = 0
-    override val SCREEN_ARENA_PICK_NUMBER_WIDTH = 0
-    override val SCREEN_ARENA_PICK_NUMBER_X = 0
-    override val SCREEN_ARENA_PICK_NUMBER_Y = 0
-
     override val SCREEN_ARENA_DASHBOARD_HEIGHT = 0
     override val SCREEN_ARENA_DASHBOARD_WIDTH = 0
     override val SCREEN_ARENA_DASHBOARD_X = 0

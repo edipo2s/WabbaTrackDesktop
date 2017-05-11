@@ -35,7 +35,6 @@ object ArenaState : StateHandler.TESLState {
 
     const val ARENA_RECOGNIZER_SPS = 2    //Screenshot Per Second
 
-    const val arenaPickLock = "lock"
     const val cardPicksToSelectLock = "lock"
     const val saveArenaPicksLock = "lock"
 
@@ -64,8 +63,8 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             when {
-                value > 0 -> Logger.d("PickNumber: $pickNumber")
-                value == 1 && cardPicksToSelect == null -> {
+                value > 0 -> Logger.i("Arena Pick $pickNumber started", true)
+                value == 1 -> {
                     resetState()
                     classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
                     Mixpanel.postEventArenaStart(classSelect ?: DeckClass.NEUTRAL)
@@ -106,14 +105,15 @@ object ArenaState : StateHandler.TESLState {
     val picks = mutableListOf<Card>()
     var picksDisableForThisDraft: Boolean = false
     var threadRunning: Boolean = false
-    var lastPickNumberRecognized: Int? = null
     var cardPicksToSelect: Triple<CardPick, CardPick, CardPick>? = null
+    var lastCardPicksToSelect: Triple<CardPick, CardPick, CardPick>? = null
 
     init {
         if (arenaStateFile.exists()) {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
             Logger.d("Restored ${picks.size} picks")
+            pickNumber = picks.size + 1
         }
     }
 
@@ -148,6 +148,8 @@ object ArenaState : StateHandler.TESLState {
     override fun resetState() {
         classSelect = null
         finishPicks = false
+        cardPicksToSelect = null
+        lastCardPicksToSelect = null
         picks.clear()
         saveArenaPicks()
         Logger.d("Arena state reset")
@@ -157,7 +159,6 @@ object ArenaState : StateHandler.TESLState {
         launch(CommonPool) {
             while (ArenaState.threadRunning && !finishPicks) {
                 ScreenFuncs.takeScreenshot()?.apply {
-                    processPickNumber(this)
                     if (cardPicksToSelect == null && pickNumber > 0) {
                         processPickCards(this)
                     }
@@ -167,30 +168,19 @@ object ArenaState : StateHandler.TESLState {
         }
     }
 
-    private fun processPickNumber(screenshot: BufferedImage) {
-        launch(CommonPool) {
-            ArenaHandler.processArenaPickNumber(screenshot)?.run {
-                synchronized(arenaPickLock) {
-                    if (lastPickNumberRecognized != this) {
-                        lastPickNumberRecognized = this
-                        pickNumber = this
-                        cardPicksToSelect = null
-                        Logger.i("Arena Pick $pickNumber Detected!", true)
-                    }
-                }
-            }
-        }
-    }
-
     fun processPickCards(screenshot: BufferedImage) {
         launch(CommonPool) {
             ArenaHandler.processArenaPick(screenshot)?.run {
                 synchronized(cardPicksToSelectLock) {
-                    cardPicksToSelect = this
-                    Logger.i("--${this.first.card.name}: ${this.first.card.arenaTier}")
-                    Logger.i("--${this.second.card.name}: ${this.second.card.arenaTier}")
-                    Logger.i("--${this.third.card.name}: ${this.third.card.arenaTier}")
-                    ArenaState.setTierPicks(this)
+                    if (lastCardPicksToSelect == null || (lastCardPicksToSelect?.first?.card != first.card ||
+                            lastCardPicksToSelect?.second?.card != second.card || lastCardPicksToSelect?.third?.card != third.card)) {
+                        cardPicksToSelect = this
+                        lastCardPicksToSelect = this
+                        Logger.i("--${this.first.card.name}: ${this.first.card.arenaTier}")
+                        Logger.i("--${this.second.card.name}: ${this.second.card.arenaTier}")
+                        Logger.i("--${this.third.card.name}: ${this.third.card.arenaTier}")
+                        ArenaState.setTierPicks(this)
+                    }
                 }
             }
         }
@@ -222,7 +212,9 @@ object ArenaState : StateHandler.TESLState {
 
     fun disableTierPicks() {
         picksDisableForThisDraft = true
-        hidePicksTier()
+        card1ArenaTierStage.isVisible = false
+        card2ArenaTierStage.isVisible = false
+        card3ArenaTierStage.isVisible = false
     }
 
     fun hideTierPicksSynergyList(hide: Boolean) {
@@ -285,11 +277,19 @@ object ArenaState : StateHandler.TESLState {
     private fun testMouseInCardPos(mousePos: Point, cardPos: Point, cardSize: Dimension, card: Card?) {
         if (Rectangle(cardPos.x, cardPos.y, cardSize.width, cardSize.height).contains(mousePos)) {
             picks.add(card ?: Card.DUMMY)
+            saveArenaPicks()
             Logger.i("${card?.name} Picked")
             val cardWithHighValue = cardPicksToSelect?.toList()?.maxBy { it.value }?.card
             Mixpanel.postEventArenaPick(card ?: Card.DUMMY, card?.shortName == cardWithHighValue?.shortName)
-            if (pickNumber == 30) {
-                finishPicks = true
+            launch(CommonPool) {
+                delay(500)
+                if (pickNumber == 30) {
+                    finishPicks = true
+                    pickNumber = 0
+                } else {
+                    pickNumber += 1
+                    cardPicksToSelect = null
+                }
             }
         }
     }

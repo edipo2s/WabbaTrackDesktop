@@ -42,10 +42,6 @@ object Recognizer {
         return recognizeImageInMap(image, DHash.SCREENS_LIST)
     }
 
-    fun recognizeScreenPickImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHash.SCREENS_PICK_LIST)
-    }
-
     fun recognizeImageInMap(image: BufferedImage, hashMap: Map<String, String>): String? {
         val pHash = calcPHash(image)
         val pHashDistances = hashMap
