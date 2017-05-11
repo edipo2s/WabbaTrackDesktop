@@ -15,6 +15,7 @@ import tornadofx.Rest
 import java.io.*
 import java.net.URL
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 /**
  * Created by Edipo on 19/03/2017.
@@ -24,12 +25,12 @@ object TESLTrackerData {
     val NODE_CARDS = "cards"
     val NODE_PATCHES = "patches"
     val NODE_USERS = "users"
-    val NODE_USERS_DECKS = "decks"
+    val NODE_USER_DECKS = "decks"
     val NODE_USER_INFO = "info"
     val NODE_DECKS = "decks"
     val NODE_DECKS_PRIVATE = "private"
     val NODE_DECKS_PUBLIC = "public"
-    val NODE_USERS_MATCHES = "matches"
+    val NODE_MATCHES = "matches"
 
     val NODE_WABBATRACK = "wabbatrack"
 
@@ -145,7 +146,7 @@ object TESLTrackerData {
                 Logger.e("Do login to get decks")
             } else {
                 val userAccessToken = TESLTrackerAuth.userAccessToken
-                val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS"
+                val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USER_DECKS"
                 with(firebaseDatabaseAPI.get("$userDecksPath/$NODE_DECKS_PRIVATE.json?auth=$userAccessToken").asJson()) {
                     decks.addAll(entrySet().map { (deckUuid, deckAttrsJson) ->
                         val deckParser = Gson().fromJson(deckAttrsJson.toString(), FirebaseParsers.DeckParser::class.java)
@@ -182,7 +183,7 @@ object TESLTrackerData {
             if (!TESLTrackerAuth.isUserLogged()) {
                 Logger.e("Do login to get decks")
             } else {
-                val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_DECKS/$NODE_DECKS_PRIVATE"
+                val userDecksPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USER_DECKS/$NODE_DECKS_PRIVATE"
                 val decksPath = userDecksPath.takeIf { deck.private } ?: "$NODE_DECKS/$NODE_DECKS_PUBLIC"
                 val userAccessToken = TESLTrackerAuth.userAccessToken
                 with(firebaseDatabaseAPI.delete("$decksPath/${deck.uuid}.json?auth=$userAccessToken").consume()) {
@@ -226,11 +227,14 @@ object TESLTrackerData {
     }
 
     fun saveMatch(newMatch: Match, retry: Int = 0, onSuccess: () -> Unit) {
+        launch(CommonPool) {
+            saveMatchAnonymous(newMatch, retry)
+        }
         if (!TESLTrackerAuth.isUserLogged()) {
             Logger.e("Do login to save Matches")
             return
         }
-        val userMatchesPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_USERS_MATCHES/${newMatch.uuid}"
+        val userMatchesPath = "$NODE_USERS/${TESLTrackerAuth.userUuid}/$NODE_MATCHES/${newMatch.uuid}"
         val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
         val userAccessToken = TESLTrackerAuth.userAccessToken
         try {
@@ -244,6 +248,29 @@ object TESLTrackerData {
             if (retry < 3) {
                 reAuthUser {
                     saveMatch(newMatch, retry + 1, onSuccess)
+                }
+            }
+        }
+    }
+
+    private fun saveMatchAnonymous(newMatch: Match, retry: Int = 0) {
+        val nanoValue = LocalTime.now().nano
+        val nano = when {
+            nanoValue % 1000000 == 0 -> Integer.toString(nanoValue / 1000000 + 1000).substring(1)
+            nanoValue % 1000 == 0 -> Integer.toString(nanoValue / 1000 + 1000000).substring(1)
+            else -> Integer.toString(nanoValue + 1000000000).substring(1)
+        }
+        val anonymousMatchesPath = "$NODE_WABBATRACK/$NODE_MATCHES/${newMatch.uuid}_$nano"
+        val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
+        try {
+            firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$anonymousMatchesPath.json",
+                    newMatchData.byteInputStream()) { processor ->
+                processor.addHeader("Content-Type", "application/json")
+            }.one()
+        } catch (e: Exception) {
+            if (retry < 3) {
+                reAuthUser {
+                    saveMatchAnonymous(newMatch, retry + 1)
                 }
             }
         }
