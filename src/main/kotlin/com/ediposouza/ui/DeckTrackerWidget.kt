@@ -304,6 +304,7 @@ class DeckTrackerWidget : JFrame() {
             }
         }
         deckCoverName.text = deckName ?: deckClassName ?: ""
+        deckCoverName.maxWidth = cellSize.width.toDouble()
         deckCoverPane.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
@@ -383,7 +384,7 @@ class DeckTrackerWidget : JFrame() {
                             image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
                             fitHeight = cardSize.height.toDouble() * 0.9
                             fitWidth = cardSize.width.toDouble() * 0.6
-                            opacity = 0.85.takeIf { item.currentQtd > 0 } ?: 0.2
+                            opacity = 1.0.takeIf { item.currentQtd > 0 } ?: 0.2
                         }
                         padding = Insets(0.0, 0.0, 0.0, cardSize.width * 0.5)
                         style = "-fx-background-radius: 25.0;"
