@@ -17,7 +17,7 @@ import java.io.FileInputStream
 import java.io.InputStream
 import javax.imageio.ImageIO
 
-fun String.toIntSafely() = this.toIntOrNull() ?: 0
+fun String?.toIntSafely() = this?.toIntOrNull() ?: 0
 
 fun String?.equalsOrNull(other: String): Boolean? = if (this == other) true else null
 

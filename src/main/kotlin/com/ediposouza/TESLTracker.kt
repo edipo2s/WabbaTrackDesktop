@@ -6,7 +6,10 @@ import com.ediposouza.extensions.addMenu
 import com.ediposouza.extensions.addMenuItem
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
-import com.ediposouza.model.*
+import com.ediposouza.model.Card
+import com.ediposouza.model.CardPick
+import com.ediposouza.model.CardSlot
+import com.ediposouza.model.Deck
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerController
@@ -343,13 +346,14 @@ class TESLTracker : App(MainStageView::class) {
                         }
                         addMenuItem("Save Match Test") {
                             Platform.runLater {
-                                GameState.apply {
-                                    playerGoFirst = true
-                                    playerDeckClass = DeckClass.BATTLEMAGE
-                                    opponentDeckClass = DeckClass.MAGE
-                                    matchMode = MatchMode.CASUAL
-                                    saveMatch(true)
-                                }
+                                TESLTrackerData.saveArenaPickAnonymous("goblin")
+//                                GameState.apply {
+//                                    playerGoFirst = true
+//                                    playerDeckClass = DeckClass.BATTLEMAGE
+//                                    opponentDeckClass = DeckClass.MAGE
+//                                    matchMode = MatchMode.CASUAL
+//                                    saveMatch(true)
+//                                }
                             }
                         }
                     }

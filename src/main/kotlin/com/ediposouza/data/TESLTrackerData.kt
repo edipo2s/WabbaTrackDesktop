@@ -3,6 +3,7 @@ package com.ediposouza.data
 import com.ediposouza.TESLTracker
 import com.ediposouza.extensions.asJson
 import com.ediposouza.extensions.getMD5
+import com.ediposouza.extensions.toIntSafely
 import com.ediposouza.model.*
 import com.ediposouza.teslesgendstracker.data.Patch
 import com.ediposouza.util.Logger
@@ -14,6 +15,7 @@ import kotlinx.coroutines.experimental.launch
 import tornadofx.Rest
 import java.io.*
 import java.net.URL
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -33,6 +35,7 @@ object TESLTrackerData {
     val NODE_MATCHES = "matches"
 
     val NODE_WABBATRACK = "wabbatrack"
+    val NODE_ARENA_PICKS = "arenaPicks"
 
     val UPDATE_FILE_NAME = "lastVersion.exe"
     val UPDATER_FILE_NAME = "Updater.exe"
@@ -269,9 +272,24 @@ object TESLTrackerData {
             }.one()
         } catch (e: Exception) {
             if (retry < 3) {
-                reAuthUser {
-                    saveMatchAnonymous(newMatch, retry + 1)
-                }
+                saveMatchAnonymous(newMatch, retry + 1)
+            }
+        }
+    }
+
+    fun saveArenaPickAnonymous(cardShortName: String, retry: Int = 0) {
+        val anonymousArenaPickPath = "$NODE_WABBATRACK/$NODE_ARENA_PICKS/${LocalDate.now()}"
+        val cardQtd = firebaseDatabaseAPI.get("$anonymousArenaPickPath/$cardShortName.json").text()?.toIntSafely() ?: 0
+        val newArenaPickData = Gson().toJson(mapOf(cardShortName to cardQtd + 1))
+        try {
+            firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$anonymousArenaPickPath.json",
+                    newArenaPickData.byteInputStream()) { processor ->
+                processor.addHeader("Content-Type", "application/json")
+                processor.addHeader("X-HTTP-Method-Override", "PATCH")
+            }.one()
+        } catch (e: Exception) {
+            if (retry < 3) {
+                saveArenaPickAnonymous(cardShortName, retry + 1)
             }
         }
     }
