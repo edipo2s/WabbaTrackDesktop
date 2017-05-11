@@ -62,8 +62,8 @@ class MainWidget : JFrame() {
 
     }
 
-    override fun setVisible(b: Boolean) {
-        super.setVisible(b)
+    override fun setVisible(visible: Boolean) {
+        super.setVisible(visible)
         if (isVisible) {
             startShowAnimation()
         }

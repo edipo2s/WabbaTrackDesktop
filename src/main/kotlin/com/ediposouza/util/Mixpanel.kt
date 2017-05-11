@@ -51,8 +51,12 @@ object Mixpanel {
         }
     }
 
+    fun postEventArenaTierDisable() = postEvent("ArenaTierDisable")
+    fun postEventArenaTierHideSynergyList() = postEvent("ArenaTierHideSynergyList")
+    fun postEventArenaTierShowSynergyList() = postEvent("ArenaTierShowSynergyList")
     fun postEventDeckTrackerIncreaseZoom() = postEvent("DeckTrackerIncreaseZoom")
     fun postEventDeckTrackerDecreaseZoom() = postEvent("DeckTrackerDecreaseZoom")
+    fun postEventDeckTrackerHide() = postEvent("DeckTrackerHide")
     fun postEventShowStatistics() = postEvent("ShowStatistics")
     fun postEventGameDetected() = postEvent("GameDetected")
 
@@ -84,9 +88,8 @@ object Mixpanel {
     }
 
     fun postEventShowDeckTrackerFromArenaDeck() = postEvent("ShowDeckTracker", mutableMapOf("mode" to "ArenaDeck"))
-    fun postEventHideDeckTracker() = postEvent("HideDeckTracker")
-    fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
     fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
+    fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
 
     fun postEventArenaPick(card: Card, highValue: Boolean) {
         postEvent("ArenaPick", mutableMapOf(

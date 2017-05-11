@@ -6,10 +6,7 @@ import com.ediposouza.extensions.addMenu
 import com.ediposouza.extensions.addMenuItem
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
-import com.ediposouza.model.Card
-import com.ediposouza.model.CardPick
-import com.ediposouza.model.CardSlot
-import com.ediposouza.model.Deck
+import com.ediposouza.model.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerController
@@ -104,11 +101,15 @@ class TESLTracker : App(MainStageView::class) {
                 }
             }
 
+        fun showMessage(msg: String) {
+            SwingUtilities.invokeLater {
+                trayIcon?.displayMessage(APP_NAME, msg, TrayIcon.MessageType.NONE)
+            }
+        }
+
         fun showRestartToUpdateNow() {
             hasUpdateReady = true
-            SwingUtilities.invokeLater {
-                trayIcon?.displayMessage(APP_NAME, "Update $APP_VERSION ready to install.", TrayIcon.MessageType.NONE)
-            }
+            showMessage("Update $APP_VERSION ready to install.")
         }
 
         fun doExit() {
@@ -266,7 +267,7 @@ class TESLTracker : App(MainStageView::class) {
                         GameState.deckTracker.isVisible = !isShowed
                         GameState.shouldShowDeckTracker = !isShowed
                         if (isShowed) {
-                            Mixpanel.postEventHideDeckTracker()
+                            Mixpanel.postEventDeckTrackerHide()
                         }
                     }
                 }
@@ -346,14 +347,13 @@ class TESLTracker : App(MainStageView::class) {
                         }
                         addMenuItem("Save Match Test") {
                             Platform.runLater {
-                                TESLTrackerData.saveArenaPickAnonymous("goblin")
-//                                GameState.apply {
-//                                    playerGoFirst = true
-//                                    playerDeckClass = DeckClass.BATTLEMAGE
-//                                    opponentDeckClass = DeckClass.MAGE
-//                                    matchMode = MatchMode.CASUAL
-//                                    saveMatch(true)
-//                                }
+                                GameState.apply {
+                                    playerGoFirst = true
+                                    playerDeckClass = DeckClass.BATTLEMAGE
+                                    opponentDeckClass = DeckClass.MAGE
+                                    matchMode = MatchMode.CASUAL
+                                    saveMatch(true)
+                                }
                             }
                         }
                     }

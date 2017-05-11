@@ -7,6 +7,7 @@ import com.ediposouza.model.CardPick
 import com.ediposouza.model.CardSlot
 import com.ediposouza.state.ArenaState
 import com.ediposouza.util.ImageFuncs
+import com.ediposouza.util.Mixpanel
 import javafx.application.Platform
 import javafx.embed.swing.JFXPanel
 import javafx.geometry.Insets
@@ -34,6 +35,15 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
 
     private lateinit var cardSize: Dimension
     private lateinit var tierValueSize: Dimension
+    var arenaTierPick: CardPick? = null
+    var isSynergyListHidden = false
+        set(value) {
+            field = value
+            hideShowSynergyListItem.text = "Show Synergy List".takeIf { value } ?: "Hide Synergy List"
+            arenaTierPick?.let {
+                setPickValue(it)
+            }
+        }
 
     private val nameValueLabel by lazy {
         Label("").apply {
@@ -59,17 +69,32 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
         }
     }
 
+    val hideShowSynergyListItem = MenuItem("Hide Synergy List").apply {
+        setOnAction {
+            val hideSynergyList = !isSynergyListHidden
+            ArenaState.hideTierPicksSynergyList(hideSynergyList)
+            if (hideSynergyList) {
+                Mixpanel.postEventArenaTierHideSynergyList()
+            } else {
+                Mixpanel.postEventArenaTierShowSynergyList()
+            }
+        }
+    }
+
     private val contextMenu = ContextMenu(
             MenuItem("Detect Again").apply {
                 setOnAction {
                     ArenaState.lastPickNumberRecognized = null
                 }
             },
-            MenuItem("Hide").apply {
+            MenuItem("Disable for this Draft").apply {
                 setOnAction {
-                    this@ArenaTierWidget.isVisible = false
+                    ArenaState.disableTierPicks()
+                    TESLTracker.showMessage("You can enable draft helper again if you go to Main screen and go back to Arena")
+                    Mixpanel.postEventArenaTierDisable()
                 }
-            })
+            },
+            hideShowSynergyListItem)
 
     init {
         type = Window.Type.UTILITY
@@ -141,14 +166,16 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
     }
 
     fun setPickValue(arenaTier: CardPick) {
+        arenaTierPick = arenaTier
         nameValueLabel.text = arenaTier.card.name
         with(synergyValueLabel) {
             style = "-fx-font-size: ${1.takeIf { arenaTier.synergy.isEmpty() } ?: 10};"
-            text = "Synergy:" + arenaTier.synergy.groupBy(Card::shortName)
-                    .map { CardSlot(it.value.first(), it.value.size) }
-                    .map { (card, qtd) -> "\n ${card.name}" + ("".takeIf { qtd == 1 } ?: " x$qtd") }
-                    .sorted()
-                    .joinToString { it }
+            text = "Synergy: Hidden".takeIf { isSynergyListHidden } ?:
+                    "Synergy:" + arenaTier.synergy.groupBy(Card::shortName)
+                            .map { CardSlot(it.value.first(), it.value.size) }
+                            .map { (card, qtd) -> "\n ${card.name}" + ("".takeIf { qtd == 1 } ?: " x$qtd") }
+                            .sorted()
+                            .joinToString { it }
         }
         with(tierValueLabel) {
             text = "${arenaTier.value}"

@@ -88,7 +88,7 @@ class DeckTrackerWidget : JFrame() {
                 setOnAction {
                     GameState.deckTracker.isVisible = false
                     GameState.shouldShowDeckTracker = false
-                    Mixpanel.postEventHideDeckTracker()
+                    Mixpanel.postEventDeckTrackerHide()
                 }
             }
     )

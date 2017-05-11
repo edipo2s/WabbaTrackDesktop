@@ -104,6 +104,7 @@ object ArenaState : StateHandler.TESLState {
     }
 
     val picks = mutableListOf<Card>()
+    var picksDisableForThisDraft: Boolean = false
     var threadRunning: Boolean = false
     var lastPickNumberRecognized: Int? = null
     var cardPicksToSelect: Triple<CardPick, CardPick, CardPick>? = null
@@ -133,6 +134,7 @@ object ArenaState : StateHandler.TESLState {
         hidePicksTier()
         GameState.deckTracker.isVisible = false
         threadRunning = false
+        picksDisableForThisDraft = false
     }
 
     override fun hasValidState(): Boolean {
@@ -218,11 +220,24 @@ object ArenaState : StateHandler.TESLState {
         }
     }
 
+    fun disableTierPicks() {
+        picksDisableForThisDraft = true
+        hidePicksTier()
+    }
+
+    fun hideTierPicksSynergyList(hide: Boolean) {
+        card1ArenaTierStage.isSynergyListHidden = hide
+        card2ArenaTierStage.isSynergyListHidden = hide
+        card3ArenaTierStage.isSynergyListHidden = hide
+    }
+
     private fun showPicksTier() {
-        card1ArenaTierStage.isVisible = true
-        card2ArenaTierStage.isVisible = true
-        card3ArenaTierStage.isVisible = true
-        startMouseClickCapture()
+        if (!picksDisableForThisDraft) {
+            card1ArenaTierStage.isVisible = true
+            card2ArenaTierStage.isVisible = true
+            card3ArenaTierStage.isVisible = true
+            startMouseClickCapture()
+        }
     }
 
     private fun hidePicksTier() {
