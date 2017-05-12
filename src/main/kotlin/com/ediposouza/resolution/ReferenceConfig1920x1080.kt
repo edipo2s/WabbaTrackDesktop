@@ -64,7 +64,7 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
     override val GAME_WIN_HEIGHT = 98
     override val GAME_WIN_WIDTH = 98
     override val GAME_WIN_X = 912
-    override val GAME_WIN_Y = 90
+    override val GAME_WIN_Y = 80
 
     override val GAME_WIN2_HEIGHT = 555
     override val GAME_WIN2_WIDTH = 570

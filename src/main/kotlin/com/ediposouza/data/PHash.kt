@@ -3,7 +3,7 @@ package com.ediposouza.data
 /**
  * Created by Edipo on 18/03/2017.
  */
-object DHash {
+object PHash {
 
     val SCREEN_MAIN = "Main"
     val SCREEN_MAIN_MODE_CASUAL = "Casual"

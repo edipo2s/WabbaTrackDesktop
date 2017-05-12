@@ -1,7 +1,7 @@
 package com.ediposouza.handler
 
-import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.*
 import com.ediposouza.model.Card
@@ -16,15 +16,15 @@ object GameHandler {
 
     fun processPlayerGoFirst(screenshot: BufferedImage): Boolean? {
         return screenshot.getGamePlayerFirstCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_FIRST)
+            Recognizer.recognizeImageInMap(it, PHash.GAME_ITEMS_LIST).equalsOrNull(PHash.PLAYER_GAME_FIRST)
         } ?: screenshot.getGamePlayerSecondCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.PLAYER_GAME_SECOND)?.let { false }
+            Recognizer.recognizeImageInMap(it, PHash.GAME_ITEMS_LIST).equalsOrNull(PHash.PLAYER_GAME_SECOND)?.let { false }
         }
     }
 
     fun processPlayerDeckClass(screenshot: BufferedImage): DeckClass? {
         return screenshot.getGamePlayerClassCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_CLASS_LIST)?.let {
+            Recognizer.recognizeImageInMap(it, PHash.GAME_PLAYER_CLASS_LIST)?.let {
                 DeckClass.of(it)
             }
         }
@@ -32,13 +32,13 @@ object GameHandler {
 
     fun processPlayerRank(screenshot: BufferedImage): Int? {
         return screenshot.getGamePlayerRankCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_RANK_LIST)?.let(String::toIntOrNull)
+            Recognizer.recognizeImageInMap(it, PHash.GAME_PLAYER_RANK_LIST)?.let(String::toIntOrNull)
         }
     }
 
     fun processOpponentDeckClass(screenshot: BufferedImage): DeckClass? {
         return screenshot.getGameOpponentClassCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_OPPONENT_CLASS_LIST)?.let {
+            Recognizer.recognizeImageInMap(it, PHash.GAME_OPPONENT_CLASS_LIST)?.let {
                 DeckClass.of(it)
             }
         }
@@ -46,7 +46,7 @@ object GameHandler {
 
     fun processOpponentRank(screenshot: BufferedImage): Int? {
         return screenshot.getGameOpponentRankCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_PLAYER_RANK_LIST)?.let(String::toIntOrNull)
+            Recognizer.recognizeImageInMap(it, PHash.GAME_PLAYER_RANK_LIST)?.let(String::toIntOrNull)
         }
     }
 
@@ -72,20 +72,20 @@ object GameHandler {
     fun processCardGenerated(screenshot: BufferedImage): Boolean? {
         return screenshot.getGameCardGenerateCrop().let {
             Recognizer.recognizeScreenImage(it)?.let {
-                it == DHash.SCREEN_GAME_CARD_GENERATED
+                it == PHash.SCREEN_GAME_CARD_GENERATED
             }
         }
     }
 
     fun processMatchEnd(screenshot: BufferedImage): Boolean? {
         return screenshot.getGameWinCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN)
+            Recognizer.recognizeImageInMap(it, PHash.GAME_ITEMS_LIST).equalsOrNull(PHash.GAME_WIN)
         } ?: screenshot.getGameWin2Crop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_WIN2)
+            Recognizer.recognizeImageInMap(it, PHash.GAME_ITEMS_LIST).equalsOrNull(PHash.GAME_WIN2)
         } ?: screenshot.getGameLossCrop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS)?.let { false }
+            Recognizer.recognizeImageInMap(it, PHash.GAME_ITEMS_LIST).equalsOrNull(PHash.GAME_LOSS)?.let { false }
         } ?: screenshot.getGameLoss2Crop().let {
-            Recognizer.recognizeImageInMap(it, DHash.GAME_ITEMS_LIST).equalsOrNull(DHash.GAME_LOSS2)?.let { false }
+            Recognizer.recognizeImageInMap(it, PHash.GAME_ITEMS_LIST).equalsOrNull(PHash.GAME_LOSS2)?.let { false }
         }
     }
 

@@ -1,7 +1,7 @@
 package com.ediposouza.util
 
-import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
@@ -39,7 +39,7 @@ object Recognizer {
     }
 
     fun recognizeScreenImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHash.SCREENS_LIST)
+        return recognizeImageInMap(image, PHash.SCREENS_LIST)
     }
 
     fun recognizeImageInMap(image: BufferedImage, hashMap: Map<String, String>): String? {

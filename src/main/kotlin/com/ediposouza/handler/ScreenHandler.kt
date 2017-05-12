@@ -1,6 +1,6 @@
 package com.ediposouza.handler
 
-import com.ediposouza.data.DHash
+import com.ediposouza.data.PHash
 import com.ediposouza.extensions.*
 import com.ediposouza.model.MatchMode
 import com.ediposouza.state.ArenaState
@@ -24,31 +24,31 @@ object ScreenHandler {
         screenRecognized = false
         //Screens check
         launch(CommonPool) {
-            if (lastScreenRecognized != DHash.SCREEN_MAIN_MODE_CASUAL &&
-                    lastScreenRecognized != DHash.SCREEN_MAIN_MODE_RANKED &&
-                    lastScreenRecognized != DHash.SCREEN_MAIN_MODE_PRATICE &&
-                    screenshot.getScreenMainCrop().matchScreen(DHash.SCREEN_MAIN)) {
+            if (lastScreenRecognized != PHash.SCREEN_MAIN_MODE_CASUAL &&
+                    lastScreenRecognized != PHash.SCREEN_MAIN_MODE_RANKED &&
+                    lastScreenRecognized != PHash.SCREEN_MAIN_MODE_PRATICE &&
+                    screenshot.getScreenMainCrop().matchScreen(PHash.SCREEN_MAIN)) {
                 Logger.i("Main Screen Detected!", true)
                 StateHandler.currentTESLState = null
                 screenRecognized = true
             }
         }
         launch(CommonPool) {
-            if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_CASUAL)) {
+            if (screenshot.getScreenMainModeCrop().matchScreen(PHash.SCREEN_MAIN_MODE_CASUAL)) {
                 Logger.i("Casual Match Mode detected!", false)
                 GameState.matchMode = MatchMode.CASUAL
                 screenRecognized = true
             }
         }
         launch(CommonPool) {
-            if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_RANKED)) {
+            if (screenshot.getScreenMainModeCrop().matchScreen(PHash.SCREEN_MAIN_MODE_RANKED)) {
                 Logger.i("Ranked Match Mode detected!", false)
                 GameState.matchMode = MatchMode.RANKED
                 screenRecognized = true
             }
         }
         launch(CommonPool) {
-            if (screenshot.getScreenMainModeCrop().matchScreen(DHash.SCREEN_MAIN_MODE_PRATICE)) {
+            if (screenshot.getScreenMainModeCrop().matchScreen(PHash.SCREEN_MAIN_MODE_PRATICE)) {
                 Logger.i("Pratice Match Mode detected!", false)
                 GameState.matchMode = MatchMode.PRATICE
                 screenRecognized = true
@@ -56,7 +56,7 @@ object ScreenHandler {
         }
         // Game
         launch(CommonPool) {
-            if (screenshot.getScreenGameCrop().matchScreen(DHash.SCREEN_GAME)) {
+            if (screenshot.getScreenGameCrop().matchScreen(PHash.SCREEN_GAME)) {
                 Logger.i("Game Screen Detected!", true)
                 StateHandler.currentTESLState = GameState
                 screenRecognized = true
@@ -64,7 +64,7 @@ object ScreenHandler {
         }
         // Arena
         launch(CommonPool) {
-            if (screenshot.getScreenArenaClassesCrop().matchScreen(DHash.SCREEN_ARENA_CLASSES)) {
+            if (screenshot.getScreenArenaClassesCrop().matchScreen(PHash.SCREEN_ARENA_CLASSES)) {
                 Logger.i("Arena Classes Screen Detected!", true)
                 StateHandler.currentTESLState = ArenaState.apply {
                     pickNumber = 1
@@ -73,14 +73,14 @@ object ScreenHandler {
             }
         }
         launch(CommonPool) {
-            if (screenshot.getScreenArenaPicksCrop().matchScreen(DHash.SCREEN_ARENA_PICKS)) {
+            if (screenshot.getScreenArenaPicksCrop().matchScreen(PHash.SCREEN_ARENA_PICKS)) {
                 Logger.i("Arena Picks Screen Detected!", true)
                 StateHandler.currentTESLState = ArenaState
                 screenRecognized = true
             }
         }
         launch(CommonPool) {
-            if (screenshot.getScreenArenaDashboardCrop().matchScreen(DHash.SCREEN_ARENA_DASHBOARD)) {
+            if (screenshot.getScreenArenaDashboardCrop().matchScreen(PHash.SCREEN_ARENA_DASHBOARD)) {
                 Logger.i("Arena Dashboard Screen Detected!", true)
                 Logger.i("Match Mode set to Arena!", true)
                 GameState.matchMode = MatchMode.ARENA

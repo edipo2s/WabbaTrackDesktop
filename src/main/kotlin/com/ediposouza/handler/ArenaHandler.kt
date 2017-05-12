@@ -1,6 +1,6 @@
 package com.ediposouza.handler
 
-import com.ediposouza.data.DHash
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getArenaCardCrop
 import com.ediposouza.extensions.getArenaPickClassCrop
@@ -17,7 +17,7 @@ object ArenaHandler {
 
     fun processArenaClass(screenshot: BufferedImage?): DeckClass? {
         screenshot?.getArenaPickClassCrop()?.apply {
-            return Recognizer.recognizeImageInMap(this, DHash.CLASS_PICK_LIST)?.let {
+            return Recognizer.recognizeImageInMap(this, PHash.CLASS_PICK_LIST)?.let {
                 Logger.i("Class picked $it")
                 DeckClass.of(it)
             }

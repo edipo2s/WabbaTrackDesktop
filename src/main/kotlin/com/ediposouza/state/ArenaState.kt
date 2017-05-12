@@ -63,7 +63,7 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             when {
-                value > 0 -> Logger.i("Arena Pick $pickNumber started", true)
+                value > 0 -> Logger.i("Arena Pick $pickNumber started\n")
                 value == 1 -> {
                     resetState()
                     classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
