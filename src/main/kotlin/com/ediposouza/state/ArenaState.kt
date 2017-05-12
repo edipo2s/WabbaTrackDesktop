@@ -281,6 +281,9 @@ object ArenaState : StateHandler.TESLState {
             Logger.i("${card?.name} Picked")
             val cardWithHighValue = cardPicksToSelect?.toList()?.maxBy { it.value }?.card
             Mixpanel.postEventArenaPick(card ?: Card.DUMMY, card?.shortName == cardWithHighValue?.shortName)
+            card?.shortName?.let {
+                TESLTrackerData.saveArenaPickAnonymous(it)
+            }
             launch(CommonPool) {
                 delay(500)
                 if (pickNumber == 30) {

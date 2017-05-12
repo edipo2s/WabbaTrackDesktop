@@ -31,6 +31,7 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.javafx.JavaFx
 import kotlinx.coroutines.experimental.launch
 import tornadofx.App
 import tornadofx.FX
@@ -190,7 +191,11 @@ class TESLTracker : App(MainStageView::class) {
             isAlwaysOnTop = true
             referenceConfig = when {
                 screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
-                else -> ReferenceConfig1920x1080()
+                screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
+                else -> {
+                    showMessage("You are using a unsupported resolution, so app may not work. Please change to 1366x768 or 1920x1080.")
+                    ReferenceConfig1920x1080()
+                }
             }
             with(TESLTracker.referenceConfig) {
                 val mainSize = ImageFuncs.getScreenScaledSize(APP_MAIN_WIDTH, APP_MAIN_HEIGHT)
@@ -499,7 +504,7 @@ class TESLTracker : App(MainStageView::class) {
     }
 
     private fun importDeckFromLegendsClick() {
-        Platform.runLater {
+        launch(JavaFx) {
             val result = TextInputDialog("").apply {
                 title = "$APP_NAME - Importing deck from Legends-Decks"
                 contentText = "Url:"
