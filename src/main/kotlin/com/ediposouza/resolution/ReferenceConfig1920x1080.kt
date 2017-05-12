@@ -1,4 +1,4 @@
-package com.ediposouza.util
+package com.ediposouza.resolution
 
 /**
  * Created by ediposouza on 16/03/17.

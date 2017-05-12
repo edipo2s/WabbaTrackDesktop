@@ -3,9 +3,9 @@ package com.ediposouza
 import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
 import com.ediposouza.extensions.*
+import com.ediposouza.resolution.ReferenceConfig1920x1080
 import com.ediposouza.util.BaseRecognizeTests
 import com.ediposouza.util.Recognizer
-import com.ediposouza.util.ReferenceConfig1920x1080
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -46,7 +46,7 @@ class Tests1920x1080 : BaseRecognizeTests() {
 
     @Test
     fun testScreenArenaPicks() {
-        recognizeScreen("ArenaPick/ArenaPick01.png", DHash.SCREEN_ARENA_PICKS, BufferedImage::getScreenArenaPicksCrop)
+        recognizeScreen("ScreenArenaDashPicks.png", DHash.SCREEN_ARENA_PICKS, BufferedImage::getScreenArenaPicksCrop)
     }
 
     @Test

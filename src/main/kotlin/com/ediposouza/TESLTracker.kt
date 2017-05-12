@@ -7,6 +7,9 @@ import com.ediposouza.extensions.addMenuItem
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.*
+import com.ediposouza.resolution.ReferenceConfig
+import com.ediposouza.resolution.ReferenceConfig1366x768
+import com.ediposouza.resolution.ReferenceConfig1920x1080
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.ui.LoggerController

@@ -2,8 +2,8 @@ package com.ediposouza
 
 import com.ediposouza.data.DHash
 import com.ediposouza.extensions.*
+import com.ediposouza.resolution.ReferenceConfig1366x768
 import com.ediposouza.util.BaseRecognizeTests
-import com.ediposouza.util.ReferenceConfig1366x768
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
