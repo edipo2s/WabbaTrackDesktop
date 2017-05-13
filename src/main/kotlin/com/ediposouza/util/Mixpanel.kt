@@ -98,6 +98,20 @@ object Mixpanel {
         ))
     }
 
+    fun postEventBuildDeckFromMenu(deckName: String) {
+        postEvent("BuildDeck", mutableMapOf(
+                "name" to deckName,
+                "mode" to "Menu"
+        ))
+    }
+
+    fun postEventBuildDeckFromTracker(deckName: String?) {
+        postEvent("BuildDeck", mutableMapOf(
+                "name" to "$deckName",
+                "mode" to "Tracker"
+        ))
+    }
+
     private fun postEvent(eventName: String, eventProps: MutableMap<String, String> = mutableMapOf()) {
         launch(CommonPool) {
             val userID = TESLTrackerAuth.userUuid ?: GUEST

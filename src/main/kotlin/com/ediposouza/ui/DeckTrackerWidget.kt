@@ -1,15 +1,15 @@
 package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getCardForSlotCrop
+import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.extensions.toFXImage
 import com.ediposouza.model.*
 import com.ediposouza.state.GameState
-import com.ediposouza.util.ImageFuncs
-import com.ediposouza.util.Logger
-import com.ediposouza.util.Mixpanel
+import com.ediposouza.util.*
 import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
@@ -64,6 +64,23 @@ class DeckTrackerWidget : JFrame() {
     }
 
     val contextMenu = ContextMenu(
+            MenuItem("Build").apply {
+                setOnAction {
+                    launch(CommonPool) {
+                        delay(250)
+                        ScreenFuncs.takeScreenshot()?.getScreenDeckBuilderCrop()?.let {
+                            if (Recognizer.recognizeImageInMap(it, PHash.SCREENS_LIST) == PHash.SCREEN_DECK_BUILDER) {
+                                this@DeckTrackerWidget.isVisible = false
+                                BuildDeck.buildDeck(deckName, deckCardSlots = deckCardsSlot)
+                                this@DeckTrackerWidget.isVisible = true
+                                Mixpanel.postEventBuildDeckFromTracker(deckName)
+                            } else {
+                                TESLTracker.showMessage("To build a deck, please first go to deck builder screen")
+                            }
+                        }
+                    }
+                }
+            },
             MenuItem("Decrease Size").apply {
                 setOnAction {
                     deckTrackerZoom -= 0.1f

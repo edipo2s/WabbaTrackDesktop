@@ -76,6 +76,19 @@ fun BufferedImage.getScreenMainModeCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getScreenDeckBuilderCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(SCREEN_DECK_BUILDER_X, SCREEN_DECK_BUILDER_Y, SCREEN_DECK_BUILDER_WIDTH, SCREEN_DECK_BUILDER_HEIGHT)
+    }
+}
+
+fun BufferedImage.getScreenDeckBuilderEmptyCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(SCREEN_DECK_BUILDER_EMPTY_X, SCREEN_DECK_BUILDER_EMPTY_Y,
+                SCREEN_DECK_BUILDER_EMPTY_WIDTH, SCREEN_DECK_BUILDER_EMPTY_HEIGHT)
+    }
+}
+
 fun BufferedImage.getScreenGameCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(SCREEN_GAME_X, SCREEN_GAME_Y, SCREEN_GAME_WIDTH, SCREEN_GAME_HEIGHT)
@@ -208,6 +221,34 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
             else -> ARENA_PICK_CARD_THIRD_X
         }
         return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, ARENA_PICK_CARD_WIDTH, ARENA_PICK_CARD_HEIGHT)
+    }
+}
+
+// -- Deck Crops --
+
+fun BufferedImage.getDeckBuilderFirstLineCardCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardX = when (cardPosition) {
+            5 -> DECK_BUILDER_FIRST_LINE_CARD_5_X
+            4 -> DECK_BUILDER_FIRST_LINE_CARD_4_X
+            3 -> DECK_BUILDER_FIRST_LINE_CARD_3_X
+            2 -> DECK_BUILDER_FIRST_LINE_CARD_2_X
+            else -> DECK_BUILDER_FIRST_LINE_CARD_1_X
+        }
+        return crop(cardX, DECK_BUILDER_FIRST_LINE_CARD_Y, DECK_BUILDER_CARD_WIDTH, DECK_BUILDER_CARD_HEIGHT)
+    }
+}
+
+fun BufferedImage.getDeckBuilderNoneLeftCardCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardX = when (cardPosition) {
+            5 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_5_X
+            4 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_4_X
+            3 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_3_X
+            2 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_2_X
+            else -> DECK_BUILDER_NONE_LEFT_LINE_CARD_1_X
+        }
+        return crop(cardX, DECK_BUILDER_NONE_LEFT_LINE_CARD_Y, DECK_BUILDER_NONE_LEFT_WIDTH, DECK_BUILDER_NONE_LEFT_HEIGHT)
     }
 }
 

@@ -209,4 +209,34 @@ class Tests1366x768 : BaseRecognizeTests() {
         assertThat(Recognizer.recognizeCardImage(croppedImage3)).isEqualTo(card3)
     }
 
+    // -- Deck Tests --
+
+    @Test
+    fun testDeckBuilderCards() {
+        val croppedImage1 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(5)
+        assertThat(Recognizer.recognizeCardImage(croppedImage1)).isNotEqualTo("shadowshift")
+        val croppedImage2 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(4)
+        assertThat(Recognizer.recognizeCardImage(croppedImage2)).isNotEqualTo("shadowshift")
+        val croppedImage3 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(3)
+        assertThat(Recognizer.recognizeCardImage(croppedImage3)).isNotEqualTo("shadowshift")
+        val croppedImage4 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(2)
+        assertThat(Recognizer.recognizeCardImage(croppedImage4)).isNotEqualTo("shadowshift")
+        val croppedImage5 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(1)
+        assertThat(Recognizer.recognizeCardImage(croppedImage5)).isEqualTo("shadowshift")
+    }
+
+    @Test
+    fun testDeckBuilderNoneLeftCard() {
+        val croppedImage1 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(1)
+        assertThat(Recognizer.recognizeImageInMap(croppedImage1, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage2 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(2)
+        assertThat(Recognizer.recognizeImageInMap(croppedImage2, PHash.DECK_ITEMS_LIST)).isEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage3 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(3)
+        assertThat(Recognizer.recognizeImageInMap(croppedImage3, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage4 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(4)
+        assertThat(Recognizer.recognizeImageInMap(croppedImage4, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage5 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(5)
+        assertThat(Recognizer.recognizeImageInMap(croppedImage5, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+    }
+
 }

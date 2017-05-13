@@ -3,7 +3,9 @@ package com.ediposouza.util
 import com.ediposouza.data.DHashCards
 import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.handler.StateHandler
 import com.ediposouza.state.ArenaState
+import com.ediposouza.state.CollectionState
 import com.ediposouza.state.GameState
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
@@ -16,7 +18,7 @@ object Recognizer {
 
     private const val PHASH_SIZE = 32
     private const val PHASH_SMALLER_SIZE = 12
-    private const val PHASH_SIMILARITY_THRESHOLD = 35
+    private const val PHASH_SIMILARITY_THRESHOLD = 40
     private const val PHASH_SIMILARITY_HIGH_THRESHOLD = 5
 
     var c: Array<Double> = Array(PHASH_SIZE, { 0.0 })
@@ -29,7 +31,12 @@ object Recognizer {
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        val classSelect = GameState.playerDeckClass ?: ArenaState.classSelect
+        val classSelect = when (StateHandler.currentTESLState) {
+            is CollectionState -> CollectionState.deckClass
+            is GameState -> GameState.playerDeckClass
+            is ArenaState -> ArenaState.classSelect
+            else -> null
+        }
         return classSelect?.let {
             val cardsFromClass = TESLTrackerData.getCardFromClass(it)
             val classPHash = DHashCards.LIST.filter { cardsFromClass.contains(it.value) }

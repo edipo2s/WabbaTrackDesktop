@@ -1,9 +1,11 @@
 package com.ediposouza
 
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerAuth
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.addMenu
 import com.ediposouza.extensions.addMenuItem
+import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.handler.ScreenHandler
 import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.*
@@ -441,6 +443,9 @@ class TESLTracker : App(MainStageView::class) {
             }
             TESLTrackerData.decks.forEach { deck ->
                 (menuMyDecks.first() as Menu).addMenu(deck.name, deck.getClassIcon()) {
+                    addMenuItem("Build") {
+                        buildDeck(deck)
+                    }
                     addMenuItem("Load") {
                         showDeckInDeckTracker(deck)
                         Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
@@ -485,6 +490,9 @@ class TESLTracker : App(MainStageView::class) {
             }
             decksImported.forEach { deck ->
                 (menuImportedDecks.first() as Menu).addMenu(deck.name, deck.getClassIcon()) {
+                    addMenuItem("Build") {
+                        buildDeck(deck)
+                    }
                     addMenuItem("Load") {
                         showDeckInDeckTracker(deck)
                         Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
@@ -501,6 +509,22 @@ class TESLTracker : App(MainStageView::class) {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun buildDeck(deck: Deck) {
+        launch(CommonPool) {
+            delay(250)
+            ScreenFuncs.takeScreenshot()?.getScreenDeckBuilderCrop()?.let {
+                if (Recognizer.recognizeImageInMap(it, PHash.SCREENS_LIST) == PHash.SCREEN_DECK_BUILDER) {
+                    GameState.deckTracker.isVisible = false
+                    BuildDeck.buildDeck(deck.name, deck.cards)
+                    showDeckInDeckTracker(deck)
+                    Mixpanel.postEventBuildDeckFromMenu(deck.name)
+                } else {
+                    showMessage("To build a deck, please first go to deck builder screen")
                 }
             }
         }

@@ -39,6 +39,16 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_MAIN_MODE_X = 400
     override val SCREEN_MAIN_MODE_Y = 130
 
+    override val SCREEN_DECK_BUILDER_X = 1150
+    override val SCREEN_DECK_BUILDER_Y = 715
+    override val SCREEN_DECK_BUILDER_HEIGHT = 50
+    override val SCREEN_DECK_BUILDER_WIDTH = 30
+
+    override val SCREEN_DECK_BUILDER_EMPTY_X = 1310
+    override val SCREEN_DECK_BUILDER_EMPTY_Y = 110
+    override val SCREEN_DECK_BUILDER_EMPTY_HEIGHT = 30
+    override val SCREEN_DECK_BUILDER_EMPTY_WIDTH = 40
+
     override val SCREEN_GAME_HEIGHT = 45
     override val SCREEN_GAME_WIDTH = 95
     override val SCREEN_GAME_X = 940
@@ -153,5 +163,53 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val ARENA_PICK_SELECT_SECOND_X = 460
     override val ARENA_PICK_SELECT_THIRD_X = 690
     override val ARENA_PICK_SELECT_Y = 100
+
+    // -- Deck --
+
+    override val DECK_BUILDER_CLEAR_FILTER_MAGICKA_0_X = 95
+    override val DECK_BUILDER_CLEAR_FILTER_MAGICKA_0_Y = 740
+    override val DECK_BUILDER_CLEAR_FILTER_MAGICKA_1_X = 140
+    override val DECK_BUILDER_CLEAR_FILTER_MAGICKA_1_Y = 740
+    override val DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_X = 30
+    override val DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_Y = 30
+    override val DECK_BUILDER_CLEAR_FILTER_SET_X = 540
+    override val DECK_BUILDER_CLEAR_FILTER_SET_Y = 740
+    override val DECK_BUILDER_CLEAR_FILTER_SET_ALL_X = 540
+    override val DECK_BUILDER_CLEAR_FILTER_SET_ALL_Y = 580
+    override val DECK_BUILDER_CLEAR_FILTER_RARITY_X = 480
+    override val DECK_BUILDER_CLEAR_FILTER_RARITY_Y = 740
+    override val DECK_BUILDER_CLEAR_FILTER_RARITY_ALL_X = 480
+    override val DECK_BUILDER_CLEAR_FILTER_RARITY_ALL_Y = 550
+    override val DECK_BUILDER_CLEAR_CARDS_FIRST_CARD_X = 1250
+    override val DECK_BUILDER_CLEAR_CARDS_FIRST_CARD_Y = 88
+
+    override val DECK_BUILDER_SEARCH_FIELD_X = 400
+    override val DECK_BUILDER_SEARCH_FIELD_Y = 25
+    override val DECK_BUILDER_FIRST_LINE_CLICK_CARD_X = 150
+    override val DECK_BUILDER_FIRST_LINE_CLICK_CARD_DISTANCE_X = 210
+    override val DECK_BUILDER_FIRST_LINE_CLICK_CARD_Y = 200
+
+    override val DECK_BUILDER_DECK_COVER_X = 1250
+    override val DECK_BUILDER_DECK_COVER_Y = 40
+    override val DECK_BUILDER_DECK_COVER_CONFIRM_X = 685
+    override val DECK_BUILDER_DECK_COVER_CONFIRM_Y = 625
+
+    override val DECK_BUILDER_CARD_HEIGHT = 146
+    override val DECK_BUILDER_CARD_WIDTH = 113
+    override val DECK_BUILDER_FIRST_LINE_CARD_1_X = 93
+    override val DECK_BUILDER_FIRST_LINE_CARD_2_X = 304
+    override val DECK_BUILDER_FIRST_LINE_CARD_3_X = 518
+    override val DECK_BUILDER_FIRST_LINE_CARD_4_X = 730
+    override val DECK_BUILDER_FIRST_LINE_CARD_5_X = 943
+    override val DECK_BUILDER_FIRST_LINE_CARD_Y = 112
+
+    override val DECK_BUILDER_NONE_LEFT_HEIGHT = 20
+    override val DECK_BUILDER_NONE_LEFT_WIDTH = 33
+    override val DECK_BUILDER_NONE_LEFT_LINE_CARD_1_X = 86
+    override val DECK_BUILDER_NONE_LEFT_LINE_CARD_2_X = 298
+    override val DECK_BUILDER_NONE_LEFT_LINE_CARD_3_X = 510
+    override val DECK_BUILDER_NONE_LEFT_LINE_CARD_4_X = 723
+    override val DECK_BUILDER_NONE_LEFT_LINE_CARD_5_X = 935
+    override val DECK_BUILDER_NONE_LEFT_LINE_CARD_Y = 340
 
 }
