@@ -3,10 +3,10 @@ package com.ediposouza.util
 import com.ediposouza.data.DHashCards
 import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
-import com.ediposouza.handler.StateHandler
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.CollectionState
 import com.ediposouza.state.GameState
+import com.ediposouza.state.StateHandler
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp

@@ -58,20 +58,9 @@ object Mixpanel {
     fun postEventDeckTrackerDecreaseZoom() = postEvent("DeckTrackerDecreaseZoom")
     fun postEventDeckTrackerHide() = postEvent("DeckTrackerHide")
     fun postEventShowStatistics() = postEvent("ShowStatistics")
-    fun postEventGameDetected() = postEvent("GameDetected")
+    fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
 
-    fun postEventGameResult(playerCls: DeckClass, opponentCls: DeckClass, mode: MatchMode, result: String) {
-        postEvent("GameResult", mutableMapOf(
-                "playerCls" to playerCls.name,
-                "opponentCls" to opponentCls.name,
-                "mode" to mode.name,
-                "result" to result
-        ))
-    }
-
-    fun postEventDeckImported(deckName: String) {
-        postEvent("DeckImported", mutableMapOf("name" to deckName))
-    }
+    fun postEventDeckImported(deckName: String) = postEvent("DeckImported", mutableMapOf("name" to deckName))
 
     fun postEventShowDeckTrackerFromMyDecks(deckName: String) {
         postEvent("ShowDeckTracker", mutableMapOf(
@@ -79,18 +68,15 @@ object Mixpanel {
                 "mode" to "MyDecks"
         ))
     }
-
     fun postEventShowDeckTrackerFromImportedDecks(deckName: String) {
         postEvent("ShowDeckTracker", mutableMapOf(
                 "name" to deckName,
                 "mode" to "ImportedDecks"
         ))
     }
-
     fun postEventShowDeckTrackerFromArenaDeck() = postEvent("ShowDeckTracker", mutableMapOf("mode" to "ArenaDeck"))
-    fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
-    fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
 
+    fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
     fun postEventArenaPick(card: Card, highValue: Boolean) {
         postEvent("ArenaPick", mutableMapOf(
                 "Card" to card.shortName,
@@ -109,6 +95,15 @@ object Mixpanel {
         postEvent("BuildDeck", mutableMapOf(
                 "name" to "$deckName",
                 "mode" to "Tracker"
+        ))
+    }
+
+    fun postEventGameResult(playerCls: DeckClass, opponentCls: DeckClass, mode: MatchMode, result: String) {
+        postEvent("GameResult", mutableMapOf(
+                "playerCls" to playerCls.name,
+                "opponentCls" to opponentCls.name,
+                "mode" to mode.name,
+                "result" to result
         ))
     }
 

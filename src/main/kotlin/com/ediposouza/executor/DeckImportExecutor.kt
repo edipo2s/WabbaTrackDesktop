@@ -1,27 +1,52 @@
-package com.ediposouza.util
+package com.ediposouza.executor
 
+import com.ediposouza.TESLTracker
+import com.ediposouza.TESLTracker.Companion.loading
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.model.CardAttribute
 import com.ediposouza.model.Deck
 import com.ediposouza.model.DeckClass
 import com.ediposouza.model.DeckType
+import com.ediposouza.util.Logger
+import javafx.scene.control.TextInputDialog
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.javafx.JavaFx
+import kotlinx.coroutines.experimental.launch
 import org.jsoup.Jsoup
 
 /**
- * Created by ediposouza on 24/04/17.
+ * Created by ediposouza on 12/05/17.
  */
-object LegendsDeckImporter {
+object DeckImportExecutor {
 
-    val DECK_URL_PREFIX = "https://www.legends-decks.com/deck/"
+    val LEGENDS_DECK_URL_PREFIX = "https://www.legends-decks.com/deck/"
 
-    fun import(url: String, onSuccess: (Deck) -> Unit) {
-        if (!url.startsWith(DECK_URL_PREFIX)) {
+    fun importDeckFromLegendsClick(onSuccess: (Deck) -> Unit) {
+        launch(JavaFx) {
+            val result = TextInputDialog("").apply {
+                title = "${TESLTracker.Companion.APP_NAME} - Importing deck from Legends-Decks"
+                contentText = "Url:"
+            }.showAndWait()
+            if (result.isPresent) {
+                val url = result.get()
+                loading.show()
+                launch(CommonPool) {
+                    importFromLegendsDeck(url) {
+                        onSuccess(it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun importFromLegendsDeck(url: String, onSuccess: (Deck) -> Unit) {
+        if (!url.startsWith(LEGENDS_DECK_URL_PREFIX)) {
             Logger.e("Invalid url")
             return
         }
         TESLTrackerData.getPatches { patches ->
             Jsoup.connect(url).get().select(".wrapper .container")?.map {
-                val deckUuid = url.removePrefix(DECK_URL_PREFIX).substringBefore("/")
+                val deckUuid = url.removePrefix(LEGENDS_DECK_URL_PREFIX).substringBefore("/")
                 val deckName = it.select(".col-lg-8 h1").first().text()
                 val deckCls = it.select(".deck_head_image_attributes").map {
                     val cardCls1 = it.child(0).attr("alt").toUpperCase()

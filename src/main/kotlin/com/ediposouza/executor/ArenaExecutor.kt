@@ -1,4 +1,4 @@
-package com.ediposouza.handler
+package com.ediposouza.executor
 
 import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage
 /**
  * Created by Edipo on 18/03/2017.
  */
-object ArenaHandler {
+object ArenaExecutor {
 
     fun processArenaClass(screenshot: BufferedImage?): DeckClass? {
         screenshot?.getArenaPickClassCrop()?.apply {

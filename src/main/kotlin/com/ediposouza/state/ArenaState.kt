@@ -2,8 +2,7 @@ package com.ediposouza.state
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerData
-import com.ediposouza.handler.ArenaHandler
-import com.ediposouza.handler.StateHandler
+import com.ediposouza.executor.ArenaExecutor
 import com.ediposouza.model.*
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
@@ -66,7 +65,7 @@ object ArenaState : StateHandler.TESLState {
                 value > 0 -> Logger.i("Arena Pick $pickNumber started\n")
                 value == 1 -> {
                     resetState()
-                    classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
+                    classSelect = ArenaExecutor.processArenaClass(ScreenFuncs.takeScreenshot())
                     Mixpanel.postEventArenaStart(classSelect ?: DeckClass.NEUTRAL)
                 }
             }
@@ -83,7 +82,7 @@ object ArenaState : StateHandler.TESLState {
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
                 Platform.runLater {
-                    GameState.deckTracker.isVisible = true
+                    GameState.showDeckTracker()
                 }
                 Mixpanel.postEventShowDeckTrackerFromArenaDeck()
             }
@@ -132,7 +131,7 @@ object ArenaState : StateHandler.TESLState {
     override fun onPause() {
         Logger.i("ArenaState onPause")
         hidePicksTier()
-        GameState.deckTracker.isVisible = false
+        GameState.hideDeckTracker()
         threadRunning = false
         picksDisableForThisDraft = false
     }
@@ -159,7 +158,7 @@ object ArenaState : StateHandler.TESLState {
         launch(CommonPool) {
             while (ArenaState.threadRunning && !finishPicks) {
                 ScreenFuncs.takeScreenshot()?.apply {
-                    if (cardPicksToSelect == null && pickNumber > 0) {
+                    if (cardPicksToSelect == null && pickNumber > 0 && !finishPicks) {
                         processPickCards(this)
                     }
                 }
@@ -170,7 +169,7 @@ object ArenaState : StateHandler.TESLState {
 
     fun processPickCards(screenshot: BufferedImage) {
         launch(CommonPool) {
-            ArenaHandler.processArenaPick(screenshot)?.run {
+            ArenaExecutor.processArenaPick(screenshot)?.run {
                 synchronized(cardPicksToSelectLock) {
                     if (lastCardPicksToSelect == null || (lastCardPicksToSelect?.first?.card != first.card ||
                             lastCardPicksToSelect?.second?.card != second.card || lastCardPicksToSelect?.third?.card != third.card)) {

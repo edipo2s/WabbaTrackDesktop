@@ -1,6 +1,5 @@
 package com.ediposouza.state
 
-import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.DeckClass
 import com.ediposouza.util.Logger
 import kotlinx.coroutines.experimental.CommonPool
@@ -17,8 +16,11 @@ object CollectionState : StateHandler.TESLState {
 
     var threadRunning: Boolean = false
     var deckClass: DeckClass? = null
+    var lastScreenshotPHash: String = ""
+    var waitingScreenshotChangeWasLogged: Boolean = false
 
     override fun onResume() {
+        GameState.hideDeckTracker()
         Logger.i("GameState onResume")
         GameState.threadRunning = true
         launch(CommonPool) {

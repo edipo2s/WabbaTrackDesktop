@@ -1,4 +1,4 @@
-package com.ediposouza.handler
+package com.ediposouza.executor
 
 import com.ediposouza.data.DHashCards
 import com.ediposouza.data.PHash
@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage
 /**
  * Created by Edipo on 27/03/2017.
  */
-object GameHandler {
+object GameExecutor {
 
     fun processPlayerGoFirst(screenshot: BufferedImage): Boolean? {
         return screenshot.getGamePlayerFirstCrop().let {

@@ -1,4 +1,4 @@
-package com.ediposouza.util
+package com.ediposouza.executor
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.data.PHash
@@ -6,13 +6,16 @@ import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.extensions.getDeckBuilderFirstLineCardCrop
 import com.ediposouza.extensions.getDeckBuilderNoneLeftCardCrop
 import com.ediposouza.extensions.getScreenDeckBuilderEmptyCrop
-import com.ediposouza.handler.StateHandler
 import com.ediposouza.model.Card
 import com.ediposouza.model.CardAttribute
 import com.ediposouza.model.CardSlot
 import com.ediposouza.model.DeckClass
 import com.ediposouza.resolution.ReferenceConfig
 import com.ediposouza.state.CollectionState
+import com.ediposouza.state.StateHandler
+import com.ediposouza.util.Logger
+import com.ediposouza.util.Recognizer
+import com.ediposouza.util.ScreenFuncs
 import com.tulskiy.keymaster.common.Provider
 import java.awt.Robot
 import java.awt.Toolkit
@@ -24,7 +27,7 @@ import javax.swing.KeyStroke
 /**
  * Created by ediposouza on 11/05/17.
  */
-object BuildDeck {
+object DeckBuildExecutor {
 
     val robot: Robot by lazy { Robot() }
     val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
@@ -93,6 +96,15 @@ object BuildDeck {
             }
             searchCard(slot.card.name)
             pauseLong()
+            // Pause if there's a class change
+            if (picksAttrList.size < 2) {
+                picksAttrList.add(slot.card.dualAttr1)
+                picksAttrList.add(slot.card.dualAttr2)
+                if (picksAttrList.size >= 2) {
+                    Logger.d("Class Change")
+                    pauseLong()
+                }
+            }
             var cardsFoundScreenshot = ScreenFuncs.takeScreenshot()
             (1..2).forEach {
                 cardsFoundScreenshot?.let {
@@ -123,16 +135,6 @@ object BuildDeck {
                 }
                 if (cardQtdNeed == slot.qtd) {
                     Logger.d("Card not found ${slot.card.name}")
-                } else {
-                    // Pause if there's a class change
-                    if (picksAttrList.size < 2) {
-                        picksAttrList.add(slot.card.dualAttr1)
-                        picksAttrList.add(slot.card.dualAttr2)
-                        if (picksAttrList.size >= 2) {
-                            Logger.d("Class Change")
-                            pauseLong()
-                        }
-                    }
                 }
             }
         }
@@ -144,9 +146,10 @@ object BuildDeck {
         pauseShort()
         selectAllAndClear()
         copyAndPaste(cardName)
-        pauseShort()
+        pauseLong()
         mouseMove({ DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_X }, { DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_Y })
         mouseClick()
+        pauseLong()
     }
 
     private fun pickCard(cardPosition: Int, qtd: Int): Int {
@@ -222,7 +225,7 @@ object BuildDeck {
     }
 
     private fun pauseLong() {
-        Thread.sleep(500)
+        Thread.sleep(350)
     }
 
 }

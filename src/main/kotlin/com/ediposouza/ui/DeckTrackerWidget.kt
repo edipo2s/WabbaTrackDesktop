@@ -3,6 +3,7 @@ package com.ediposouza.ui
 import com.ediposouza.TESLTracker
 import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.executor.DeckBuildExecutor
 import com.ediposouza.extensions.getCardForSlotCrop
 import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.extensions.makeDraggable
@@ -71,7 +72,7 @@ class DeckTrackerWidget : JFrame() {
                         ScreenFuncs.takeScreenshot()?.getScreenDeckBuilderCrop()?.let {
                             if (Recognizer.recognizeImageInMap(it, PHash.SCREENS_LIST) == PHash.SCREEN_DECK_BUILDER) {
                                 this@DeckTrackerWidget.isVisible = false
-                                BuildDeck.buildDeck(deckName, deckCardSlots = deckCardsSlot)
+                                DeckBuildExecutor.buildDeck(deckName, deckCardSlots = deckCardsSlot)
                                 this@DeckTrackerWidget.isVisible = true
                                 Mixpanel.postEventBuildDeckFromTracker(deckName)
                             } else {
@@ -103,7 +104,7 @@ class DeckTrackerWidget : JFrame() {
             },
             MenuItem("Hide Deck").apply {
                 setOnAction {
-                    GameState.deckTracker.isVisible = false
+                    this@DeckTrackerWidget.isVisible = false
                     GameState.shouldShowDeckTracker = false
                     Mixpanel.postEventDeckTrackerHide()
                 }

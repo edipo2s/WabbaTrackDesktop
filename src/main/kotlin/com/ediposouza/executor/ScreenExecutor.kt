@@ -1,10 +1,11 @@
-package com.ediposouza.handler
+package com.ediposouza.executor
 
 import com.ediposouza.data.PHash
 import com.ediposouza.extensions.*
 import com.ediposouza.model.MatchMode
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
+import com.ediposouza.state.StateHandler
 import com.ediposouza.util.Logger
 import com.ediposouza.util.Recognizer
 import kotlinx.coroutines.experimental.CommonPool
@@ -14,7 +15,7 @@ import java.awt.image.BufferedImage
 /**
  * Created by Edipo on 18/03/2017.
  */
-object ScreenHandler {
+object ScreenExecutor {
 
     var screenRecognized = false
     var lastScreenRecognized = ""
