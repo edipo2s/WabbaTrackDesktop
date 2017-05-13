@@ -31,7 +31,7 @@ abstract class ReferenceConfig {
     open val ARENA_PICK_WIDGET_HEIGHT = 0
     open val ARENA_PICK_WIDGET_WIDTH = 0
 
-    val FULL_CARD_HEIGHT = 255
+    val FULL_CARD_HEIGHT = 240
     val FULL_CARD_WIDTH = 212
     val FULL_CARD_X = 80
     val FULL_CARD_Y = 100
@@ -39,6 +39,9 @@ abstract class ReferenceConfig {
     val FULL_CARD_DECK_IMAGE_Y = 115
     val FULL_CARD_DECK_IMAGE_HEIGHT = 80
     val FULL_CARD_DECK_IMAGE_WIDTH = 290
+
+    open val BASE_CARD_HEIGHT = 0
+    open val BASE_CARD_WIDTH = 0
 
     // -- Screens --
 
@@ -104,8 +107,6 @@ abstract class ReferenceConfig {
     open val GAME_LOSS2_X = 0
     open val GAME_LOSS2_Y = 0
 
-    open val GAME_CARD_DRAW_HEIGHT = 0
-    open val GAME_CARD_DRAW_WIDTH = 0
     open val GAME_CARD_DRAW_X = 0
     open val GAME_CARD_DRAW_Y = 0
 
@@ -119,8 +120,6 @@ abstract class ReferenceConfig {
     open val GAME_CARD_GENERATED_X = 0
     open val GAME_CARD_GENERATED_Y = 0
 
-    open val CARD_INITIAL_DRAW_HEIGHT = 0
-    open val CARD_INITIAL_DRAW_WIDTH = 0
     open val CARD_INITIAL_DRAW_FIRST_X = 0
     open val CARD_INITIAL_DRAW_SECOND_X = 0
     open val CARD_INITIAL_DRAW_THIRD_X = 0
@@ -163,8 +162,6 @@ abstract class ReferenceConfig {
     open val ARENA_PICK_CLASS_X = 0
     open val ARENA_PICK_CLASS_Y = 0
 
-    open val ARENA_PICK_CARD_HEIGHT = 0
-    open val ARENA_PICK_CARD_WIDTH = 0
     open val ARENA_PICK_CARD_START_Y = 0
     open val ARENA_PICK_CARD_FIRST_X = 0
     open val ARENA_PICK_CARD_SECOND_X = 0

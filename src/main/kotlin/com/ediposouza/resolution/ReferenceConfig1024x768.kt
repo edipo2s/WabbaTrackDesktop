@@ -20,6 +20,9 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val DECK_TRACKER_CARD_HEIGHT = 0
     override val DECK_TRACKER_CARD_WIDTH = 0
 
+    override val BASE_CARD_HEIGHT = 0
+    override val BASE_CARD_WIDTH = 0
+
     // -- Screens --
 
     override val SCREEN_MAIN_HEIGHT = 0
@@ -74,8 +77,6 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val GAME_LOSS2_X = 0
     override val GAME_LOSS2_Y = 0
 
-    override val GAME_CARD_DRAW_HEIGHT = 0
-    override val GAME_CARD_DRAW_WIDTH = 0
     override val GAME_CARD_DRAW_X = 0
     override val GAME_CARD_DRAW_Y = 0
 
@@ -89,8 +90,6 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val GAME_CARD_GENERATED_X = 0
     override val GAME_CARD_GENERATED_Y = 0
 
-    override val CARD_INITIAL_DRAW_HEIGHT = 0
-    override val CARD_INITIAL_DRAW_WIDTH = 0
     override val CARD_INITIAL_DRAW_FIRST_X = 0
     override val CARD_INITIAL_DRAW_SECOND_X = 0
     override val CARD_INITIAL_DRAW_THIRD_X = 0
@@ -123,8 +122,6 @@ class ReferenceConfig1024x768 : ReferenceConfig() {
     override val ARENA_PICK_CLASS_X = 0
     override val ARENA_PICK_CLASS_Y = 0
 
-    override val ARENA_PICK_CARD_HEIGHT = 155
-    override val ARENA_PICK_CARD_WIDTH = 118
     override val ARENA_PICK_CARD_START_Y = 152
     override val ARENA_PICK_CARD_FIRST_X = 113
     override val ARENA_PICK_CARD_SECOND_X = 341

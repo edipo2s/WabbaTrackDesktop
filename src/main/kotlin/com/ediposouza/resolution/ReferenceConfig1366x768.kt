@@ -27,6 +27,9 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val ARENA_PICK_WIDGET_HEIGHT = 75
     override val ARENA_PICK_WIDGET_WIDTH = 75
 
+    override val BASE_CARD_HEIGHT = 138
+    override val BASE_CARD_WIDTH = 120
+
     // -- Screens --
 
     override val SCREEN_MAIN_HEIGHT = 50
@@ -91,12 +94,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_LOSS2_X = 550
     override val GAME_LOSS2_Y = 250
 
-    override val GAME_CARD_DRAW_HEIGHT = 145
-    override val GAME_CARD_DRAW_WIDTH = 120
     override val GAME_CARD_DRAW_X = 1003
     override val GAME_CARD_DRAW_Y = 358
 
-    override val GAME_CARD_DRAW_PROPHECY_HEIGHT = 107
+    override val GAME_CARD_DRAW_PROPHECY_HEIGHT = 103
     override val GAME_CARD_DRAW_PROPHECY_WIDTH = 92
     override val GAME_CARD_DRAW_PROPHECY_X = 943
     override val GAME_CARD_DRAW_PROPHECY_Y = 453
@@ -106,8 +107,6 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_CARD_GENERATED_X = 1105
     override val GAME_CARD_GENERATED_Y = 455
 
-    override val CARD_INITIAL_DRAW_HEIGHT = 145
-    override val CARD_INITIAL_DRAW_WIDTH = 120
     override val CARD_INITIAL_DRAW_FIRST_X = 412
     override val CARD_INITIAL_DRAW_SECOND_X = 623
     override val CARD_INITIAL_DRAW_THIRD_X = 835
@@ -150,12 +149,10 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val ARENA_PICK_CLASS_X = 1191
     override val ARENA_PICK_CLASS_Y = 20
 
-    override val ARENA_PICK_CARD_HEIGHT = 143
-    override val ARENA_PICK_CARD_WIDTH = 118
     override val ARENA_PICK_CARD_START_Y = 152
-    override val ARENA_PICK_CARD_FIRST_X = 284
-    override val ARENA_PICK_CARD_SECOND_X = 512
-    override val ARENA_PICK_CARD_THIRD_X = 740
+    override val ARENA_PICK_CARD_FIRST_X = 282
+    override val ARENA_PICK_CARD_SECOND_X = 510
+    override val ARENA_PICK_CARD_THIRD_X = 738
 
     override val ARENA_PICK_SELECT_HEIGHT = 315
     override val ARENA_PICK_SELECT_WIDTH = 200
@@ -194,7 +191,7 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val DECK_BUILDER_DECK_COVER_CONFIRM_X = 685
     override val DECK_BUILDER_DECK_COVER_CONFIRM_Y = 625
 
-    override val DECK_BUILDER_CARD_HEIGHT = 146
+    override val DECK_BUILDER_CARD_HEIGHT = 128
     override val DECK_BUILDER_CARD_WIDTH = 113
     override val DECK_BUILDER_FIRST_LINE_CARD_1_X = 93
     override val DECK_BUILDER_FIRST_LINE_CARD_2_X = 304

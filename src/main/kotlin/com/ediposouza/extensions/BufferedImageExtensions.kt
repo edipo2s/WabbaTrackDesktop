@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-
 /**
  * Created by Edipo on 19/03/2017.
  */
@@ -141,7 +140,7 @@ fun BufferedImage.getGameLoss2Crop(): BufferedImage {
 
 fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
-        return crop(GAME_CARD_DRAW_X, GAME_CARD_DRAW_Y, GAME_CARD_DRAW_WIDTH, GAME_CARD_DRAW_HEIGHT)
+        return crop(GAME_CARD_DRAW_X, GAME_CARD_DRAW_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
     }
 }
 
@@ -165,7 +164,7 @@ fun BufferedImage.getGameInitialCardDrawCrop(cardPosition: Int): BufferedImage {
             2 -> CARD_INITIAL_DRAW_SECOND_X
             else -> CARD_INITIAL_DRAW_THIRD_X
         }
-        return crop(cardPositionDrawStartX, CARD_INITIAL_DRAW_Y, CARD_INITIAL_DRAW_WIDTH, CARD_INITIAL_DRAW_HEIGHT)
+        return crop(cardPositionDrawStartX, CARD_INITIAL_DRAW_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
     }
 }
 
@@ -220,7 +219,7 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
             2 -> ARENA_PICK_CARD_SECOND_X
             else -> ARENA_PICK_CARD_THIRD_X
         }
-        return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, ARENA_PICK_CARD_WIDTH, ARENA_PICK_CARD_HEIGHT)
+        return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
     }
 }
 
