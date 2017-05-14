@@ -35,6 +35,11 @@ object DeckBuildExecutor {
     var isRunning = false
 
     fun buildDeck(deckName: String?, deckCards: Map<String, Int>? = null, deckCardSlots: List<CardSlot>? = null) {
+        if (!TESLTracker.supportedResolution) {
+            TESLTracker.showMessageUnsupportedResolution()
+            return
+        }
+        TESLTracker.showMessage("Deck build started, you can hit ESC to cancel.")
         keyProvider.register(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0)) {
             isRunning = false
             keyProvider.stop()
@@ -107,6 +112,7 @@ object DeckBuildExecutor {
                 picksAttrList.add(slot.card.dualAttr2)
                 if (picksAttrList.size >= 2) {
                     Logger.d("Class Change")
+                    pauseShort()
                     pauseLong()
                 }
             }

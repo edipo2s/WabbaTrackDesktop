@@ -65,6 +65,7 @@ class TESLTracker : App(MainStageView::class) {
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
+        var supportedResolution = true
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
 
@@ -111,6 +112,10 @@ class TESLTracker : App(MainStageView::class) {
             SwingUtilities.invokeLater {
                 trayIcon?.displayMessage(APP_NAME, msg, TrayIcon.MessageType.NONE)
             }
+        }
+
+        fun showMessageUnsupportedResolution() {
+            showMessage("You are using a unsupported resolution, so app may not work. Please change to 1366x768 or 1920x1080.")
         }
 
         fun showRestartToUpdateNow() {
@@ -198,7 +203,8 @@ class TESLTracker : App(MainStageView::class) {
                 screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
                 screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
                 else -> {
-                    showMessage("You are using a unsupported resolution, so app may not work. Please change to 1366x768 or 1920x1080.")
+                    supportedResolution = false
+                    showMessageUnsupportedResolution()
                     ReferenceConfig1920x1080()
                 }
             }
@@ -447,12 +453,12 @@ class TESLTracker : App(MainStageView::class) {
             }
             TESLTrackerData.decks.forEach { deck ->
                 (menuMyDecks.first() as Menu).addMenu(deck.name, deck.getClassIcon()) {
-                    addMenuItem("Build") {
-                        buildDeck(deck)
-                    }
                     addMenuItem("Load") {
                         showDeckInDeckTracker(deck)
                         Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
+                    }
+                    addMenuItem("Build") {
+                        buildDeck(deck)
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {
@@ -494,12 +500,12 @@ class TESLTracker : App(MainStageView::class) {
             }
             decksImported.forEach { deck ->
                 (menuImportedDecks.first() as Menu).addMenu(deck.name, deck.getClassIcon()) {
-                    addMenuItem("Build") {
-                        buildDeck(deck)
-                    }
                     addMenuItem("Load") {
                         showDeckInDeckTracker(deck)
                         Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
+                    }
+                    addMenuItem("Build") {
+                        buildDeck(deck)
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {

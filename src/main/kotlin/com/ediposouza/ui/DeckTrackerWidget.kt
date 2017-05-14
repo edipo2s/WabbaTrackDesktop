@@ -164,32 +164,35 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
+    val deckCoverClass = BorderPane().apply {
+        left = VBox().apply {
+            add(deckCoverName)
+            add(HBox().apply {
+                add(deckAttr1Image)
+                add(label(" "))
+                add(deckAttr2Image)
+                padding = Insets(1.0, 0.0, 0.0, 0.0)
+            })
+            padding = Insets(2.0, 0.0, 0.0, 4.0)
+        }
+        right = ImageView().apply {
+            image = Image(configIconStream)
+            padding = Insets(0.0, 0.0, 0.0, 2.0)
+            setOnMousePressed { me ->
+                if (me.isPrimaryButtonDown || me.isSecondaryButtonDown) {
+                    contextMenu.show(this, me.screenX, me.screenY)
+                }
+            }
+        }
+        makeDraggable(this@DeckTrackerWidget)
+        background = Background(BackgroundImage(defaultDeckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
+    }
+
     val deckCoverPane by lazy {
         BorderPane().apply {
-            top = BorderPane().apply {
-                left = VBox().apply {
-                    add(deckCoverName)
-                    add(HBox().apply {
-                        add(deckAttr1Image)
-                        add(label(" "))
-                        add(deckAttr2Image)
-                        padding = Insets(1.0, 0.0, 0.0, 0.0)
-                    })
-                    padding = Insets(2.0, 0.0, 0.0, 4.0)
-                }
-                right = ImageView().apply {
-                    image = Image(configIconStream)
-                    padding = Insets(0.0, 0.0, 0.0, 2.0)
-                    setOnMousePressed { me ->
-                        if (me.isPrimaryButtonDown || me.isSecondaryButtonDown) {
-                            contextMenu.show(this, me.screenX, me.screenY)
-                        }
-                    }
-                }
-                makeDraggable(this@DeckTrackerWidget)
-            }
-            background = Background(BackgroundImage(defaultDeckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
+            top = deckCoverClass
+            padding = Insets(2.0, 2.0, 5.0, 2.0)
         }
     }
 
@@ -313,6 +316,7 @@ class DeckTrackerWidget : JFrame() {
     }
 
     private fun updateDeckCover() {
+        val frameCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/frameCover.png")
         val deckClass = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
         val deckClassName = deckClass?.name?.toLowerCase()?.capitalize()
         val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${deckClassName ?: "Default"}.webp")
@@ -325,7 +329,11 @@ class DeckTrackerWidget : JFrame() {
         }
         deckCoverName.text = deckName ?: deckClassName ?: ""
         deckCoverName.maxWidth = cellSize.width.toDouble()
-        deckCoverPane.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+        deckCoverPane.background = Background(BackgroundImage(frameCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
+                        cellSize.height * 1.45 + deckTrackerZoom * 5.0, false, false, false, false)))
+        deckCoverClass.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
                         cellSize.height * 1.5, false, false, false, false)))
