@@ -35,6 +35,12 @@ class Tests1366x768 : BaseRecognizeTests() {
     }
 
     @Test
+    fun testScreenDeckBuilder() {
+        recognizeScreen("ScreenDeckBuilderEmpty.png", PHash.SCREEN_DECK_BUILDER, BufferedImage::getScreenDeckBuilderCrop)
+        recognizeScreen("ScreenDeckBuilderEmpty.png", PHash.SCREEN_DECK_BUILDER_EMPTY, BufferedImage::getScreenDeckBuilderEmptyCrop)
+    }
+
+    @Test
     fun testScreenGame() {
         recognizeScreen("Game/PlayFirst.png", PHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
     }

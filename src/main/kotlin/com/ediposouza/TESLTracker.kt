@@ -65,7 +65,7 @@ class TESLTracker : App(MainStageView::class) {
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
-        var supportedResolution = true
+        var usingSupportedResolution = true
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
 
@@ -203,7 +203,7 @@ class TESLTracker : App(MainStageView::class) {
                 screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
                 screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
                 else -> {
-                    supportedResolution = false
+                    usingSupportedResolution = false
                     showMessageUnsupportedResolution()
                     ReferenceConfig1920x1080()
                 }

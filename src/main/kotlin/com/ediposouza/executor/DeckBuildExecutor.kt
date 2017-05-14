@@ -35,7 +35,7 @@ object DeckBuildExecutor {
     var isRunning = false
 
     fun buildDeck(deckName: String?, deckCards: Map<String, Int>? = null, deckCardSlots: List<CardSlot>? = null) {
-        if (!TESLTracker.supportedResolution) {
+        if (!TESLTracker.usingSupportedResolution) {
             TESLTracker.showMessageUnsupportedResolution()
             return
         }
@@ -89,6 +89,7 @@ object DeckBuildExecutor {
 
     private fun clearDeck() {
         mouseMove({ DECK_BUILDER_CLEAR_CARDS_FIRST_CARD_X }, { DECK_BUILDER_CLEAR_CARDS_FIRST_CARD_Y })
+        var i = 0
         do {
             val isSecondDeckCardEmpty = ScreenFuncs.takeScreenshot()?.getScreenDeckBuilderEmptyCrop()?.let {
                 Recognizer.recognizeImageInMap(it, PHash.SCREENS_LIST) == PHash.SCREEN_DECK_BUILDER_EMPTY
@@ -96,7 +97,8 @@ object DeckBuildExecutor {
             mouseClick()
             mouseClick()
             mouseClick()
-        } while (isRunning && !isSecondDeckCardEmpty)
+            i += 1
+        } while (isRunning && !isSecondDeckCardEmpty && i < 25)
     }
 
     private fun pickDeckCards(deckCards: List<CardSlot>) {
