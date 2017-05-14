@@ -75,6 +75,11 @@ object DeckBuildExecutor {
             keyPress(KeyEvent.VK_BACK_SPACE)
             keyRelease(KeyEvent.VK_BACK_SPACE)
         }
+        pauseLong()
+        mouseMove({ DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_X }, { DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_Y })
+        pauseShort()
+        mouseClick()
+        pauseShort()
     }
 
     private fun clearDeck() {
@@ -146,9 +151,6 @@ object DeckBuildExecutor {
         pauseShort()
         selectAllAndClear()
         copyAndPaste(cardName)
-        pauseLong()
-        mouseMove({ DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_X }, { DECK_BUILDER_CLEAR_FILTER_ATTRIBUTES_Y })
-        mouseClick()
         pauseLong()
     }
 

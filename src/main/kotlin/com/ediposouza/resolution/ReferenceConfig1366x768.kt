@@ -193,12 +193,13 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     override val DECK_BUILDER_CARD_HEIGHT = 128
     override val DECK_BUILDER_CARD_WIDTH = 113
-    override val DECK_BUILDER_FIRST_LINE_CARD_1_X = 93
-    override val DECK_BUILDER_FIRST_LINE_CARD_2_X = 304
-    override val DECK_BUILDER_FIRST_LINE_CARD_3_X = 518
-    override val DECK_BUILDER_FIRST_LINE_CARD_4_X = 730
-    override val DECK_BUILDER_FIRST_LINE_CARD_5_X = 943
+    override val DECK_BUILDER_CARD_1_X = 93
+    override val DECK_BUILDER_CARD_2_X = 304
+    override val DECK_BUILDER_CARD_3_X = 518
+    override val DECK_BUILDER_CARD_4_X = 730
+    override val DECK_BUILDER_CARD_5_X = 943
     override val DECK_BUILDER_FIRST_LINE_CARD_Y = 112
+    override val DECK_BUILDER_SECOND_LINE_CARD_Y = 440
 
     override val DECK_BUILDER_NONE_LEFT_HEIGHT = 20
     override val DECK_BUILDER_NONE_LEFT_WIDTH = 33

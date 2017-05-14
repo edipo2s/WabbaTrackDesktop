@@ -228,13 +228,26 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
 fun BufferedImage.getDeckBuilderFirstLineCardCrop(cardPosition: Int): BufferedImage {
     with(TESLTracker.referenceConfig) {
         val cardX = when (cardPosition) {
-            5 -> DECK_BUILDER_FIRST_LINE_CARD_5_X
-            4 -> DECK_BUILDER_FIRST_LINE_CARD_4_X
-            3 -> DECK_BUILDER_FIRST_LINE_CARD_3_X
-            2 -> DECK_BUILDER_FIRST_LINE_CARD_2_X
-            else -> DECK_BUILDER_FIRST_LINE_CARD_1_X
+            5 -> DECK_BUILDER_CARD_5_X
+            4 -> DECK_BUILDER_CARD_4_X
+            3 -> DECK_BUILDER_CARD_3_X
+            2 -> DECK_BUILDER_CARD_2_X
+            else -> DECK_BUILDER_CARD_1_X
         }
         return crop(cardX, DECK_BUILDER_FIRST_LINE_CARD_Y, DECK_BUILDER_CARD_WIDTH, DECK_BUILDER_CARD_HEIGHT)
+    }
+}
+
+fun BufferedImage.getDeckBuilderSecondLineCardCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardX = when (cardPosition) {
+            5 -> DECK_BUILDER_CARD_5_X
+            4 -> DECK_BUILDER_CARD_4_X
+            3 -> DECK_BUILDER_CARD_3_X
+            2 -> DECK_BUILDER_CARD_2_X
+            else -> DECK_BUILDER_CARD_1_X
+        }
+        return crop(cardX, DECK_BUILDER_SECOND_LINE_CARD_Y, DECK_BUILDER_CARD_WIDTH, DECK_BUILDER_CARD_HEIGHT)
     }
 }
 

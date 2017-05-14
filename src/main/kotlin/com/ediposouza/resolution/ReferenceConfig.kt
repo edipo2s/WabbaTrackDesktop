@@ -206,12 +206,13 @@ abstract class ReferenceConfig {
 
     open val DECK_BUILDER_CARD_HEIGHT = 0
     open val DECK_BUILDER_CARD_WIDTH = 0
-    open val DECK_BUILDER_FIRST_LINE_CARD_1_X = 0
-    open val DECK_BUILDER_FIRST_LINE_CARD_2_X = 0
-    open val DECK_BUILDER_FIRST_LINE_CARD_3_X = 0
-    open val DECK_BUILDER_FIRST_LINE_CARD_4_X = 0
-    open val DECK_BUILDER_FIRST_LINE_CARD_5_X = 0
+    open val DECK_BUILDER_CARD_1_X = 0
+    open val DECK_BUILDER_CARD_2_X = 0
+    open val DECK_BUILDER_CARD_3_X = 0
+    open val DECK_BUILDER_CARD_4_X = 0
+    open val DECK_BUILDER_CARD_5_X = 0
     open val DECK_BUILDER_FIRST_LINE_CARD_Y = 0
+    open val DECK_BUILDER_SECOND_LINE_CARD_Y = 0
 
     open val DECK_BUILDER_NONE_LEFT_HEIGHT = 0
     open val DECK_BUILDER_NONE_LEFT_WIDTH = 0
