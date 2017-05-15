@@ -1,14 +1,21 @@
 package com.ediposouza
 
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerAuth
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.executor.DeckBuildExecutor
+import com.ediposouza.executor.DeckImportExecutor
+import com.ediposouza.executor.ScreenExecutor
 import com.ediposouza.extensions.addMenu
 import com.ediposouza.extensions.addMenuItem
-import com.ediposouza.handler.ScreenHandler
-import com.ediposouza.handler.StateHandler
+import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.model.*
+import com.ediposouza.resolution.ReferenceConfig
+import com.ediposouza.resolution.ReferenceConfig1366x768
+import com.ediposouza.resolution.ReferenceConfig1920x1080
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
+import com.ediposouza.state.StateHandler
 import com.ediposouza.ui.LoggerController
 import com.ediposouza.ui.LoggerView
 import com.ediposouza.ui.MainStageView
@@ -22,7 +29,6 @@ import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ProgressIndicator
-import javafx.scene.control.TextInputDialog
 import javafx.scene.image.Image
 import javafx.scene.layout.Background
 import javafx.scene.paint.Color
@@ -54,11 +60,12 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.1.3"
+        val APP_VERSION = "0.2.0"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
+        var usingSupportedResolution = true
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
 
@@ -81,7 +88,7 @@ class TESLTracker : App(MainStageView::class) {
         }
 
         private var trayIcon: TrayIcon? = null
-        private var lastScreenshotDHash = ""
+        private var lastScreenshotPHash = ""
         private var loginMenuItems: List<Any>? = null
 
         private var hasUpdateReady: Boolean = false
@@ -105,6 +112,10 @@ class TESLTracker : App(MainStageView::class) {
             SwingUtilities.invokeLater {
                 trayIcon?.displayMessage(APP_NAME, msg, TrayIcon.MessageType.NONE)
             }
+        }
+
+        fun showMessageUnsupportedResolution() {
+            showMessage("You are using a unsupported resolution, so app may not work. Please change to 1366x768 or 1920x1080.")
         }
 
         fun showRestartToUpdateNow() {
@@ -190,7 +201,12 @@ class TESLTracker : App(MainStageView::class) {
             isAlwaysOnTop = true
             referenceConfig = when {
                 screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
-                else -> ReferenceConfig1920x1080()
+                screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
+                else -> {
+                    usingSupportedResolution = false
+                    showMessageUnsupportedResolution()
+                    ReferenceConfig1920x1080()
+                }
             }
             with(TESLTracker.referenceConfig) {
                 val mainSize = ImageFuncs.getScreenScaledSize(APP_MAIN_WIDTH, APP_MAIN_HEIGHT)
@@ -258,13 +274,17 @@ class TESLTracker : App(MainStageView::class) {
                 }
                 menuImportedDecks = addMenu("Imported Decks") {
                     addMenuItem(importDecksFromLegendsDecksLabel) {
-                        importDeckFromLegendsClick()
+                        startImportFromLegendsDeck()
                     }
                 }
                 addMenuItem("Show/Hide Deck Tracker") {
                     Platform.runLater {
-                        val isShowed = GameState.deckTracker.isVisible
-                        GameState.deckTracker.isVisible = !isShowed
+                        val isShowed = GameState.isDeckTrackerVisible()
+                        if (isShowed) {
+                            GameState.hideDeckTracker()
+                        } else {
+                            GameState.showDeckTracker(true)
+                        }
                         GameState.shouldShowDeckTracker = !isShowed
                         if (isShowed) {
                             Mixpanel.postEventDeckTrackerHide()
@@ -337,12 +357,12 @@ class TESLTracker : App(MainStageView::class) {
                             }
                         }
                         addMenuItem("Draw Test") {
-                            GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("firebolt") ?: Card.DUMMY)
+                            GameState.trackCardDraw(TESLTrackerData.getCard("firebolt") ?: Card.DUMMY)
                             launch(CommonPool) {
                                 delay(2000L)
-                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY)
+                                GameState.trackCardDraw(TESLTrackerData.getCard("windkeepspellsword") ?: Card.DUMMY)
                                 delay(2000L)
-                                GameState.deckTracker.trackCardDraw(TESLTrackerData.getCard("lightningbolt") ?: Card.DUMMY)
+                                GameState.trackCardDraw(TESLTrackerData.getCard("lightningbolt") ?: Card.DUMMY)
                             }
                         }
                         addMenuItem("Save Match Test") {
@@ -437,6 +457,9 @@ class TESLTracker : App(MainStageView::class) {
                         showDeckInDeckTracker(deck)
                         Mixpanel.postEventShowDeckTrackerFromMyDecks(deck.name)
                     }
+                    addMenuItem("Build") {
+                        buildDeck(deck)
+                    }
                     addMenuItem("Delete") {
                         Platform.runLater {
                             alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
@@ -471,7 +494,7 @@ class TESLTracker : App(MainStageView::class) {
             menuImportedDecks.forEach {
                 if (it is Menu) {
                     it.addMenuItem(importDecksFromLegendsDecksLabel) {
-                        importDeckFromLegendsClick()
+                        startImportFromLegendsDeck()
                     }
                 }
             }
@@ -480,6 +503,9 @@ class TESLTracker : App(MainStageView::class) {
                     addMenuItem("Load") {
                         showDeckInDeckTracker(deck)
                         Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
+                    }
+                    addMenuItem("Build") {
+                        buildDeck(deck)
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {
@@ -498,31 +524,35 @@ class TESLTracker : App(MainStageView::class) {
         }
     }
 
-    private fun importDeckFromLegendsClick() {
-        Platform.runLater {
-            val result = TextInputDialog("").apply {
-                title = "$APP_NAME - Importing deck from Legends-Decks"
-                contentText = "Url:"
-            }.showAndWait()
-            if (result.isPresent) {
-                val url = result.get()
-                loading.show()
-                launch(CommonPool) {
-                    LegendsDeckImporter.import(url) { deck ->
-                        Platform.runLater {
-                            loading.close()
-                            if (decksImported.find { it.name == deck.name } == null) {
-                                decksImported.add(deck)
-                                updateMenuDecksImported()
-                                saveDecksImported()
-                            }
-                        }
-                        Mixpanel.postEventDeckImported(deck.name)
-                        showDeckInDeckTracker(deck)
-                        Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
-                    }
+    private fun buildDeck(deck: Deck) {
+        launch(CommonPool) {
+            delay(250)
+            ScreenFuncs.takeScreenshot()?.getScreenDeckBuilderCrop()?.let {
+                if (Recognizer.recognizeImageInMap(it, PHash.SCREENS_LIST) == PHash.SCREEN_DECK_BUILDER) {
+                    GameState.hideDeckTracker()
+                    DeckBuildExecutor.buildDeck(deck.name, deck.cards)
+                    showDeckInDeckTracker(deck)
+                    Mixpanel.postEventBuildDeckFromMenu(deck.name)
+                } else {
+                    showMessage("To build a deck, please first go to deck builder screen")
                 }
             }
+        }
+    }
+
+    private fun startImportFromLegendsDeck() {
+        DeckImportExecutor.importDeckFromLegendsClick { deck ->
+            Platform.runLater {
+                loading.close()
+                if (decksImported.find { it.name == deck.name } == null) {
+                    decksImported.add(deck)
+                    updateMenuDecksImported()
+                    saveDecksImported()
+                }
+            }
+            Mixpanel.postEventDeckImported(deck.name)
+            showDeckInDeckTracker(deck)
+            Mixpanel.postEventShowDeckTrackerFromImportedDecks(deck.name)
         }
     }
 
@@ -545,7 +575,7 @@ class TESLTracker : App(MainStageView::class) {
             CardSlot(TESLTrackerData.getCard(it.key) ?: Card.DUMMY, it.value)
         }, deck.name)
         Platform.runLater {
-            GameState.deckTracker.isVisible = true
+            GameState.showDeckTracker(true)
         }
     }
 
@@ -567,7 +597,6 @@ class TESLTracker : App(MainStageView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
-                Mixpanel.postEventGameDetected()
                 StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")
@@ -584,7 +613,7 @@ class TESLTracker : App(MainStageView::class) {
         }
         while (true) {
             if (!analyseScreenshot(ScreenFuncs.takeScreenshot())) {
-                ScreenHandler.lastScreenRecognized = ""
+                ScreenExecutor.lastScreenRecognized = ""
                 break
             }
         }
@@ -594,15 +623,15 @@ class TESLTracker : App(MainStageView::class) {
         if (screenshot == null) {
             return false
         }
-        val screenshotDHash = Recognizer.calcPHash(screenshot)
-        if (Recognizer.isScreenshotDifferent(screenshotDHash, lastScreenshotDHash) ||
+        val screenshotPHash = Recognizer.calcPHash(screenshot)
+        if (Recognizer.isScreenshotDifferent(screenshotPHash, lastScreenshotPHash) ||
                 !(StateHandler.currentTESLState?.hasValidState() ?: false)) {
-            lastScreenshotDHash = screenshotDHash
+            lastScreenshotPHash = screenshotPHash
             waitingScreenshotChangeWasLogged = false
-            ScreenHandler.process(screenshot)
+            ScreenExecutor.process(screenshot)
             val sps = ELDER_SCROLL_SPS.takeIf { StateHandler.currentTESLState == null } ?: 0.5f
             delay((1000 / sps).toLong())
-            if (!ScreenHandler.screenRecognized) {
+            if (!ScreenExecutor.screenRecognized) {
                 return isTESLegendsScreenActive() || isTESLegendsTrackerWindow() || isTESLegendsTrackerPopupWindow()
             }
         } else if (!waitingScreenshotChangeWasLogged) {

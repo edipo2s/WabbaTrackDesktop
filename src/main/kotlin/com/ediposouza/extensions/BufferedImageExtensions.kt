@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-
 /**
  * Created by Edipo on 19/03/2017.
  */
@@ -76,6 +75,19 @@ fun BufferedImage.getScreenMainModeCrop(): BufferedImage {
     }
 }
 
+fun BufferedImage.getScreenDeckBuilderCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(SCREEN_DECK_BUILDER_X, SCREEN_DECK_BUILDER_Y, SCREEN_DECK_BUILDER_WIDTH, SCREEN_DECK_BUILDER_HEIGHT)
+    }
+}
+
+fun BufferedImage.getScreenDeckBuilderEmptyCrop(): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        return crop(SCREEN_DECK_BUILDER_EMPTY_X, SCREEN_DECK_BUILDER_EMPTY_Y,
+                SCREEN_DECK_BUILDER_EMPTY_WIDTH, SCREEN_DECK_BUILDER_EMPTY_HEIGHT)
+    }
+}
+
 fun BufferedImage.getScreenGameCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
         return crop(SCREEN_GAME_X, SCREEN_GAME_Y, SCREEN_GAME_WIDTH, SCREEN_GAME_HEIGHT)
@@ -128,7 +140,7 @@ fun BufferedImage.getGameLoss2Crop(): BufferedImage {
 
 fun BufferedImage.getGameCardDrawCrop(): BufferedImage {
     with(TESLTracker.referenceConfig) {
-        return crop(GAME_CARD_DRAW_X, GAME_CARD_DRAW_Y, GAME_CARD_DRAW_WIDTH, GAME_CARD_DRAW_HEIGHT)
+        return crop(GAME_CARD_DRAW_X, GAME_CARD_DRAW_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
     }
 }
 
@@ -152,7 +164,7 @@ fun BufferedImage.getGameInitialCardDrawCrop(cardPosition: Int): BufferedImage {
             2 -> CARD_INITIAL_DRAW_SECOND_X
             else -> CARD_INITIAL_DRAW_THIRD_X
         }
-        return crop(cardPositionDrawStartX, CARD_INITIAL_DRAW_Y, CARD_INITIAL_DRAW_WIDTH, CARD_INITIAL_DRAW_HEIGHT)
+        return crop(cardPositionDrawStartX, CARD_INITIAL_DRAW_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
     }
 }
 
@@ -207,7 +219,48 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
             2 -> ARENA_PICK_CARD_SECOND_X
             else -> ARENA_PICK_CARD_THIRD_X
         }
-        return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, ARENA_PICK_CARD_WIDTH, ARENA_PICK_CARD_HEIGHT)
+        return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
+    }
+}
+
+// -- Deck Crops --
+
+fun BufferedImage.getDeckBuilderFirstLineCardCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardX = when (cardPosition) {
+            5 -> DECK_BUILDER_CARD_5_X
+            4 -> DECK_BUILDER_CARD_4_X
+            3 -> DECK_BUILDER_CARD_3_X
+            2 -> DECK_BUILDER_CARD_2_X
+            else -> DECK_BUILDER_CARD_1_X
+        }
+        return crop(cardX, DECK_BUILDER_FIRST_LINE_CARD_Y, DECK_BUILDER_CARD_WIDTH, DECK_BUILDER_CARD_HEIGHT)
+    }
+}
+
+fun BufferedImage.getDeckBuilderSecondLineCardCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardX = when (cardPosition) {
+            5 -> DECK_BUILDER_CARD_5_X
+            4 -> DECK_BUILDER_CARD_4_X
+            3 -> DECK_BUILDER_CARD_3_X
+            2 -> DECK_BUILDER_CARD_2_X
+            else -> DECK_BUILDER_CARD_1_X
+        }
+        return crop(cardX, DECK_BUILDER_SECOND_LINE_CARD_Y, DECK_BUILDER_CARD_WIDTH, DECK_BUILDER_CARD_HEIGHT)
+    }
+}
+
+fun BufferedImage.getDeckBuilderNoneLeftCardCrop(cardPosition: Int): BufferedImage {
+    with(TESLTracker.referenceConfig) {
+        val cardX = when (cardPosition) {
+            5 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_5_X
+            4 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_4_X
+            3 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_3_X
+            2 -> DECK_BUILDER_NONE_LEFT_LINE_CARD_2_X
+            else -> DECK_BUILDER_NONE_LEFT_LINE_CARD_1_X
+        }
+        return crop(cardX, DECK_BUILDER_NONE_LEFT_LINE_CARD_Y, DECK_BUILDER_NONE_LEFT_WIDTH, DECK_BUILDER_NONE_LEFT_HEIGHT)
     }
 }
 

@@ -1,9 +1,8 @@
 package com.ediposouza.state
 
 import com.ediposouza.data.TESLTrackerData
-import com.ediposouza.handler.GameHandler
-import com.ediposouza.handler.GameHandler.processCardDrawProphecy
-import com.ediposouza.handler.StateHandler
+import com.ediposouza.executor.GameExecutor
+import com.ediposouza.executor.GameExecutor.processCardDrawProphecy
 import com.ediposouza.model.*
 import com.ediposouza.ui.DeckTrackerWidget
 import com.ediposouza.util.Logger
@@ -38,7 +37,7 @@ object GameState : StateHandler.TESLState {
     const val cardGenerateLock = "lock"
     const val endMatchLock = "lock"
 
-    val deckTracker by lazy { DeckTrackerWidget() }
+    private val deckTracker by lazy { DeckTrackerWidget() }
     private var deckCardsSlot: List<CardSlot> = listOf()
 
     var threadRunning: Boolean = false
@@ -144,7 +143,7 @@ object GameState : StateHandler.TESLState {
     private fun processCardFirstDraws(screenshot: BufferedImage) {
         launch(CommonPool) {
             if (!firstCardDrawsTracked) {
-                GameHandler.processFirstCardDraws(screenshot).run {
+                GameExecutor.processFirstCardDraws(screenshot).run {
                     if (firstCardDrawsWithoutMulligan != this) {
                         firstCardDraws = this
                     }
@@ -158,7 +157,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processPlayerGoFirst(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processPlayerGoFirst(screenshot)?.run {
+            GameExecutor.processPlayerGoFirst(screenshot)?.run {
                 synchronized(playerGoFirstLock) {
                     if (playerGoFirst == null) {
                         playerGoFirst = this
@@ -171,7 +170,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processPlayerDeck(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processPlayerDeckClass(screenshot)?.run {
+            GameExecutor.processPlayerDeckClass(screenshot)?.run {
                 synchronized(playerDeckClassLock) {
                     if (playerDeckClass == null) {
                         playerDeckClass = this
@@ -184,7 +183,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processPlayerRank(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processPlayerRank(screenshot)?.run {
+            GameExecutor.processPlayerRank(screenshot)?.run {
                 synchronized(playerRankLock) {
                     if (playerRank == null) {
                         playerRank = this
@@ -198,7 +197,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processOpponentDeck(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processOpponentDeckClass(screenshot)?.run {
+            GameExecutor.processOpponentDeckClass(screenshot)?.run {
                 synchronized(opponentDeckClassLock) {
                     if (opponentDeckClass == null) {
                         opponentDeckClass = this
@@ -211,7 +210,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processOpponentRank(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processOpponentRank(screenshot)?.run {
+            GameExecutor.processOpponentRank(screenshot)?.run {
                 synchronized(opponentRankLock) {
                     if (opponentRank == null) {
                         opponentRank = this
@@ -224,7 +223,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processCardGenerate(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processCardGenerated(screenshot)?.run {
+            GameExecutor.processCardGenerated(screenshot)?.run {
                 synchronized(cardGenerateLock) {
                     if (cardGeneratedDetected != this) {
                         cardGeneratedDetected = this
@@ -241,7 +240,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processCardDraw(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processCardDrawProphecy(screenshot)?.run {
+            GameExecutor.processCardDrawProphecy(screenshot)?.run {
                 synchronized(cardDrawProphecyLock) {
                     if (lastCardDraw != this) {
                         lastCardDraw = this
@@ -254,7 +253,7 @@ object GameState : StateHandler.TESLState {
                     }
                 }
             }
-            GameHandler.processCardDraw(screenshot)?.run {
+            GameExecutor.processCardDraw(screenshot)?.run {
                 synchronized(cardDrawLock) {
                     if (lastCardDraw != this) {
                         lastCardDraw = this
@@ -288,7 +287,7 @@ object GameState : StateHandler.TESLState {
 
     private fun processEndMatch(screenshot: BufferedImage) {
         launch(CommonPool) {
-            GameHandler.processMatchEnd(screenshot)?.run {
+            GameExecutor.processMatchEnd(screenshot)?.run {
                 synchronized(endMatchLock) {
                     if (playerGoFirst != null) {
                         val win = this
@@ -311,14 +310,20 @@ object GameState : StateHandler.TESLState {
         }
     }
 
-    private fun showDeckTracker() {
-        if (deckCardsSlot.isNotEmpty() && shouldShowDeckTracker) {
+    fun isDeckTrackerVisible() = deckTracker.isVisible
+
+    fun showDeckTracker(forceShow: Boolean = false) {
+        if (forceShow || (deckCardsSlot.isNotEmpty() && shouldShowDeckTracker)) {
             deckTracker.isVisible = true
         }
     }
 
-    private fun hideDeckTracker() {
+    fun hideDeckTracker() {
         deckTracker.isVisible = false
+    }
+
+    fun trackCardDraw(card: Card) {
+        deckTracker.trackCardDraw(card)
     }
 
     fun saveMatch(win: Boolean) {

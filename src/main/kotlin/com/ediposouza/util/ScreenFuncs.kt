@@ -1,5 +1,6 @@
 package com.ediposouza.util
 
+import com.ediposouza.TESLTracker
 import com.sun.jna.Native
 import com.sun.jna.Platform
 import com.sun.jna.PointerType
@@ -29,28 +30,34 @@ object ScreenFuncs {
     }
 
     fun getActiveWindowTitle(): String {
-        var titleStr: String
-        if (Platform.isWindows()) {
-            val windowText = ByteArray(512)
-            val hwnd = User32.INSTANCE.GetForegroundWindow() // then you can call it!
-            User32.INSTANCE.GetWindowTextA(hwnd, windowText, 512)
-            titleStr = Native.toString(windowText)
-        } else if (Platform.isMac()) {
-            val script = "tell application \"System Events\"\n" +
-                    "	name of application processes whose frontmost is true\n" +
-                    "end tell"
-            val appleScript = ScriptEngineManager().getEngineByName("AppleScript")
-            try {
-                titleStr = appleScript.eval(script).toString()
-            } catch (e: ScriptException) {
-                titleStr = ""
-            }
+        try {
+            var titleStr: String
+            if (Platform.isWindows()) {
+                val windowText = ByteArray(512)
+                val hwnd = User32.INSTANCE.GetForegroundWindow()
+                User32.INSTANCE.GetWindowTextA(hwnd, windowText, 512)
+                titleStr = Native.toString(windowText)
+            } else if (Platform.isMac()) {
+                val script = "tell application \"System Events\"\n" +
+                        "	name of application processes whose frontmost is true\n" +
+                        "end tell"
+                val appleScript = ScriptEngineManager().getEngineByName("AppleScript")
+                try {
+                    titleStr = appleScript.eval(script).toString()
+                } catch (e: ScriptException) {
+                    titleStr = ""
+                }
 
-        } else {
-            titleStr = "Platform is not Support"
-        }
+            } else {
+                titleStr = "Platform is not Support"
+            }
 //        Logger.d(titleStr)
-        return titleStr
+            return titleStr
+        } catch (e: Exception) {
+            Logger.e("Initialization Error")
+            TESLTracker.showMessage("Initialization error, please restart WabbaTrack.")
+        }
+        return ""
     }
 
     fun takeScreenshot(): BufferedImage? {

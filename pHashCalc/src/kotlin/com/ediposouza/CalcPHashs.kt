@@ -17,6 +17,7 @@ object CalcPHashs {
 
     val CROP_FOLDER_ARENA = "Arena"
     val CROP_FOLDER_CARDS = "Cards"
+    val CROP_FOLDER_DECK = "Deck"
     val CROP_FOLDER_GAME = "Game"
     val CROP_FOLDER_SCREENS = "Screens"
 
@@ -32,10 +33,13 @@ object CalcPHashs {
         getDHashFile("/Screens/MainModePratice.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
         getDHashFile("/Screens/MainModePratice2.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenMainModeCrop)
         getDHashFile("/Screens/Game.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenGameCrop)
-        getDHashFile("/Game/CardGenerated.png", CROP_FOLDER_GAME, BufferedImage::getGameCardGenerateCrop)
         getDHashFile("/Screens/ArenaClasses.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaClassesCrop)
         getDHashFile("/Screens/ArenaPicks.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaPicksCrop)
         getDHashFile("/Screens/ArenaDash.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenArenaDashboardCrop)
+        getDHashFile("/Screens/DeckBuilder.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenDeckBuilderCrop)
+        getDHashFile("/Screens/DeckBuilderEmpty.png", CROP_FOLDER_SCREENS, BufferedImage::getScreenDeckBuilderEmptyCrop)
+        getDHashFile("/Deck/CollectionEmpty.png", CROP_FOLDER_DECK) { it.getDeckBuilderFirstLineCardCrop(1) }
+        getDHashFile("/Deck/DeckBuilderNoneLeft.png", CROP_FOLDER_DECK) { it.getDeckBuilderNoneLeftCardCrop(2) }
 
         Logger.d("--Arena Class Select--")
         getDHashFolderFiles("/ArenaClass", CROP_FOLDER_ARENA, BufferedImage::getArenaPickClassCrop)
@@ -47,6 +51,7 @@ object CalcPHashs {
         getDHashFile("/Game/Win2.png", CROP_FOLDER_GAME, BufferedImage::getGameWin2Crop)
         getDHashFile("/Game/Loss.png", CROP_FOLDER_GAME, BufferedImage::getGameLossCrop)
         getDHashFile("/Game/Loss2.png", CROP_FOLDER_GAME, BufferedImage::getGameLoss2Crop)
+        getDHashFile("/Game/CardGenerated.png", CROP_FOLDER_GAME, BufferedImage::getGameCardGenerateCrop)
         getDHashFolderFiles("/Game/PlayerRank", CROP_FOLDER_GAME, BufferedImage::getGameOpponentRankCrop)
         getDHashFolderFiles("/Game/PlayerClass", CROP_FOLDER_GAME, BufferedImage::getGamePlayerClassCrop)
         getDHashFolderFiles("/Game/OpponentClass", CROP_FOLDER_GAME, BufferedImage::getGameOpponentClassCrop)

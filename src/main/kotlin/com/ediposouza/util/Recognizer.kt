@@ -1,10 +1,12 @@
 package com.ediposouza.util
 
-import com.ediposouza.data.DHash
 import com.ediposouza.data.DHashCards
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
 import com.ediposouza.state.ArenaState
+import com.ediposouza.state.CollectionState
 import com.ediposouza.state.GameState
+import com.ediposouza.state.StateHandler
 import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
 import java.awt.image.ColorConvertOp
@@ -29,7 +31,12 @@ object Recognizer {
     }
 
     fun recognizeCardImage(image: BufferedImage): String? {
-        val classSelect = GameState.playerDeckClass ?: ArenaState.classSelect
+        val classSelect = when (StateHandler.currentTESLState) {
+            is CollectionState -> CollectionState.deckClass
+            is GameState -> GameState.playerDeckClass
+            is ArenaState -> ArenaState.classSelect
+            else -> null
+        }
         return classSelect?.let {
             val cardsFromClass = TESLTrackerData.getCardFromClass(it)
             val classPHash = DHashCards.LIST.filter { cardsFromClass.contains(it.value) }
@@ -39,7 +46,7 @@ object Recognizer {
     }
 
     fun recognizeScreenImage(image: BufferedImage): String? {
-        return recognizeImageInMap(image, DHash.SCREENS_LIST)
+        return recognizeImageInMap(image, PHash.SCREENS_LIST)
     }
 
     fun recognizeImageInMap(image: BufferedImage, hashMap: Map<String, String>): String? {
