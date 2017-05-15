@@ -39,7 +39,7 @@ object DeckBuildExecutor {
             TESLTracker.showMessageUnsupportedResolution()
             return
         }
-        TESLTracker.showMessage("Deck build started, you can hit ESC to cancel.")
+//        TESLTracker.showMessage("Deck build started, you can hit ESC to cancel.")
         keyProvider.register(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0)) {
             isRunning = false
             keyProvider.stop()
