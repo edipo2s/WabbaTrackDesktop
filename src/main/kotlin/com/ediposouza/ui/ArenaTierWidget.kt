@@ -111,7 +111,8 @@ class ArenaTierWidget(val pickNumber: Int) : JFrame() {
                 1 -> tierValueFirstPos.x
                 2 -> tierValueSecondPos.x
                 else -> tierValueThirdPos.x
-            }, tierValueFirstPos.y)
+            } + TESLTracker.graphicsDevice.defaultConfiguration.bounds.x,
+                    tierValueFirstPos.y + TESLTracker.graphicsDevice.defaultConfiguration.bounds.y)
 
             cardSize = ImageFuncs.getScreenScaledSize(ARENA_PICK_SELECT_WIDTH, ARENA_PICK_SELECT_HEIGHT)
         }

@@ -204,7 +204,8 @@ class DeckTrackerWidget : JFrame() {
 
         with(TESLTracker.referenceConfig) {
             val deckTrackerPos = ImageFuncs.getScreenScaledPosition(DECK_TRACKER_X, DECK_TRACKER_Y)
-            setLocation(deckTrackerPos.x, deckTrackerPos.y)
+            setLocation(deckTrackerPos.x + TESLTracker.graphicsDevice.defaultConfiguration.bounds.x,
+                    deckTrackerPos.y + TESLTracker.graphicsDevice.defaultConfiguration.bounds.y)
             val screenHeightUseful = (TESLTracker.screenSize.height * 1.5).toInt()
             deckTrackerSize = Dimension(ImageFuncs.getScreenScaledSize(DECK_TRACKER_WIDTH, 0).width, screenHeightUseful)
             size = deckTrackerSize

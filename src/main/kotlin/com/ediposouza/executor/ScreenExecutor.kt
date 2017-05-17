@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage
  */
 object ScreenExecutor {
 
-    const val ARENA_GAME_STARTED_PREF = "ArenaGameStarted"
+    private const val ARENA_GAME_STARTED_PREF = "ArenaGameStarted"
 
     var screenRecognized = false
     var lastScreenRecognized = ""

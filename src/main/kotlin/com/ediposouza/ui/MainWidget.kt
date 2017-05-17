@@ -46,7 +46,8 @@ class MainWidget : JFrame() {
         with(TESLTracker.referenceConfig) {
             val mainPos = ImageFuncs.getScreenScaledPosition(APP_MAIN_X, APP_MAIN_Y)
             mainSize = ImageFuncs.getScreenScaledSize(APP_MAIN_WIDTH, APP_MAIN_HEIGHT)
-            setLocation(mainPos.x, mainPos.y)
+            setLocation(mainPos.x + TESLTracker.graphicsDevice.defaultConfiguration.bounds.x,
+                    mainPos.y + TESLTracker.graphicsDevice.defaultConfiguration.bounds.y)
         }
 
         contentPane.add(JFXPanel().apply {
