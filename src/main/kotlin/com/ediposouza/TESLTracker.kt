@@ -213,6 +213,7 @@ class TESLTracker : App(MainStageView::class) {
                     else -> {
                         usingSupportedResolution = false
                         showMessageUnsupportedResolution()
+                        Mixpanel.postEventUnsupportedScreenResolution("${screenSize.width}x${screenSize.height}")
                         ReferenceConfig1920x1080()
                     }
                 }

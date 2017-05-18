@@ -60,6 +60,7 @@ object Mixpanel {
     fun postEventShowStatistics() = postEvent("ShowStatistics")
     fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
     fun postEventGameDetected() = postEvent("GameDetected")
+    fun postEventUnsupportedScreenResolution(resolution: String) = postEvent("UnsupportedScreenResolution", mutableMapOf("resolution" to resolution))
 
     fun postEventDeckImported(deckName: String) = postEvent("DeckImported", mutableMapOf("name" to deckName))
 
