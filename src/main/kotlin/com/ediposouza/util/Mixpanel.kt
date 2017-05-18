@@ -59,6 +59,7 @@ object Mixpanel {
     fun postEventDeckTrackerHide() = postEvent("DeckTrackerHide")
     fun postEventShowStatistics() = postEvent("ShowStatistics")
     fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
+    fun postEventGameDetected() = postEvent("GameDetected")
 
     fun postEventDeckImported(deckName: String) = postEvent("DeckImported", mutableMapOf("name" to deckName))
 

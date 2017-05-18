@@ -4,8 +4,15 @@ import com.ediposouza.ui.MainWidget
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import javafx.embed.swing.SwingFXUtils
+import javafx.scene.Group
+import javafx.scene.Scene
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.stage.Modality
+import javafx.stage.Stage
+import javafx.stage.StageStyle
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.IOUtils
 import tornadofx.Rest
@@ -15,6 +22,7 @@ import java.awt.PopupMenu
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.util.*
 import javax.imageio.ImageIO
 
 fun String?.toIntSafely() = this?.toIntOrNull() ?: 0
@@ -109,4 +117,31 @@ fun File.getMD5(): String? {
 fun Rest.Response.asJson(): JsonObject {
     val text = text() ?: "{}"
     return JsonParser().parse(text.takeIf { text != "null" } ?: "{}").asJsonObject
+}
+
+fun alertAlwaysOnTop(type: Alert.AlertType,
+                     header: String,
+                     content: String,
+                     vararg buttons: ButtonType,
+                     actionFn: (Alert.(ButtonType) -> Unit)? = null): Alert {
+
+    val alert = Alert(type, content, *buttons)
+    alert.headerText = header
+    with(alert.dialogPane) {
+        scene.root = Group()
+        Stage(StageStyle.UTILITY).apply {
+            for (buttonType in buttonTypes) {
+                lookupButton(buttonType).setOnMouseClicked {
+                    this@with.userData = buttonType
+                    close()
+                }
+            }
+            initModality(Modality.APPLICATION_MODAL)
+            isAlwaysOnTop = true
+            scene = Scene(this@with)
+        }.showAndWait()
+        val button: Optional<ButtonType> = Optional.ofNullable(userData as? ButtonType)
+        button.ifPresent { actionFn?.invoke(alert, button.get()) }
+    }
+    return alert
 }

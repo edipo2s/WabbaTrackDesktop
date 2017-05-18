@@ -8,6 +8,7 @@ import com.ediposouza.executor.DeckImportExecutor
 import com.ediposouza.executor.ScreenExecutor
 import com.ediposouza.extensions.addMenu
 import com.ediposouza.extensions.addMenuItem
+import com.ediposouza.extensions.alertAlwaysOnTop
 import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.model.*
 import com.ediposouza.resolution.ReferenceConfig
@@ -206,6 +207,7 @@ class TESLTracker : App(MainStageView::class) {
                 graphicsDevice = it
                 screenSize = Dimension(it.displayMode.width, it.displayMode.height)
                 referenceConfig = when {
+                    screenSize.width == 1360 && screenSize.height == 768 -> ReferenceConfig1366x768()
                     screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
                     screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
                     else -> {
@@ -475,7 +477,7 @@ class TESLTracker : App(MainStageView::class) {
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {
-                            alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
+                            alertAlwaysOnTop(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
                                     ButtonType.YES, ButtonType.NO) { bt ->
                                 if (bt == ButtonType.YES) {
                                     TESLTrackerData.deleteDecks(deck) {
@@ -522,7 +524,7 @@ class TESLTracker : App(MainStageView::class) {
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {
-                            alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
+                            alertAlwaysOnTop(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
                                     ButtonType.YES, ButtonType.NO) { bt ->
                                 if (bt == ButtonType.YES) {
                                     decksImported.remove(deck)
@@ -610,6 +612,7 @@ class TESLTracker : App(MainStageView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
+                Mixpanel.postEventGameDetected()
                 StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")

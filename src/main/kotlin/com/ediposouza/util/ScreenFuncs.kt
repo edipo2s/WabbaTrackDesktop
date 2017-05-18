@@ -1,24 +1,19 @@
 package com.ediposouza.util
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.extensions.alertAlwaysOnTop
 import com.ediposouza.ui.MonitorNumberWidget
 import com.sun.jna.Native
 import com.sun.jna.Platform
 import com.sun.jna.PointerType
 import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.win32.StdCallLibrary
-import javafx.scene.Group
-import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
-import javafx.stage.Modality
-import javafx.stage.Stage
-import javafx.stage.StageStyle
 import java.awt.GraphicsDevice
 import java.awt.GraphicsEnvironment
 import java.awt.Robot
 import java.awt.image.BufferedImage
-import java.util.*
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
@@ -100,34 +95,14 @@ object ScreenFuncs {
             return
         }
         val graphicsDeviceLast = graphicDevices.last()
-        val monitor1Widget = MonitorNumberWidget(1, graphicsDeviceFirst).apply {
-            isVisible = true
-        }
-        val monitor2Widget = MonitorNumberWidget(2, graphicsDeviceLast).apply {
-            isVisible = true
-        }
-        val alert = Alert(Alert.AlertType.CONFIRMATION, "In which monitor you will play Elder Scroll Legends?",
-                ButtonType("1"), ButtonType("2"))
-        alert.title = "Dual Monitor"
-        val root = alert.dialogPane
-        root.scene.root = Group()
-        Stage(StageStyle.UTILITY).apply {
-            for (buttonType in root.buttonTypes) {
-                root.lookupButton(buttonType).setOnMouseClicked {
-                    root.userData = buttonType
-                    close()
-                }
-            }
-            initModality(Modality.APPLICATION_MODAL)
-            isAlwaysOnTop = true
-            scene = Scene(root)
-        }.showAndWait()
-        val button: Optional<ButtonType> = Optional.ofNullable(root.userData as ButtonType)
-        monitor1Widget.isVisible = false
-        monitor2Widget.isVisible = false
-        if (button.isPresent) {
+        val monitor1Widget = MonitorNumberWidget(1, graphicsDeviceFirst).apply { isVisible = true }
+        val monitor2Widget = MonitorNumberWidget(2, graphicsDeviceLast).apply { isVisible = true }
+        alertAlwaysOnTop(Alert.AlertType.CONFIRMATION, "Dual Monitor", "In which monitor you will play Elder Scroll Legends?",
+                ButtonType("1"), ButtonType("2")) { button ->
+            monitor1Widget.isVisible = false
+            monitor2Widget.isVisible = false
             TESLTracker.preferences.putInt(GAME_MONITORS_PREF, graphicDevices.size)
-            if (button.get().text == "1") {
+            if (button.text == "1") {
                 TESLTracker.preferences.putInt(GAME_MONITOR_SELECTED_PREF, 0)
                 onSuccess(graphicsDeviceFirst)
             } else {
