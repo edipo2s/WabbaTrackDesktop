@@ -74,9 +74,7 @@ object ScreenExecutor {
         launch(CommonPool) {
             if (screenshot.getScreenArenaClassesCrop().matchScreen(PHash.SCREEN_ARENA_CLASSES)) {
                 Logger.i("Arena Classes Screen Detected!", true)
-                StateHandler.currentTESLState = ArenaState.apply {
-                    pickNumber = 1
-                }
+                ArenaState.resetState()
                 screenRecognized = true
             }
         }
@@ -86,6 +84,9 @@ object ScreenExecutor {
                 StateHandler.currentTESLState = ArenaState.apply {
                     if (TESLTracker.preferences.getBoolean(ARENA_GAME_STARTED_PREF, false)) {
                         TESLTracker.preferences.remove(ARENA_GAME_STARTED_PREF)
+                        pickNumber = 1
+                    }
+                    if (pickNumber == 0) {
                         pickNumber = 1
                     }
                 }

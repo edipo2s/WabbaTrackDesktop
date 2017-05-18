@@ -491,7 +491,7 @@ class DeckTrackerWidget : JFrame() {
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                 }
                 setOnMouseEntered {
-                    val cardPosX = deckTrackerWidget.location.x
+                    val cardPosX = deckTrackerWidget.location.x - TESLTracker.graphicsDevice.defaultConfiguration.bounds.x
                     val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
                     cardWidget = CardWidget(item.card, cardPosX, cardPosY)
                     cardWidget?.isVisible = true
