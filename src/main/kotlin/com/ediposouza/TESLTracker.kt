@@ -310,9 +310,10 @@ class TESLTracker : App(MainStageView::class) {
                     Mixpanel.postEventAndroidTESLegendsTracker()
                 }
                 addMenu("Settings") {
-                    addMenuItem("Change default game monitor") {
+                    addMenuItem("Clear default game monitor") {
                         ScreenFuncs.clearGameMonitorPref()
                         showMessage("Default monitor setting clear. Restart $APP_NAME to choose default monitor")
+                        Mixpanel.postEventDualMonitorClearConfig()
                     }
                 }
                 addMenuItem("About") {
@@ -325,7 +326,7 @@ class TESLTracker : App(MainStageView::class) {
                     doExit()
                 }
                 if (File(DEBUG_FILE_NAME).exists()) {
-                    addMenu("Test") {
+                    addMenu("Tests") {
                         addMenuItem("Show Log") {
                             Platform.runLater {
                                 Stage().apply {
@@ -596,9 +597,9 @@ class TESLTracker : App(MainStageView::class) {
     }
 
     private fun checkUpdate() {
-        TESLTrackerData.checkForUpdate { lastVersion ->
+        TESLTrackerData.checkForUpdate { lastVersion, changeLog ->
             SwingUtilities.invokeLater {
-                trayIcon?.displayMessage(APP_NAME, "New version $lastVersion detected, downloading...", TrayIcon.MessageType.NONE)
+                trayIcon?.displayMessage(APP_NAME, "New version $lastVersion detected, downloading...\n$changeLog", TrayIcon.MessageType.NONE)
             }
         }
     }

@@ -32,17 +32,31 @@ object ScreenFuncs {
         fun GetWindowTextA(hWnd: PointerType, lpString: ByteArray, nMaxCount: Int): Int
 
         companion object {
-            val INSTANCE = Native.loadLibrary("user32", User32::class.java)
+            val INSTANCE by lazy { loadUser32() }
+
+            private fun loadUser32(retry: Int = 0): User32? {
+                return try {
+                    Native.loadLibrary("user32", User32::class.java)
+                } catch (e: Exception) {
+                    Logger.e(e)
+                    if (retry < 3) {
+                        Thread.sleep(250)
+                        loadUser32(retry + 1)
+                    } else {
+                        null
+                    }
+                }
+            }
         }
     }
 
     fun getActiveWindowTitle(): String {
-        try {
+        User32.INSTANCE?.let {
             var titleStr: String
             if (Platform.isWindows()) {
                 val windowText = ByteArray(512)
-                val hwnd = User32.INSTANCE.GetForegroundWindow()
-                User32.INSTANCE.GetWindowTextA(hwnd, windowText, 512)
+                val hwnd = it.GetForegroundWindow()
+                it.GetWindowTextA(hwnd, windowText, 512)
                 titleStr = Native.toString(windowText)
             } else if (Platform.isMac()) {
                 val script = "tell application \"System Events\"\n" +
@@ -54,16 +68,14 @@ object ScreenFuncs {
                 } catch (e: ScriptException) {
                     titleStr = ""
                 }
-
             } else {
                 titleStr = "Platform is not Support"
             }
 //        Logger.d(titleStr)
             return titleStr
-        } catch (e: Exception) {
-            Logger.e("Initialization Error")
-            TESLTracker.showMessage("Initialization error, please restart WabbaTrack.")
         }
+        Logger.e("Initialization Error")
+        TESLTracker.showMessage("Initialization error, please restart WabbaTrack.")
         return ""
     }
 
@@ -89,6 +101,7 @@ object ScreenFuncs {
             onSuccess(graphicsDeviceFirst)
             return
         }
+        Mixpanel.postEventDualMonitorDetected()
         if (TESLTracker.preferences.getInt(GAME_MONITORS_PREF, 0) == graphicDevices.size &&
                 TESLTracker.preferences.keys().contains(GAME_MONITORS_PREF)) {
             onSuccess(graphicDevices[TESLTracker.preferences.getInt(GAME_MONITOR_SELECTED_PREF, 0)])

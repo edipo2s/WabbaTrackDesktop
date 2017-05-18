@@ -320,7 +320,7 @@ object TESLTrackerData {
         }
     }
 
-    fun checkForUpdate(retry: Int = 0, onSuccess: (String) -> Unit) {
+    fun checkForUpdate(retry: Int = 0, onSuccess: (String, String) -> Unit) {
         with(firebaseDatabaseAPI.get("$NODE_WABBATRACK.json").one()) {
             val lastVersion = entries.find { it.key == "lastVersion" }?.value.toString().replace("\"", "")
             if (lastVersion == TESLTracker.APP_VERSION) {
@@ -338,7 +338,8 @@ object TESLTrackerData {
                 }
             }
             Logger.i("New version detect, downloading version $lastVersion")
-            onSuccess(lastVersion)
+            val changeLog = entries.find { it.key == "changeLog" }?.value.toString().replace("\"", "")
+            onSuccess(lastVersion, changeLog)
             val url = entries.find { it.key == "url" }?.value.toString()
             val updaterUrl = entries.find { it.key == "updater" }?.value.toString()
             downloadFile(updaterUrl, UPDATER_FILE_NAME) {
