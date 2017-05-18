@@ -260,7 +260,8 @@ object TESLTrackerData {
 
     private fun saveMatchAnonymous(newMatch: Match, retry: Int = 0) {
         val matchIdUTC = LocalDateTime.now(ZoneOffset.UTC).toString().replace(".", "_")
-        val anonymousMatchesPath = "$NODE_WABBATRACK/$NODE_MATCHES/$matchIdUTC"
+        val modeName = newMatch.mode.name.toLowerCase()
+        val anonymousMatchesPath = "$NODE_WABBATRACK/$NODE_MATCHES/$modeName/${LocalDate.now()}/$matchIdUTC"
         val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
         try {
             firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$anonymousMatchesPath.json",
