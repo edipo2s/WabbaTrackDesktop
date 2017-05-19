@@ -219,7 +219,7 @@ object DeckBuildExecutor {
 
     private fun mouseMove(x: ReferenceConfig.() -> Int, y: ReferenceConfig.() -> Int) {
         with(TESLTracker.referenceConfig) {
-            robot.mouseMove(x(), y())
+            robot.mouseMove(x() + TESLTracker.graphicsDevice.defaultConfiguration.bounds.x, y())
         }
     }
 

@@ -8,11 +8,13 @@ import com.ediposouza.model.Deck
 import com.ediposouza.model.DeckClass
 import com.ediposouza.model.DeckType
 import com.ediposouza.util.Logger
+import javafx.scene.control.ButtonType
 import javafx.scene.control.TextInputDialog
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.javafx.JavaFx
 import kotlinx.coroutines.experimental.launch
 import org.jsoup.Jsoup
+import java.util.*
 
 /**
  * Created by ediposouza on 12/05/17.
@@ -23,16 +25,31 @@ object DeckImportExecutor {
 
     fun importDeckFromLegendsClick(onSuccess: (Deck) -> Unit) {
         launch(JavaFx) {
-            val result = TextInputDialog("").apply {
+            val alert = TextInputDialog("").apply {
                 title = "${TESLTracker.Companion.APP_NAME} - Importing deck from Legends-Decks"
                 contentText = "Url:"
-            }.showAndWait()
-            if (result.isPresent) {
-                val url = result.get()
-                loading.show()
-                launch(CommonPool) {
-                    importFromLegendsDeck(url) {
-                        onSuccess(it)
+            }
+            with(alert.dialogPane) {
+                scene.root = javafx.scene.Group()
+                javafx.stage.Stage(javafx.stage.StageStyle.UTILITY).apply {
+                    for (buttonType in buttonTypes) {
+                        lookupButton(buttonType).setOnMouseClicked {
+                            this@with.userData = buttonType
+                            close()
+                        }
+                    }
+                    initModality(javafx.stage.Modality.APPLICATION_MODAL)
+                    isAlwaysOnTop = true
+                    scene = javafx.scene.Scene(this@with)
+                }.showAndWait()
+                val button: Optional<ButtonType> = java.util.Optional.ofNullable(userData as? ButtonType)
+                if (button.isPresent && button.get() == ButtonType.OK) {
+                    val url = alert.editor.characters.toString()
+                    loading.show()
+                    launch(CommonPool) {
+                        importFromLegendsDeck(url) {
+                            onSuccess(it)
+                        }
                     }
                 }
             }

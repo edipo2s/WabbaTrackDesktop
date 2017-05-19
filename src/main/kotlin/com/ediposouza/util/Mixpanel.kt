@@ -60,6 +60,11 @@ object Mixpanel {
     fun postEventShowStatistics() = postEvent("ShowStatistics")
     fun postEventAndroidTESLegendsTracker() = postEvent("AndroidTESLegendsTracker")
 
+    fun postEventGameDetected() = postEvent("GameDetected")
+    fun postEventDualMonitorDetected() = postEvent("DualMonitorDetected")
+    fun postEventDualMonitorClearConfig() = postEvent("DualMonitorClearConfig")
+    fun postEventUnsupportedScreenResolution(resolution: String) = postEvent("UnsupportedScreenResolution", mutableMapOf("resolution" to resolution))
+
     fun postEventDeckImported(deckName: String) = postEvent("DeckImported", mutableMapOf("name" to deckName))
 
     fun postEventShowDeckTrackerFromMyDecks(deckName: String) {
@@ -68,12 +73,14 @@ object Mixpanel {
                 "mode" to "MyDecks"
         ))
     }
+
     fun postEventShowDeckTrackerFromImportedDecks(deckName: String) {
         postEvent("ShowDeckTracker", mutableMapOf(
                 "name" to deckName,
                 "mode" to "ImportedDecks"
         ))
     }
+
     fun postEventShowDeckTrackerFromArenaDeck() = postEvent("ShowDeckTracker", mutableMapOf("mode" to "ArenaDeck"))
 
     fun postEventArenaStart(cls: DeckClass) = postEvent("ArenaStart", mutableMapOf("Cls" to cls.name))
@@ -109,14 +116,18 @@ object Mixpanel {
 
     private fun postEvent(eventName: String, eventProps: MutableMap<String, String> = mutableMapOf()) {
         launch(CommonPool) {
-            val userID = TESLTrackerAuth.userUuid ?: GUEST
-            val pcID = TESLTrackerAuth.userUuid ?: SERIAL
-            val delivery = ClientDelivery().apply {
-                addMessage(messageBuilder.event(userID, eventName, JSONObject(eventProps.apply {
-                    put("pcId", pcID)
-                })))
+            try {
+                val userID = TESLTrackerAuth.userUuid ?: GUEST
+                val pcID = TESLTrackerAuth.userUuid ?: SERIAL
+                val delivery = ClientDelivery().apply {
+                    addMessage(messageBuilder.event(userID, eventName, JSONObject(eventProps.apply {
+                        put("pcId", pcID)
+                    })))
+                }
+                mixpanelAPI.deliver(delivery)
+            } catch (e: Exception) {
+                Logger.e(e)
             }
-            mixpanelAPI.deliver(delivery)
         }
     }
 

@@ -8,9 +8,11 @@ import com.ediposouza.executor.DeckImportExecutor
 import com.ediposouza.executor.ScreenExecutor
 import com.ediposouza.extensions.addMenu
 import com.ediposouza.extensions.addMenuItem
+import com.ediposouza.extensions.alertAlwaysOnTop
 import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.model.*
 import com.ediposouza.resolution.ReferenceConfig
+import com.ediposouza.resolution.ReferenceConfig1360x768
 import com.ediposouza.resolution.ReferenceConfig1366x768
 import com.ediposouza.resolution.ReferenceConfig1920x1080
 import com.ediposouza.state.ArenaState
@@ -49,6 +51,7 @@ import java.io.FileWriter
 import java.io.InputStream
 import java.net.URI
 import java.net.URLDecoder
+import java.util.prefs.Preferences
 import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
 
@@ -60,14 +63,16 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.2.0"
+        val APP_VERSION = "0.2.1"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
+        val preferences: Preferences by lazy { Preferences.userNodeForPackage(TESLTracker::class.java) }
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
         var usingSupportedResolution = true
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
-        val screenSize: Dimension by lazy { Toolkit.getDefaultToolkit().screenSize }
+        lateinit var graphicsDevice: GraphicsDevice
+        lateinit var screenSize: Dimension
 
         val iconName: String = "/ic_legend.png".takeIf { com.sun.jna.Platform.isWindows() } ?: "/ic_legend_osx.png"
         val jarPath: String = URLDecoder.decode(TESLTracker::class.java.protectionDomain.codeSource.location.file, "UTF-8")
@@ -199,13 +204,20 @@ class TESLTracker : App(MainStageView::class) {
         super.start(stage.apply {
             initStyle(StageStyle.TRANSPARENT)
             isAlwaysOnTop = true
-            referenceConfig = when {
-                screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
-                screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
-                else -> {
-                    usingSupportedResolution = false
-                    showMessageUnsupportedResolution()
-                    ReferenceConfig1920x1080()
+            ScreenFuncs.getGameMonitor {
+                graphicsDevice = it
+                screenSize = Dimension(it.displayMode.width, it.displayMode.height)
+                referenceConfig = when {
+                    screenSize.width == 1360 && screenSize.height == 768 -> ReferenceConfig1360x768()
+                    screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
+                    screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
+                    else -> {
+                        usingSupportedResolution = false
+                        Logger.d("Using unsupported resolution: ${screenSize.width}x${screenSize.height}")
+                        showMessageUnsupportedResolution()
+                        Mixpanel.postEventUnsupportedScreenResolution("${screenSize.width}x${screenSize.height}")
+                        ReferenceConfig1920x1080()
+                    }
                 }
             }
             with(TESLTracker.referenceConfig) {
@@ -299,6 +311,13 @@ class TESLTracker : App(MainStageView::class) {
                     Desktop.getDesktop().browse(URI(url))
                     Mixpanel.postEventAndroidTESLegendsTracker()
                 }
+                addMenu("Settings") {
+                    addMenuItem("Clear default game monitor") {
+                        ScreenFuncs.clearGameMonitorPref()
+                        showMessage("Default monitor setting clear. Restart $APP_NAME to choose default monitor")
+                        Mixpanel.postEventDualMonitorClearConfig()
+                    }
+                }
                 addMenuItem("About") {
                     Platform.runLater {
                         alert(Alert.AlertType.INFORMATION, "About", "$APP_NAME $APP_VERSION \n\nSpecial thanks:\n" +
@@ -309,7 +328,7 @@ class TESLTracker : App(MainStageView::class) {
                     doExit()
                 }
                 if (File(DEBUG_FILE_NAME).exists()) {
-                    addMenu("Test") {
+                    addMenu("Tests") {
                         addMenuItem("Show Log") {
                             Platform.runLater {
                                 Stage().apply {
@@ -319,8 +338,8 @@ class TESLTracker : App(MainStageView::class) {
                                     title = "$APP_NAME Logs"
                                     height = 200.0
                                     width = 180.0
-                                    x = screenSize.width - width - 10.0
-                                    y = screenSize.height - height
+                                    x = screenSize.width - width - 10.0 + TESLTracker.graphicsDevice.defaultConfiguration.bounds.x
+                                    y = screenSize.height - height + TESLTracker.graphicsDevice.defaultConfiguration.bounds.y
                                 }.show()
                             }
                         }
@@ -462,7 +481,7 @@ class TESLTracker : App(MainStageView::class) {
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {
-                            alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
+                            alertAlwaysOnTop(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
                                     ButtonType.YES, ButtonType.NO) { bt ->
                                 if (bt == ButtonType.YES) {
                                     TESLTrackerData.deleteDecks(deck) {
@@ -509,7 +528,7 @@ class TESLTracker : App(MainStageView::class) {
                     }
                     addMenuItem("Delete") {
                         Platform.runLater {
-                            alert(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
+                            alertAlwaysOnTop(Alert.AlertType.CONFIRMATION, "Are you sure?", "Delete ${deck.name}",
                                     ButtonType.YES, ButtonType.NO) { bt ->
                                 if (bt == ButtonType.YES) {
                                     decksImported.remove(deck)
@@ -580,9 +599,9 @@ class TESLTracker : App(MainStageView::class) {
     }
 
     private fun checkUpdate() {
-        TESLTrackerData.checkForUpdate { lastVersion ->
+        TESLTrackerData.checkForUpdate { lastVersion, changeLog ->
             SwingUtilities.invokeLater {
-                trayIcon?.displayMessage(APP_NAME, "New version $lastVersion detected, downloading...", TrayIcon.MessageType.NONE)
+                trayIcon?.displayMessage(APP_NAME, "New version $lastVersion detected, downloading...\n$changeLog", TrayIcon.MessageType.NONE)
             }
         }
     }
@@ -597,6 +616,7 @@ class TESLTracker : App(MainStageView::class) {
         while (true) {
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
+                Mixpanel.postEventGameDetected()
                 StateHandler.currentTESLState?.onResume()
                 startElderScrollRecognition()
                 Logger.i("Waiting Elder scroll legends..")

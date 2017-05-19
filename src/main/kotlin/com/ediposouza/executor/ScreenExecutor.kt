@@ -1,5 +1,6 @@
 package com.ediposouza.executor
 
+import com.ediposouza.TESLTracker
 import com.ediposouza.data.PHash
 import com.ediposouza.extensions.*
 import com.ediposouza.model.MatchMode
@@ -16,6 +17,8 @@ import java.awt.image.BufferedImage
  * Created by Edipo on 18/03/2017.
  */
 object ScreenExecutor {
+
+    private const val ARENA_GAME_STARTED_PREF = "ArenaGameStarted"
 
     var screenRecognized = false
     var lastScreenRecognized = ""
@@ -59,7 +62,11 @@ object ScreenExecutor {
         launch(CommonPool) {
             if (screenshot.getScreenGameCrop().matchScreen(PHash.SCREEN_GAME)) {
                 Logger.i("Game Screen Detected!", true)
-                StateHandler.currentTESLState = GameState
+                StateHandler.currentTESLState = GameState.apply {
+                    if (matchMode == MatchMode.ARENA) {
+                        TESLTracker.preferences.putBoolean(ARENA_GAME_STARTED_PREF, true)
+                    }
+                }
                 screenRecognized = true
             }
         }
@@ -67,16 +74,22 @@ object ScreenExecutor {
         launch(CommonPool) {
             if (screenshot.getScreenArenaClassesCrop().matchScreen(PHash.SCREEN_ARENA_CLASSES)) {
                 Logger.i("Arena Classes Screen Detected!", true)
-                StateHandler.currentTESLState = ArenaState.apply {
-                    pickNumber = 1
-                }
+                ArenaState.resetState()
                 screenRecognized = true
             }
         }
         launch(CommonPool) {
             if (screenshot.getScreenArenaPicksCrop().matchScreen(PHash.SCREEN_ARENA_PICKS)) {
                 Logger.i("Arena Picks Screen Detected!", true)
-                StateHandler.currentTESLState = ArenaState
+                StateHandler.currentTESLState = ArenaState.apply {
+                    if (TESLTracker.preferences.getBoolean(ARENA_GAME_STARTED_PREF, false)) {
+                        TESLTracker.preferences.remove(ARENA_GAME_STARTED_PREF)
+                        pickNumber = 1
+                    }
+                    if (pickNumber == 0) {
+                        pickNumber = 1
+                    }
+                }
                 screenRecognized = true
             }
         }
