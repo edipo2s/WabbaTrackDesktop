@@ -114,13 +114,13 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
 
     override val GAME_PLAYER_FIRST_HEIGHT = 72
     override val GAME_PLAYER_FIRST_WIDTH = 78
-    override val GAME_PLAYER_FIRST_X = 1362
-    override val GAME_PLAYER_FIRST_Y = 773
+    override val GAME_PLAYER_FIRST_X = 1294
+    override val GAME_PLAYER_FIRST_Y = 160
 
     override val GAME_PLAYER_SECOND_HEIGHT = 74
     override val GAME_PLAYER_SECOND_WIDTH = 76
-    override val GAME_PLAYER_SECOND_X = 1294
-    override val GAME_PLAYER_SECOND_Y = 160
+    override val GAME_PLAYER_SECOND_X = 1362
+    override val GAME_PLAYER_SECOND_Y = 773
 
     override val GAME_PLAYER_RANK_HEIGHT = 62
     override val GAME_PLAYER_RANK_WIDTH = 50

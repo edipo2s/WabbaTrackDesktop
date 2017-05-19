@@ -1,10 +1,10 @@
-package com.ediposouza
+package com.ediposouza.tests
 
-import com.ediposouza.data.DHashCards
+import com.ediposouza.TESLTracker
 import com.ediposouza.data.PHash
 import com.ediposouza.extensions.*
 import com.ediposouza.resolution.ReferenceConfig1366x768
-import com.ediposouza.util.BaseRecognizeTests
+import com.ediposouza.util.BaseResolutionTests
 import com.ediposouza.util.Recognizer
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -14,7 +14,17 @@ import java.awt.image.BufferedImage
 /**
  * Created by ediposouza on 06/03/17.
  */
-class Tests1366x768 : BaseRecognizeTests() {
+class Tests1366x768 : BaseResolutionTests() {
+
+    override val initialCardsDraw1 = "elusiveschemer"
+    override val initialCardsDraw2 = "blacksapprotector"
+    override val initialCardsDraw3 = "blacksapprotector"
+    override val gameCardDraw = "quinrawlburglar"
+    override val gameCardDrawProphecy = "blacksapprotector"
+
+    override val arenaPicks1 = "giantsnake"
+    override val arenaPicks2 = "spiderlair"
+    override val arenaPicks3 = "brilliantexperiment"
 
     @Before
     fun setUp() {
@@ -22,46 +32,7 @@ class Tests1366x768 : BaseRecognizeTests() {
     }
 
     @Test
-    fun testScreenMain() {
-        recognizeScreen("ScreenMain.png", PHash.SCREEN_MAIN, BufferedImage::getScreenMainCrop)
-    }
-
-    @Test
-    fun testScreenMainMode() {
-        recognizeScreen("ScreenMainModeCasual.png", PHash.SCREEN_MAIN_MODE_CASUAL, BufferedImage::getScreenMainModeCrop)
-        recognizeScreen("ScreenMainModeRanked.png", PHash.SCREEN_MAIN_MODE_RANKED, BufferedImage::getScreenMainModeCrop)
-        recognizeScreen("ScreenMainModePratice.png", PHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
-        recognizeScreen("ScreenMainModePratice2.png", PHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
-    }
-
-    @Test
-    fun testScreenDeckBuilder() {
-        recognizeScreen("ScreenDeckBuilderEmpty.png", PHash.SCREEN_DECK_BUILDER, BufferedImage::getScreenDeckBuilderCrop)
-        recognizeScreen("ScreenDeckBuilderEmpty.png", PHash.SCREEN_DECK_BUILDER_EMPTY, BufferedImage::getScreenDeckBuilderEmptyCrop)
-    }
-
-    @Test
-    fun testScreenGame() {
-        recognizeScreen("Game/PlayFirst.png", PHash.SCREEN_GAME, BufferedImage::getScreenGameCrop)
-    }
-
-    @Test
-    fun testScreenArenaClasses() {
-        recognizeScreen("ScreenArenaClasses.png", PHash.SCREEN_ARENA_CLASSES, BufferedImage::getScreenArenaClassesCrop)
-    }
-
-    @Test
-    fun testScreenArenaPicks() {
-        recognizeScreen("ScreenArenaPicks.png", PHash.SCREEN_ARENA_PICKS, BufferedImage::getScreenArenaPicksCrop)
-    }
-
-    @Test
-    fun testScreenArenaDash() {
-        recognizeScreen("ScreenArenaDash.png", PHash.SCREEN_ARENA_DASHBOARD, BufferedImage::getScreenArenaDashboardCrop)
-    }
-
-    @Test
-    fun testArenaPickClass() {
+    override fun testArenaPickClass() {
         recognizeArenaPickClass("ArenaClass/PickArcher.png", "Archer")
         recognizeArenaPickClass("ArenaClass/PickAssassin.png", "Assassin")
         recognizeArenaPickClass("ArenaClass/PickBattlemage.png", "Battlemage")
@@ -74,29 +45,10 @@ class Tests1366x768 : BaseRecognizeTests() {
         recognizeArenaPickClass("ArenaClass/PickWarrior.png", "Warrior")
     }
 
-    private fun recognizeScreen(testFileName: String, screen: String?, cropFun: (BufferedImage) -> BufferedImage?) {
-        cropFun(getFileImage(testFileName))?.apply {
-            assertThat(recognizeImage(this, PHash.SCREENS_LIST)).isEqualTo(screen)
-        }
-    }
-
-    private fun recognizeArenaPickClass(testFileName: String, cls: String) {
-        val croppedImage = getFileImage(testFileName).getArenaPickClassCrop()
-        assertThat(recognizeImage(croppedImage, PHash.CLASS_PICK_LIST)).isEqualTo(cls)
-    }
-
     // -- Game Tests --
 
     @Test
-    fun testRing() {
-        var croppedImage = getFileImage("Game/PlayFirst.png").getGamePlayerFirstCrop()
-        assertThat(recognizeImage(croppedImage, PHash.GAME_ITEMS_LIST)).isEqualTo(PHash.PLAYER_GAME_FIRST)
-        croppedImage = getFileImage("Game/PlaySecond.png").getGamePlayerSecondCrop()
-        assertThat(recognizeImage(croppedImage, PHash.GAME_ITEMS_LIST)).isEqualTo(PHash.PLAYER_GAME_SECOND)
-    }
-
-    @Test
-    fun testResult() {
+    override fun testResult() {
         var croppedImage = getFileImage("Game/win.png").getGameWinCrop()
         assertThat(recognizeImage(croppedImage, PHash.GAME_ITEMS_LIST)).isEqualTo(PHash.GAME_WIN)
         croppedImage = getFileImage("Game/win2.png").getGameWin2Crop()
@@ -108,29 +60,7 @@ class Tests1366x768 : BaseRecognizeTests() {
     }
 
     @Test
-    fun testInitialCardsDraw() {
-        var croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(1)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("elusiveschemer")
-        croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(2)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("blacksapprotector")
-        croppedImage = getFileImage("Game/InitialCardsDraw.png").getGameInitialCardDrawCrop(3)
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("blacksapprotector")
-    }
-
-    @Test
-    fun testGameCardDraw() {
-        val croppedImage = getFileImage("Game/CardDraw.png").getGameCardDrawCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("quinrawlburglar")
-    }
-
-    @Test
-    fun testGameCardDrawProphecy() {
-        val croppedImage = getFileImage("Game/CardProphecy.png").getGameCardDrawProphecyCrop()
-        assertThat(recognizeImage(croppedImage, DHashCards.LIST)).isEqualTo("blacksapprotector")
-    }
-
-    @Test
-    fun testGameOpponentClass() {
+    override fun testGameOpponentClass() {
         recognizeOpponent("Game/OpponentClass/OpponentAgility.png", "Agility", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentClass/OpponentArcher.png", "Archer", BufferedImage::getGameOpponentClassCrop)
         recognizeOpponent("Game/OpponentClass/OpponentAssassin.png", "Assassin", BufferedImage::getGameOpponentClassCrop)
@@ -150,7 +80,7 @@ class Tests1366x768 : BaseRecognizeTests() {
     }
 
     @Test
-    fun testGamePlayerClass() {
+    override fun testGamePlayerClass() {
         recognizePlayer("Game/PlayerClass/PlayerAgility.png", "Agility", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerClass/PlayerArcher.png", "Archer", BufferedImage::getGamePlayerClassCrop)
         recognizePlayer("Game/PlayerClass/PlayerAssassin.png", "Assassin", BufferedImage::getGamePlayerClassCrop)
@@ -170,7 +100,7 @@ class Tests1366x768 : BaseRecognizeTests() {
     }
 
     @Test
-    fun testGamePlayerRank() {
+    override fun testGamePlayerRank() {
         var croppedImage = getFileImage("Game/PlayerRank/rankLegend.png").getGameOpponentRankCrop()
         assertThat(recognizeImage(croppedImage, PHash.GAME_PLAYER_RANK_LIST)).isEqualTo("0")
         croppedImage = getFileImage("Game/PlayerRank/rank1.png").getGamePlayerRankCrop()
@@ -189,36 +119,10 @@ class Tests1366x768 : BaseRecognizeTests() {
         assertThat(recognizeImage(croppedImage, PHash.GAME_PLAYER_RANK_LIST)).isEqualTo("6")
     }
 
-    private fun recognizeOpponent(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
-        val croppedImage = crop(getFileImage(testFileName))
-        assertThat(recognizeImage(croppedImage, PHash.GAME_OPPONENT_CLASS_LIST)).isEqualTo(result)
-    }
-
-    private fun recognizePlayer(testFileName: String, result: String, crop: (BufferedImage) -> BufferedImage) {
-        val croppedImage = crop(getFileImage(testFileName))
-        assertThat(recognizeImage(croppedImage, PHash.GAME_PLAYER_CLASS_LIST)).isEqualTo(result)
-    }
-
     // -- Arena Tests --
 
     @Test
-    fun testArenaPicks() {
-        recognizeArenaPick("ScreenArenaPicks.png", "giantsnake", "spiderlair", "brilliantexperiment")
-    }
-
-    private fun recognizeArenaPick(testFileName: String, card1: String, card2: String, card3: String) {
-        val croppedImage1 = getFileImage(testFileName).getArenaCardCrop(1)
-        assertThat(Recognizer.recognizeCardImage(croppedImage1)).isEqualTo(card1)
-        val croppedImage2 = getFileImage(testFileName).getArenaCardCrop(2)
-        assertThat(Recognizer.recognizeCardImage(croppedImage2)).isEqualTo(card2)
-        val croppedImage3 = getFileImage(testFileName).getArenaCardCrop(3)
-        assertThat(Recognizer.recognizeCardImage(croppedImage3)).isEqualTo(card3)
-    }
-
-    // -- Deck Tests --
-
-    @Test
-    fun testDeckBuilderCards() {
+    override fun testDeckBuilderCards() {
         val croppedImage1 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(5)
         assertThat(Recognizer.recognizeCardImage(croppedImage1)).isNotEqualTo("shadowshift")
         val croppedImage2 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(4)
@@ -229,20 +133,6 @@ class Tests1366x768 : BaseRecognizeTests() {
         assertThat(Recognizer.recognizeCardImage(croppedImage4)).isNotEqualTo("shadowshift")
         val croppedImage5 = getFileImage("Deck/DeckBuilderPick.png").getDeckBuilderFirstLineCardCrop(1)
         assertThat(Recognizer.recognizeCardImage(croppedImage5)).isEqualTo("shadowshift")
-    }
-
-    @Test
-    fun testDeckBuilderNoneLeftCard() {
-        val croppedImage1 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(1)
-        assertThat(Recognizer.recognizeImageInMap(croppedImage1, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
-        val croppedImage2 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(2)
-        assertThat(Recognizer.recognizeImageInMap(croppedImage2, PHash.DECK_ITEMS_LIST)).isEqualTo(PHash.DECK_ITEM_NONE_LEFT)
-        val croppedImage3 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(3)
-        assertThat(Recognizer.recognizeImageInMap(croppedImage3, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
-        val croppedImage4 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(4)
-        assertThat(Recognizer.recognizeImageInMap(croppedImage4, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
-        val croppedImage5 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(5)
-        assertThat(Recognizer.recognizeImageInMap(croppedImage5, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
     }
 
 }

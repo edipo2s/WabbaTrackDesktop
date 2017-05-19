@@ -12,6 +12,7 @@ import com.ediposouza.extensions.alertAlwaysOnTop
 import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.model.*
 import com.ediposouza.resolution.ReferenceConfig
+import com.ediposouza.resolution.ReferenceConfig1360x768
 import com.ediposouza.resolution.ReferenceConfig1366x768
 import com.ediposouza.resolution.ReferenceConfig1920x1080
 import com.ediposouza.state.ArenaState
@@ -207,7 +208,7 @@ class TESLTracker : App(MainStageView::class) {
                 graphicsDevice = it
                 screenSize = Dimension(it.displayMode.width, it.displayMode.height)
                 referenceConfig = when {
-                    screenSize.width == 1360 && screenSize.height == 768 -> ReferenceConfig1366x768()
+                    screenSize.width == 1360 && screenSize.height == 768 -> ReferenceConfig1360x768()
                     screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
                     screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
                     else -> {

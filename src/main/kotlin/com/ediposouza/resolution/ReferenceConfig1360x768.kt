@@ -3,9 +3,9 @@ package com.ediposouza.resolution
 /**
  * Created by ediposouza on 16/03/17.
  */
-class ReferenceConfig1366x768 : ReferenceConfig() {
+class ReferenceConfig1360x768 : ReferenceConfig() {
 
-    override val SCREEN_REFERENCE_WIDTH = 1366
+    override val SCREEN_REFERENCE_WIDTH = 1360
     override val SCREEN_REFERENCE_HEIGHT = 768
 
     // -- APP --
@@ -34,7 +34,7 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     override val SCREEN_MAIN_HEIGHT = 50
     override val SCREEN_MAIN_WIDTH = 75
-    override val SCREEN_MAIN_X = 490
+    override val SCREEN_MAIN_X = 487
     override val SCREEN_MAIN_Y = 660
 
     override val SCREEN_MAIN_MODE_HEIGHT = 100
@@ -42,12 +42,12 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val SCREEN_MAIN_MODE_X = 400
     override val SCREEN_MAIN_MODE_Y = 130
 
-    override val SCREEN_DECK_BUILDER_X = 1150
+    override val SCREEN_DECK_BUILDER_X = 1144
     override val SCREEN_DECK_BUILDER_Y = 715
     override val SCREEN_DECK_BUILDER_HEIGHT = 50
     override val SCREEN_DECK_BUILDER_WIDTH = 30
 
-    override val SCREEN_DECK_BUILDER_EMPTY_X = 1150
+    override val SCREEN_DECK_BUILDER_EMPTY_X = 1144
     override val SCREEN_DECK_BUILDER_EMPTY_Y = 677
     override val SCREEN_DECK_BUILDER_EMPTY_HEIGHT = 35
     override val SCREEN_DECK_BUILDER_EMPTY_WIDTH = 90
@@ -59,12 +59,12 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
 
     override val SCREEN_ARENA_CLASSES_HEIGHT = 115
     override val SCREEN_ARENA_CLASSES_WIDTH = 80
-    override val SCREEN_ARENA_CLASSES_X = 500
+    override val SCREEN_ARENA_CLASSES_X = 498
     override val SCREEN_ARENA_CLASSES_Y = 132
 
     override val SCREEN_ARENA_PICKS_HEIGHT = 40
     override val SCREEN_ARENA_PICKS_WIDTH = 40
-    override val SCREEN_ARENA_PICKS_X = 330
+    override val SCREEN_ARENA_PICKS_X = 327
     override val SCREEN_ARENA_PICKS_Y = 650
 
     override val SCREEN_ARENA_DASHBOARD_HEIGHT = 50
@@ -94,12 +94,12 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_LOSS2_X = 550
     override val GAME_LOSS2_Y = 250
 
-    override val GAME_CARD_DRAW_X = 1003
+    override val GAME_CARD_DRAW_X = 1000
     override val GAME_CARD_DRAW_Y = 358
 
     override val GAME_CARD_DRAW_PROPHECY_HEIGHT = 103
     override val GAME_CARD_DRAW_PROPHECY_WIDTH = 92
-    override val GAME_CARD_DRAW_PROPHECY_X = 943
+    override val GAME_CARD_DRAW_PROPHECY_X = 940
     override val GAME_CARD_DRAW_PROPHECY_Y = 453
 
     override val GAME_CARD_GENERATED_HEIGHT = 60
@@ -107,46 +107,46 @@ class ReferenceConfig1366x768 : ReferenceConfig() {
     override val GAME_CARD_GENERATED_X = 1105
     override val GAME_CARD_GENERATED_Y = 455
 
-    override val CARD_INITIAL_DRAW_FIRST_X = 412
-    override val CARD_INITIAL_DRAW_SECOND_X = 623
-    override val CARD_INITIAL_DRAW_THIRD_X = 835
+    override val CARD_INITIAL_DRAW_FIRST_X = 409
+    override val CARD_INITIAL_DRAW_SECOND_X = 620
+    override val CARD_INITIAL_DRAW_THIRD_X = 832
     override val CARD_INITIAL_DRAW_Y = 230
 
     override val GAME_PLAYER_FIRST_HEIGHT = 50
     override val GAME_PLAYER_FIRST_WIDTH = 55
-    override val GAME_PLAYER_FIRST_X = 920
+    override val GAME_PLAYER_FIRST_X = 917
     override val GAME_PLAYER_FIRST_Y = 115
 
     override val GAME_PLAYER_SECOND_HEIGHT = 50
     override val GAME_PLAYER_SECOND_WIDTH = 55
-    override val GAME_PLAYER_SECOND_X = 970
+    override val GAME_PLAYER_SECOND_X = 967
     override val GAME_PLAYER_SECOND_Y = 550
 
     override val GAME_PLAYER_RANK_HEIGHT = 43
     override val GAME_PLAYER_RANK_WIDTH = 36
-    override val GAME_PLAYER_RANK_X = 232
+    override val GAME_PLAYER_RANK_X = 229
     override val GAME_PLAYER_RANK_Y = 558
 
     override val GAME_OPPONENT_RANK_HEIGHT = 43
     override val GAME_OPPONENT_RANK_WIDTH = 36
-    override val GAME_OPPONENT_RANK_X = 232
+    override val GAME_OPPONENT_RANK_X = 229
     override val GAME_OPPONENT_RANK_Y = 67
 
     override val GAME_PLAYER_CLASS_HEIGHT = 35
     override val GAME_PLAYER_CLASS_WIDTH = 70
-    override val GAME_PLAYER_CLASS_X = 950
+    override val GAME_PLAYER_CLASS_X = 947
     override val GAME_PLAYER_CLASS_Y = 705
 
     override val GAME_OPPONENT_CLASS_HEIGHT = 35
     override val GAME_OPPONENT_CLASS_WIDTH = 70
-    override val GAME_OPPONENT_CLASS_X = 913
+    override val GAME_OPPONENT_CLASS_X = 910
     override val GAME_OPPONENT_CLASS_Y = 13
 
     // -- Arena --
 
     override val ARENA_PICK_CLASS_HEIGHT = 45
     override val ARENA_PICK_CLASS_WIDTH = 129
-    override val ARENA_PICK_CLASS_X = 1191
+    override val ARENA_PICK_CLASS_X = 1188
     override val ARENA_PICK_CLASS_Y = 20
 
     override val ARENA_PICK_CARD_START_Y = 152
