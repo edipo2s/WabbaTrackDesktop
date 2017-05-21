@@ -62,7 +62,8 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             when {
-                value > 0 -> Logger.i("Arena Pick $pickNumber started\n")
+                value > 30 -> Logger.e("Invalid pick number $pickNumber\n")
+                value in 1..30 -> Logger.i("Arena Pick $pickNumber started\n")
                 value == 1 -> {
                     resetState()
                     classSelect = ArenaExecutor.processArenaClass(ScreenFuncs.takeScreenshot())
@@ -73,11 +74,10 @@ object ArenaState : StateHandler.TESLState {
 
     var finishPicks = false
         set(value) {
-            field = value
-            if (value) {
-                threadRunning = false
-                hidePicksTier()
-                GameState.matchMode = MatchMode.ARENA
+            threadRunning = false
+            hidePicksTier()
+            GameState.matchMode = MatchMode.ARENA
+            if (field != value) {
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
@@ -86,6 +86,7 @@ object ArenaState : StateHandler.TESLState {
                 }
                 Mixpanel.postEventShowDeckTrackerFromArenaDeck()
             }
+            field = value
         }
 
     val mouseListener = object : NativeMouseListener {
@@ -112,7 +113,9 @@ object ArenaState : StateHandler.TESLState {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
             Logger.d("Restored ${picks.size} picks")
-            pickNumber = picks.size + 1
+            if (picks.size < 30) {
+                pickNumber = picks.size + 1
+            }
         }
     }
 
