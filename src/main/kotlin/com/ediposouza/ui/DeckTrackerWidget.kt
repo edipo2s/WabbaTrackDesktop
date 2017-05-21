@@ -405,10 +405,12 @@ class DeckTrackerWidget : JFrame() {
                     add(stackpane {
                         imageview {
                             var cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream("/CardsWebp/card_back.webp"))
-                            try {
-                                cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream(cardImagePath))
-                            } catch (e: Exception) {
-                                Logger.e(e)
+                            if (item.card != Card.DUMMY) {
+                                try {
+                                    cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream(cardImagePath))
+                                } catch (e: Exception) {
+                                    Logger.e(e)
+                                }
                             }
                             image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
                             fitHeight = cardSize.height.toDouble() * 0.9
