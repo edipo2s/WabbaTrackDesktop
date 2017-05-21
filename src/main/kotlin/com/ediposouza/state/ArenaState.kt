@@ -62,13 +62,14 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             when {
-                value > 30 -> Logger.e("Invalid pick number $pickNumber\n")
-                value in 1..30 -> Logger.i("Arena Pick $pickNumber started\n")
                 value == 1 -> {
+                    Logger.i("Arena Pick 1 started\n")
                     resetState()
                     classSelect = ArenaExecutor.processArenaClass(ScreenFuncs.takeScreenshot())
                     Mixpanel.postEventArenaStart(classSelect ?: DeckClass.NEUTRAL)
                 }
+                value in 2..30 -> Logger.i("Arena Pick $pickNumber started\n")
+                value > 30 -> Logger.e("Invalid pick number $pickNumber\n")
             }
         }
 
