@@ -101,6 +101,7 @@ object ScreenFuncs {
             onSuccess(graphicsDeviceFirst)
             return
         }
+        TESLTracker.usingDualMonitor = true
         Mixpanel.postEventDualMonitorDetected()
         if (TESLTracker.preferences.getInt(GAME_MONITORS_PREF, 0) == graphicDevices.size &&
                 TESLTracker.preferences.keys().contains(GAME_MONITORS_PREF)) {
