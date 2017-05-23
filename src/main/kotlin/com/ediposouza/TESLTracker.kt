@@ -38,6 +38,7 @@ import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import tornadofx.App
@@ -63,12 +64,13 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.2.1"
+        val APP_VERSION = "0.2.2"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
         val preferences: Preferences by lazy { Preferences.userNodeForPackage(TESLTracker::class.java) }
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
+        var usingDualMonitor = false
         var usingSupportedResolution = true
         var referenceConfig: ReferenceConfig = ReferenceConfig1366x768()
         lateinit var graphicsDevice: GraphicsDevice
@@ -147,9 +149,16 @@ class TESLTracker : App(MainStageView::class) {
 
     }
 
+    /**
+     * Max time to WabbaTrack stop screenshot after set another window active when in Dual Monitor configuration
+     */
+    var DUAL_MONITOR_SCREEN_INACTIVE_TOLERANCE = 2 * 60 * 1000L
+
     val DELAY_WINDOW_DETECTION = 5_000L
     val ELDER_SCROLL_SPS = 2f    //Screenshot Per Second
     val ELDER_SCROLL_LEGENDS_WINDOW_TITLE = "The Elder Scrolls: Legends"
+
+    private var dualMonitorScreenInactiveTimeout: Job? = null
 
     private lateinit var trayPopupMenu: PopupMenu
     private lateinit var menuMyDecks: List<Any>
@@ -312,7 +321,7 @@ class TESLTracker : App(MainStageView::class) {
                     Mixpanel.postEventAndroidTESLegendsTracker()
                 }
                 addMenu("Settings") {
-                    addMenuItem("Clear default game monitor") {
+                    addMenuItem("Change default game monitor (Dual Monitor)") {
                         ScreenFuncs.clearGameMonitorPref()
                         showMessage("Default monitor setting clear. Restart $APP_NAME to choose default monitor")
                         Mixpanel.postEventDualMonitorClearConfig()
@@ -661,7 +670,19 @@ class TESLTracker : App(MainStageView::class) {
         return true
     }
 
-    private fun isTESLegendsScreenActive() = ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
+    private fun isTESLegendsScreenActive(): Boolean {
+        var isActive = ScreenFuncs.getActiveWindowTitle().contains(ELDER_SCROLL_LEGENDS_WINDOW_TITLE)
+        if (!isActive && usingDualMonitor) {
+            if (dualMonitorScreenInactiveTimeout == null) {
+                dualMonitorScreenInactiveTimeout = launch(CommonPool) {
+                    delay(DUAL_MONITOR_SCREEN_INACTIVE_TOLERANCE)
+                    dualMonitorScreenInactiveTimeout = null
+                }
+            }
+            isActive = dualMonitorScreenInactiveTimeout?.isActive ?: false
+        }
+        return isActive
+    }
 
     private fun isTESLegendsTrackerWindow() = ScreenFuncs.getActiveWindowTitle().contains(APP_NAME)
 

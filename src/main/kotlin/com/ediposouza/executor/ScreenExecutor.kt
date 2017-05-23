@@ -81,8 +81,9 @@ object ScreenExecutor {
         launch(CommonPool) {
             if (screenshot.getScreenArenaPicksCrop().matchScreen(PHash.SCREEN_ARENA_PICKS)) {
                 Logger.i("Arena Picks Screen Detected!", true)
+                GameState.hideDeckTracker()
                 StateHandler.currentTESLState = ArenaState.apply {
-                    if (TESLTracker.preferences.getBoolean(ARENA_GAME_STARTED_PREF, false)) {
+                    if (finishPicks || TESLTracker.preferences.getBoolean(ARENA_GAME_STARTED_PREF, false)) {
                         TESLTracker.preferences.remove(ARENA_GAME_STARTED_PREF)
                         pickNumber = 1
                     }
