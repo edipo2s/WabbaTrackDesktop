@@ -44,8 +44,9 @@ import javax.swing.SwingUtilities
  */
 class DeckTrackerWidget : JFrame() {
 
+    private val DEFAULT_ZOOM = 0.9f
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
-    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: 0.9f
+    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: DEFAULT_ZOOM
     private lateinit var deckTrackerSize: Dimension
 
     var deckName: String? = null
@@ -314,6 +315,10 @@ class DeckTrackerWidget : JFrame() {
             }
             updateDeckInfo()
         }
+    }
+
+    fun resetZoom() {
+        deckTrackerZoom = DEFAULT_ZOOM
     }
 
     private fun updateDeckCover() {
