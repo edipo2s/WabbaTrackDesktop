@@ -78,6 +78,7 @@ object GameState : StateHandler.TESLState {
         playerGoFirst = null
         playerDeckClass = null
         playerRank = null
+        playerRankLegend = null
         opponentDeckClass = null
         opponentRank = null
         lastCardDraw = null
@@ -313,6 +314,9 @@ object GameState : StateHandler.TESLState {
     fun isDeckTrackerVisible() = deckTracker.isVisible
 
     fun showDeckTracker(forceShow: Boolean = false) {
+        if (forceShow) {
+            deckTracker.resetZoom()
+        }
         if (forceShow || (deckCardsSlot.isNotEmpty() && shouldShowDeckTracker)) {
             deckTracker.isVisible = true
         }
