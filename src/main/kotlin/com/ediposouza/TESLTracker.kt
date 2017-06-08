@@ -163,6 +163,8 @@ class TESLTracker : App(MainStageView::class) {
     private lateinit var trayPopupMenu: PopupMenu
     private lateinit var menuMyDecks: List<Any>
     private lateinit var menuImportedDecks: List<Any>
+    private lateinit var elderScrollDetectionInvalidateJob: Job
+    private var elderScrollDetectionRunning = false
     private val legendsIconStream: InputStream by lazy { TESLTracker::class.java.getResourceAsStream(iconName) }
     private val mainWidget: MainWidget by lazy { MainWidget() }
     private val loggerController by inject<LoggerController>()
@@ -251,7 +253,7 @@ class TESLTracker : App(MainStageView::class) {
             Mixpanel.trackUser()
         }
         launch(CommonPool) {
-            startElderScrollDetection()
+            startGetWindowTitleCheck()
         }
         launch(CommonPool) {
             delay(500)
@@ -615,6 +617,25 @@ class TESLTracker : App(MainStageView::class) {
         }
     }
 
+    suspend private fun startGetWindowTitleCheck() {
+        elderScrollDetectionInvalidateJob = launch(CommonPool) {
+            delay(DELAY_WINDOW_DETECTION * 2)
+            Logger.i("ElderScrollDetection thread stop")
+            elderScrollDetectionRunning = false
+        }
+        while (true) {
+            delay((ELDER_SCROLL_SPS * 1000L).toLong())
+            Logger.i("Checking ElderScrollDetection...")
+            if (!elderScrollDetectionRunning) {
+                Logger.i("Starting ElderScrollDetection thread")
+                elderScrollDetectionRunning = true
+                launch(CommonPool) {
+                    startElderScrollDetection()
+                }
+            }
+        }
+    }
+
     suspend private fun startElderScrollDetection() {
         TESLTrackerData.updateCardDB()
         Logger.d("Using ${referenceConfig.SCREEN_REFERENCE} as reference")
@@ -623,6 +644,8 @@ class TESLTracker : App(MainStageView::class) {
         }
         Logger.i("Waiting Elder scroll legends..")
         while (true) {
+            elderScrollDetectionInvalidateJob.cancel()
+            elderScrollDetectionInvalidateJob.start()
             if (isTESLegendsScreenActive()) {
                 Logger.i("Elder scroll legends detected!")
                 Mixpanel.postEventGameDetected()
