@@ -43,8 +43,8 @@ open class BaseResolutionTests : BaseRecognizeTests() {
     fun testScreenMainMode() {
         recognizeScreen("ScreenMainModeCasual.png", PHash.SCREEN_MAIN_MODE_CASUAL, BufferedImage::getScreenMainModeCrop)
         recognizeScreen("ScreenMainModeRanked.png", PHash.SCREEN_MAIN_MODE_RANKED, BufferedImage::getScreenMainModeCrop)
-        recognizeScreen("ScreenMainModePratice.png", PHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
-        recognizeScreen("ScreenMainModePratice2.png", PHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
+        recognizeScreen("ScreenMainModePractice.png", PHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
+        recognizeScreen("ScreenMainModePractice2.png", PHash.SCREEN_MAIN_MODE_PRATICE, BufferedImage::getScreenMainModeCrop)
     }
 
     @Test

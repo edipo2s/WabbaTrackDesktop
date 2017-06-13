@@ -75,7 +75,7 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
     // -- Game --
 
     override val GAME_WIN_HEIGHT = 98
-    override val GAME_WIN_WIDTH = 98
+    override val GAME_WIN_WIDTH = GAME_WIN_HEIGHT
     override val GAME_WIN_X = 912
     override val GAME_WIN_Y = 80
 
@@ -90,7 +90,7 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
     override val GAME_LOSS_Y = 784
 
     override val GAME_LOSS2_HEIGHT = 430
-    override val GAME_LOSS2_WIDTH = 430
+    override val GAME_LOSS2_WIDTH = GAME_LOSS2_HEIGHT
     override val GAME_LOSS2_X = 770
     override val GAME_LOSS2_Y = 345
 
@@ -127,9 +127,9 @@ class ReferenceConfig1920x1080 : ReferenceConfig() {
     override val GAME_PLAYER_RANK_X = 326
     override val GAME_PLAYER_RANK_Y = 787
 
-    override val GAME_OPPONENT_RANK_HEIGHT = 62
-    override val GAME_OPPONENT_RANK_WIDTH = 50
-    override val GAME_OPPONENT_RANK_X = 326
+    override val GAME_OPPONENT_RANK_HEIGHT = GAME_PLAYER_RANK_HEIGHT
+    override val GAME_OPPONENT_RANK_WIDTH = GAME_PLAYER_RANK_WIDTH
+    override val GAME_OPPONENT_RANK_X = GAME_PLAYER_RANK_X
     override val GAME_OPPONENT_RANK_Y = 94
 
     override val GAME_PLAYER_CLASS_HEIGHT = 48
