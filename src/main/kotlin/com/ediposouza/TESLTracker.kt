@@ -61,7 +61,7 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.2.3"
+        val APP_VERSION = "3.0.0"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
 
@@ -414,6 +414,9 @@ class TESLTracker : App(MainStageView::class) {
                 }
             }
         }
+        Platform.runLater {
+            alert(Alert.AlertType.INFORMATION, "Warning", "WabbaTrack only words with game in fullscreen mode and using one of following resolutions: 1360x768, 1366x768, 1680x1050, 1920x1080")
+        }
     }
 
     private fun doLogin(retry: Int = 0) {
@@ -623,7 +626,7 @@ class TESLTracker : App(MainStageView::class) {
         }
         while (true) {
             delay((ELDER_SCROLL_SPS * 1000L).toLong())
-            Logger.i("Checking ElderScrollDetection...")
+//            Logger.i("Checking ElderScrollDetection...")
             if (!elderScrollDetectionRunning) {
                 Logger.i("Starting ElderScrollDetection thread")
                 elderScrollDetectionRunning = true
