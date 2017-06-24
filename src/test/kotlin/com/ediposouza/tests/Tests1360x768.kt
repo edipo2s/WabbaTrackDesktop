@@ -1,11 +1,14 @@
 package com.ediposouza.tests
 
+import com.ediposouza.TESLTracker
+import com.ediposouza.resolution.ReferenceConfig1360x768
+import com.ediposouza.util.BaseResolutionTests
 import org.junit.Before
 
 /**
  * Created by ediposouza on 06/03/17.
  */
-class Tests1360x768 : com.ediposouza.util.BaseResolutionTests() {
+class Tests1360x768 : BaseResolutionTests() {
 
     override val arenaPickClass = "Assassin"
     override val initialCardsDraw1 = "blacksapprotector"
@@ -26,7 +29,7 @@ class Tests1360x768 : com.ediposouza.util.BaseResolutionTests() {
 
     @Before
     fun setUp() {
-        com.ediposouza.TESLTracker.Companion.referenceConfig = com.ediposouza.resolution.ReferenceConfig1360x768()
+        TESLTracker.referenceConfig = ReferenceConfig1360x768()
     }
 
 }

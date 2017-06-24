@@ -11,10 +11,7 @@ import com.ediposouza.extensions.addMenuItem
 import com.ediposouza.extensions.alertAlwaysOnTop
 import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.model.*
-import com.ediposouza.resolution.ReferenceConfig
-import com.ediposouza.resolution.ReferenceConfig1360x768
-import com.ediposouza.resolution.ReferenceConfig1366x768
-import com.ediposouza.resolution.ReferenceConfig1920x1080
+import com.ediposouza.resolution.*
 import com.ediposouza.state.ArenaState
 import com.ediposouza.state.GameState
 import com.ediposouza.state.StateHandler
@@ -64,9 +61,10 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.2.3"
+        val APP_VERSION = "0.3.1"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
+        val supportedResolutions = "1360x768, 1366x768, 1680x1080, 1920x1080 or 2560x1440"
 
         val preferences: Preferences by lazy { Preferences.userNodeForPackage(TESLTracker::class.java) }
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
@@ -122,7 +120,7 @@ class TESLTracker : App(MainStageView::class) {
         }
 
         fun showMessageUnsupportedResolution() {
-            showMessage("You are using a unsupported resolution, so app may not work. Please change to 1366x768 or 1920x1080.")
+            showMessage("You are using a unsupported resolution, so app may not work. Please change to $supportedResolutions.")
         }
 
         fun showRestartToUpdateNow() {
@@ -221,7 +219,9 @@ class TESLTracker : App(MainStageView::class) {
                 referenceConfig = when {
                     screenSize.width == 1360 && screenSize.height == 768 -> ReferenceConfig1360x768()
                     screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
+                    screenSize.width == 1680 && screenSize.height == 1050 -> ReferenceConfig1680x1050()
                     screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
+                    screenSize.width == 2560 && screenSize.height == 1440 -> ReferenceConfig2560x1440()
                     else -> {
                         usingSupportedResolution = false
                         Logger.d("Using unsupported resolution: ${screenSize.width}x${screenSize.height}")
@@ -266,6 +266,16 @@ class TESLTracker : App(MainStageView::class) {
             checkUpdate()
         }
         FX.primaryStage.scene.fill = Color.TRANSPARENT
+        launch(CommonPool) {
+            deleteOldTmpFiles()
+        }
+    }
+
+    private fun deleteOldTmpFiles() {
+        val tmpFolder = File(File(TESLTracker.jarPath).parentFile, "data/tmp")
+        if (tmpFolder.exists()) {
+            tmpFolder.deleteRecursively()
+        }
     }
 
     private fun configureSystemTrayIcon() {
@@ -415,6 +425,9 @@ class TESLTracker : App(MainStageView::class) {
                     displayMessage(APP_NAME, "$APP_NAME started.", TrayIcon.MessageType.NONE)
                 }
             }
+        }
+        Platform.runLater {
+            alert(Alert.AlertType.INFORMATION, "Warning", "WabbaTrack only words with game in fullscreen mode and using one of following resolutions: $supportedResolutions")
         }
     }
 
@@ -625,7 +638,7 @@ class TESLTracker : App(MainStageView::class) {
         }
         while (true) {
             delay((ELDER_SCROLL_SPS * 1000L).toLong())
-            Logger.i("Checking ElderScrollDetection...")
+//            Logger.i("Checking ElderScrollDetection...")
             if (!elderScrollDetectionRunning) {
                 Logger.i("Starting ElderScrollDetection thread")
                 elderScrollDetectionRunning = true
