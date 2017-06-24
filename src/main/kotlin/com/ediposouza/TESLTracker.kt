@@ -264,6 +264,16 @@ class TESLTracker : App(MainStageView::class) {
             checkUpdate()
         }
         FX.primaryStage.scene.fill = Color.TRANSPARENT
+        launch(CommonPool) {
+            deleteOldTmpFiles()
+        }
+    }
+
+    private fun deleteOldTmpFiles() {
+        val tmpFolder = File(File(TESLTracker.jarPath).parentFile, "data/tmp")
+        if (tmpFolder.exists()) {
+            tmpFolder.deleteRecursively()
+        }
     }
 
     private fun configureSystemTrayIcon() {

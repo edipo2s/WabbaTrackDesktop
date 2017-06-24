@@ -16,7 +16,7 @@ import javax.imageio.ImageIO
  * Created by Edipo on 19/03/2017.
  */
 
-val SAVE_CROP_IMAGES = true
+val SAVE_CROP_IMAGES = false
 
 fun BufferedImage.toFXImage(): Image {
     return SwingFXUtils.toFXImage(this, null)
