@@ -64,7 +64,7 @@ class TESLTracker : App(MainStageView::class) {
         val APP_VERSION = "0.3.1"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
-        val supportedResolutions = "1360x768, 1366x768, 1680x1080, 1920x1080, 2560x1440"
+        val supportedResolutions = "1360x768, 1366x768, 1680x1080, 1920x1080 or 2560x1440"
 
         val preferences: Preferences by lazy { Preferences.userNodeForPackage(TESLTracker::class.java) }
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
