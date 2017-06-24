@@ -61,9 +61,10 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "3.0.0"
+        val APP_VERSION = "0.3.1"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
+        val supportedResolutions = "1360x768, 1366x768, 1680x1080, 1920x1080, 2560x1440"
 
         val preferences: Preferences by lazy { Preferences.userNodeForPackage(TESLTracker::class.java) }
         val keyProvider: Provider by lazy { Provider.getCurrentProvider(true) }
@@ -119,7 +120,7 @@ class TESLTracker : App(MainStageView::class) {
         }
 
         fun showMessageUnsupportedResolution() {
-            showMessage("You are using a unsupported resolution, so app may not work. Please change to 1366x768 or 1920x1080.")
+            showMessage("You are using a unsupported resolution, so app may not work. Please change to $supportedResolutions.")
         }
 
         fun showRestartToUpdateNow() {
@@ -220,6 +221,7 @@ class TESLTracker : App(MainStageView::class) {
                     screenSize.width == 1366 && screenSize.height == 768 -> ReferenceConfig1366x768()
                     screenSize.width == 1680 && screenSize.height == 1050 -> ReferenceConfig1680x1050()
                     screenSize.width == 1920 && screenSize.height == 1080 -> ReferenceConfig1920x1080()
+                    screenSize.width == 2560 && screenSize.height == 1440 -> ReferenceConfig2560x1440()
                     else -> {
                         usingSupportedResolution = false
                         Logger.d("Using unsupported resolution: ${screenSize.width}x${screenSize.height}")
@@ -425,7 +427,7 @@ class TESLTracker : App(MainStageView::class) {
             }
         }
         Platform.runLater {
-            alert(Alert.AlertType.INFORMATION, "Warning", "WabbaTrack only words with game in fullscreen mode and using one of following resolutions: 1360x768, 1366x768, 1680x1050, 1920x1080")
+            alert(Alert.AlertType.INFORMATION, "Warning", "WabbaTrack only words with game in fullscreen mode and using one of following resolutions: $supportedResolutions")
         }
     }
 

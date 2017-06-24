@@ -162,7 +162,7 @@ abstract class ReferenceConfig {
     open val ARENA_PICK_CLASS_X = 0
     open val ARENA_PICK_CLASS_Y = 0
 
-    open val ARENA_PICK_CARD_START_Y = 0
+    open val ARENA_PICK_CARD_Y = 0
     open val ARENA_PICK_CARD_FIRST_X = 0
     open val ARENA_PICK_CARD_SECOND_X = 0
     open val ARENA_PICK_CARD_THIRD_X = 0

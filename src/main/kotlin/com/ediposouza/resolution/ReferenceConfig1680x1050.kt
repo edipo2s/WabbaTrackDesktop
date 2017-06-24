@@ -10,8 +10,8 @@ class ReferenceConfig1680x1050 : ReferenceConfig() {
 
     // -- APP --
 
-    override val APP_MAIN_HEIGHT = 90
-    override val APP_MAIN_WIDTH = 90
+    override val APP_MAIN_HEIGHT = 80
+    override val APP_MAIN_WIDTH = 80
     override val APP_MAIN_Y = 950
 
     override val DECK_TRACKER_WIDTH = 350
@@ -149,7 +149,7 @@ class ReferenceConfig1680x1050 : ReferenceConfig() {
     override val ARENA_PICK_CLASS_X = 1442
     override val ARENA_PICK_CLASS_Y = 26
 
-    override val ARENA_PICK_CARD_START_Y = 208
+    override val ARENA_PICK_CARD_Y = 208
     override val ARENA_PICK_CARD_FIRST_X = 295
     override val ARENA_PICK_CARD_SECOND_X = 606
     override val ARENA_PICK_CARD_THIRD_X = 918

@@ -219,7 +219,7 @@ fun BufferedImage.getArenaCardCrop(pickPosition: Int): BufferedImage {
             2 -> ARENA_PICK_CARD_SECOND_X
             else -> ARENA_PICK_CARD_THIRD_X
         }
-        return crop(cardPositionPickStartX, ARENA_PICK_CARD_START_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
+        return crop(cardPositionPickStartX, ARENA_PICK_CARD_Y, BASE_CARD_WIDTH, BASE_CARD_HEIGHT)
     }
 }
 

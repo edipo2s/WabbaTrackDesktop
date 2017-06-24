@@ -147,9 +147,9 @@ open class BaseResolutionTests : BaseRecognizeTests() {
 
     @Test
     open fun testGamePlayerRank() {
-        var croppedImage = getFileImage("Game/Rank.png").getGamePlayerRankCrop().apply { saveCroppedImage() }
+        var croppedImage = getFileImage("Game/Rank.png").getGamePlayerRankCrop()
         assertThat(recognizeImage(croppedImage, PHash.GAME_PLAYER_RANK_LIST)).isEqualTo(gamePlayerRank_Player)
-        croppedImage = getFileImage("Game/Rank.png").getGameOpponentRankCrop().apply { saveCroppedImage() }
+        croppedImage = getFileImage("Game/Rank.png").getGameOpponentRankCrop()
         assertThat(recognizeImage(croppedImage, PHash.GAME_PLAYER_RANK_LIST)).isEqualTo(gamePlayerRank_Opponent)
     }
 
