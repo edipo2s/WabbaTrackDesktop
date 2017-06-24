@@ -1,15 +1,16 @@
 package com.ediposouza.ui
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.data.PHash
 import com.ediposouza.data.TESLTrackerData
+import com.ediposouza.executor.DeckBuildExecutor
 import com.ediposouza.extensions.getCardForSlotCrop
+import com.ediposouza.extensions.getScreenDeckBuilderCrop
 import com.ediposouza.extensions.makeDraggable
 import com.ediposouza.extensions.toFXImage
 import com.ediposouza.model.*
 import com.ediposouza.state.GameState
-import com.ediposouza.util.ImageFuncs
-import com.ediposouza.util.Logger
-import com.ediposouza.util.Mixpanel
+import com.ediposouza.util.*
 import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
@@ -43,8 +44,9 @@ import javax.swing.SwingUtilities
  */
 class DeckTrackerWidget : JFrame() {
 
+    private val DEFAULT_ZOOM = 0.9f
     private val deckCardsSlot: ObservableList<CardSlot> = FXCollections.observableArrayList<CardSlot>()
-    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: 0.9f
+    private var deckTrackerZoom: Float = 0.8f.takeIf { GameState.matchMode == MatchMode.ARENA } ?: DEFAULT_ZOOM
     private lateinit var deckTrackerSize: Dimension
 
     var deckName: String? = null
@@ -64,6 +66,23 @@ class DeckTrackerWidget : JFrame() {
     }
 
     val contextMenu = ContextMenu(
+            MenuItem("Build").apply {
+                setOnAction {
+                    launch(CommonPool) {
+                        delay(250)
+                        ScreenFuncs.takeScreenshot()?.getScreenDeckBuilderCrop()?.let {
+                            if (Recognizer.recognizeImageInMap(it, PHash.SCREENS_LIST) == PHash.SCREEN_DECK_BUILDER) {
+                                this@DeckTrackerWidget.isVisible = false
+                                DeckBuildExecutor.buildDeck(deckName, deckCardSlots = deckCardsSlot)
+                                this@DeckTrackerWidget.isVisible = true
+                                Mixpanel.postEventBuildDeckFromTracker(deckName)
+                            } else {
+                                TESLTracker.showMessage("To build a deck, please first go to deck builder screen")
+                            }
+                        }
+                    }
+                }
+            },
             MenuItem("Decrease Size").apply {
                 setOnAction {
                     deckTrackerZoom -= 0.1f
@@ -86,7 +105,7 @@ class DeckTrackerWidget : JFrame() {
             },
             MenuItem("Hide Deck").apply {
                 setOnAction {
-                    GameState.deckTracker.isVisible = false
+                    this@DeckTrackerWidget.isVisible = false
                     GameState.shouldShowDeckTracker = false
                     Mixpanel.postEventDeckTrackerHide()
                 }
@@ -146,32 +165,35 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
+    val deckCoverClass = BorderPane().apply {
+        left = VBox().apply {
+            add(deckCoverName)
+            add(HBox().apply {
+                add(deckAttr1Image)
+                add(label(" "))
+                add(deckAttr2Image)
+                padding = Insets(1.0, 0.0, 0.0, 0.0)
+            })
+            padding = Insets(2.0, 0.0, 0.0, 4.0)
+        }
+        right = ImageView().apply {
+            image = Image(configIconStream)
+            padding = Insets(0.0, 0.0, 0.0, 2.0)
+            setOnMousePressed { me ->
+                if (me.isPrimaryButtonDown || me.isSecondaryButtonDown) {
+                    contextMenu.show(this, me.screenX, me.screenY)
+                }
+            }
+        }
+        makeDraggable(this@DeckTrackerWidget)
+        background = Background(BackgroundImage(defaultDeckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
+    }
+
     val deckCoverPane by lazy {
         BorderPane().apply {
-            top = BorderPane().apply {
-                left = VBox().apply {
-                    add(deckCoverName)
-                    add(HBox().apply {
-                        add(deckAttr1Image)
-                        add(label(" "))
-                        add(deckAttr2Image)
-                        padding = Insets(1.0, 0.0, 0.0, 0.0)
-                    })
-                    padding = Insets(2.0, 0.0, 0.0, 4.0)
-                }
-                right = ImageView().apply {
-                    image = Image(configIconStream)
-                    padding = Insets(0.0, 0.0, 0.0, 2.0)
-                    setOnMousePressed { me ->
-                        if (me.isPrimaryButtonDown || me.isSecondaryButtonDown) {
-                            contextMenu.show(this, me.screenX, me.screenY)
-                        }
-                    }
-                }
-                makeDraggable(this@DeckTrackerWidget)
-            }
-            background = Background(BackgroundImage(defaultDeckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT))
+            top = deckCoverClass
+            padding = Insets(2.0, 2.0, 5.0, 2.0)
         }
     }
 
@@ -183,7 +205,8 @@ class DeckTrackerWidget : JFrame() {
 
         with(TESLTracker.referenceConfig) {
             val deckTrackerPos = ImageFuncs.getScreenScaledPosition(DECK_TRACKER_X, DECK_TRACKER_Y)
-            setLocation(deckTrackerPos.x, deckTrackerPos.y)
+            setLocation(deckTrackerPos.x + TESLTracker.graphicsDevice.defaultConfiguration.bounds.x,
+                    deckTrackerPos.y + TESLTracker.graphicsDevice.defaultConfiguration.bounds.y)
             val screenHeightUseful = (TESLTracker.screenSize.height * 1.5).toInt()
             deckTrackerSize = Dimension(ImageFuncs.getScreenScaledSize(DECK_TRACKER_WIDTH, 0).width, screenHeightUseful)
             size = deckTrackerSize
@@ -294,7 +317,12 @@ class DeckTrackerWidget : JFrame() {
         }
     }
 
+    fun resetZoom() {
+        deckTrackerZoom = DEFAULT_ZOOM
+    }
+
     private fun updateDeckCover() {
+        val frameCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/frameCover.png")
         val deckClass = DeckClass.getClasses(deckCardsSlot.groupBy { it.card.attr }.keys.toList()).firstOrNull()
         val deckClassName = deckClass?.name?.toLowerCase()?.capitalize()
         val deckCoverStream = TESLTracker::class.java.getResourceAsStream("/UI/Class/${deckClassName ?: "Default"}.webp")
@@ -307,7 +335,11 @@ class DeckTrackerWidget : JFrame() {
         }
         deckCoverName.text = deckName ?: deckClassName ?: ""
         deckCoverName.maxWidth = cellSize.width.toDouble()
-        deckCoverPane.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+        deckCoverPane.background = Background(BackgroundImage(frameCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
+                        cellSize.height * 1.45 + deckTrackerZoom * 5.0, false, false, false, false)))
+        deckCoverClass.background = Background(BackgroundImage(deckCoverStream.toFXImage(), BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize(cellSize.width.toDouble() + cellSize.height * 1.5,
                         cellSize.height * 1.5, false, false, false, false)))
@@ -378,10 +410,12 @@ class DeckTrackerWidget : JFrame() {
                     add(stackpane {
                         imageview {
                             var cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream("/CardsWebp/card_back.webp"))
-                            try {
-                                cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream(cardImagePath))
-                            } catch (e: Exception) {
-                                Logger.e(e)
+                            if (item.card != Card.DUMMY) {
+                                try {
+                                    cardFullImage = ImageIO.read(TESLTracker::class.java.getResourceAsStream(cardImagePath))
+                                } catch (e: Exception) {
+                                    Logger.e(e)
+                                }
                             }
                             image = cardFullImage?.getCardForSlotCrop()?.toFXImage()
                             fitHeight = cardSize.height.toDouble() * 0.9
@@ -464,7 +498,7 @@ class DeckTrackerWidget : JFrame() {
                     maxWidth = cardSize.width.toDouble() + cardSize.height
                 }
                 setOnMouseEntered {
-                    val cardPosX = deckTrackerWidget.location.x
+                    val cardPosX = deckTrackerWidget.location.x - TESLTracker.graphicsDevice.defaultConfiguration.bounds.x
                     val cardPosY = deckTrackerWidget.location.y + (listView.items.indexOf(item) * cardSize.height)
                     cardWidget = CardWidget(item.card, cardPosX, cardPosY)
                     cardWidget?.isVisible = true

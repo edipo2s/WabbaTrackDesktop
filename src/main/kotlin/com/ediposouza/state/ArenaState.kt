@@ -2,8 +2,7 @@ package com.ediposouza.state
 
 import com.ediposouza.TESLTracker
 import com.ediposouza.data.TESLTrackerData
-import com.ediposouza.handler.ArenaHandler
-import com.ediposouza.handler.StateHandler
+import com.ediposouza.executor.ArenaExecutor
 import com.ediposouza.model.*
 import com.ediposouza.ui.ArenaTierWidget
 import com.ediposouza.util.ImageFuncs
@@ -63,30 +62,32 @@ object ArenaState : StateHandler.TESLState {
         set(value) {
             field = value
             when {
-                value > 0 -> Logger.i("Arena Pick $pickNumber started", true)
                 value == 1 -> {
+                    Logger.i("Arena Pick 1 started\n")
                     resetState()
-                    classSelect = ArenaHandler.processArenaClass(ScreenFuncs.takeScreenshot())
+                    classSelect = ArenaExecutor.processArenaClass(ScreenFuncs.takeScreenshot())
                     Mixpanel.postEventArenaStart(classSelect ?: DeckClass.NEUTRAL)
                 }
+                value in 2..30 -> Logger.i("Arena Pick $pickNumber started\n")
+                value > 30 -> Logger.e("Invalid pick number $pickNumber\n")
             }
         }
 
     var finishPicks = false
         set(value) {
-            field = value
-            if (value) {
-                threadRunning = false
-                hidePicksTier()
-                GameState.matchMode = MatchMode.ARENA
+            threadRunning = false
+            hidePicksTier()
+            GameState.matchMode = MatchMode.ARENA
+            if (field != value) {
                 GameState.setDeckCardsSlot(picks
                         .groupBy(Card::shortName)
                         .map { CardSlot(it.value.first(), it.value.size) })
                 Platform.runLater {
-                    GameState.deckTracker.isVisible = true
+                    GameState.showDeckTracker()
                 }
                 Mixpanel.postEventShowDeckTrackerFromArenaDeck()
             }
+            field = value
         }
 
     val mouseListener = object : NativeMouseListener {
@@ -113,7 +114,9 @@ object ArenaState : StateHandler.TESLState {
             val cards = Gson().fromJson(FileReader(arenaStateFile).readText(), List::class.java)
             picks.addAll(cards.map { TESLTrackerData.getCard(it?.toString()) ?: Card.DUMMY })
             Logger.d("Restored ${picks.size} picks")
-            pickNumber = picks.size + 1
+            if (picks.size < 30) {
+                pickNumber = picks.size + 1
+            }
         }
     }
 
@@ -132,7 +135,7 @@ object ArenaState : StateHandler.TESLState {
     override fun onPause() {
         Logger.i("ArenaState onPause")
         hidePicksTier()
-        GameState.deckTracker.isVisible = false
+        GameState.hideDeckTracker()
         threadRunning = false
         picksDisableForThisDraft = false
     }
@@ -159,7 +162,7 @@ object ArenaState : StateHandler.TESLState {
         launch(CommonPool) {
             while (ArenaState.threadRunning && !finishPicks) {
                 ScreenFuncs.takeScreenshot()?.apply {
-                    if (cardPicksToSelect == null && pickNumber > 0) {
+                    if (cardPicksToSelect == null && pickNumber > 0 && !finishPicks) {
                         processPickCards(this)
                     }
                 }
@@ -170,7 +173,7 @@ object ArenaState : StateHandler.TESLState {
 
     fun processPickCards(screenshot: BufferedImage) {
         launch(CommonPool) {
-            ArenaHandler.processArenaPick(screenshot)?.run {
+            ArenaExecutor.processArenaPick(screenshot)?.run {
                 synchronized(cardPicksToSelectLock) {
                     if (lastCardPicksToSelect == null || (lastCardPicksToSelect?.first?.card != first.card ||
                             lastCardPicksToSelect?.second?.card != second.card || lastCardPicksToSelect?.third?.card != third.card)) {
@@ -281,6 +284,9 @@ object ArenaState : StateHandler.TESLState {
             Logger.i("${card?.name} Picked")
             val cardWithHighValue = cardPicksToSelect?.toList()?.maxBy { it.value }?.card
             Mixpanel.postEventArenaPick(card ?: Card.DUMMY, card?.shortName == cardWithHighValue?.shortName)
+            card?.shortName?.let {
+                TESLTrackerData.saveArenaPickAnonymous(it)
+            }
             launch(CommonPool) {
                 delay(500)
                 if (pickNumber == 30) {

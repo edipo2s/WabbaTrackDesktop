@@ -17,7 +17,7 @@ import java.io.*
 import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.ZoneOffset
 
 /**
  * Created by Edipo on 19/03/2017.
@@ -39,6 +39,8 @@ object TESLTrackerData {
 
     val UPDATE_FILE_NAME = "lastVersion.exe"
     val UPDATER_FILE_NAME = "Updater.exe"
+
+    val MAX_RETRY = 5
 
     var firebaseDatabaseAPI: Rest = Rest().apply {
         baseURI = "https://tes-legends-assistant.firebaseio.com/"
@@ -135,7 +137,7 @@ object TESLTrackerData {
                 onSuccess?.invoke()
             }
         } catch (e: Exception) {
-            if (retry < 3) {
+            if (retry < MAX_RETRY) {
                 updateUserDB(retry + 1, onSuccess)
             }
         }
@@ -248,7 +250,7 @@ object TESLTrackerData {
                 onSuccess()
             }
         } catch (e: Exception) {
-            if (retry < 3) {
+            if (retry < MAX_RETRY) {
                 reAuthUser {
                     saveMatch(newMatch, retry + 1, onSuccess)
                 }
@@ -257,13 +259,9 @@ object TESLTrackerData {
     }
 
     private fun saveMatchAnonymous(newMatch: Match, retry: Int = 0) {
-        val nanoValue = LocalTime.now().nano
-        val nano = when {
-            nanoValue % 1000000 == 0 -> Integer.toString(nanoValue / 1000000 + 1000).substring(1)
-            nanoValue % 1000 == 0 -> Integer.toString(nanoValue / 1000 + 1000000).substring(1)
-            else -> Integer.toString(nanoValue + 1000000000).substring(1)
-        }
-        val anonymousMatchesPath = "$NODE_WABBATRACK/$NODE_MATCHES/${newMatch.uuid}_$nano"
+        val matchIdUTC = LocalDateTime.now(ZoneOffset.UTC).toString().replace(".", "_")
+        val modeName = newMatch.mode.name.toLowerCase()
+        val anonymousMatchesPath = "$NODE_WABBATRACK/$NODE_MATCHES/$modeName/${LocalDate.now()}/$matchIdUTC"
         val newMatchData = Gson().toJson(FirebaseParsers.MatchParser().fromMatch(newMatch))
         try {
             firebaseDatabaseAPI.execute(Rest.Request.Method.PUT, "$anonymousMatchesPath.json",
@@ -271,7 +269,7 @@ object TESLTrackerData {
                 processor.addHeader("Content-Type", "application/json")
             }.one()
         } catch (e: Exception) {
-            if (retry < 3) {
+            if (retry < MAX_RETRY) {
                 saveMatchAnonymous(newMatch, retry + 1)
             }
         }
@@ -288,7 +286,7 @@ object TESLTrackerData {
                 processor.addHeader("X-HTTP-Method-Override", "PATCH")
             }.one()
         } catch (e: Exception) {
-            if (retry < 3) {
+            if (retry < MAX_RETRY) {
                 saveArenaPickAnonymous(cardShortName, retry + 1)
             }
         }
@@ -312,7 +310,7 @@ object TESLTrackerData {
             if (TESLTrackerAuth.login()) {
                 onSuccess()
             } else {
-                if (retry < 3) {
+                if (retry < MAX_RETRY) {
                     Logger.e("Error while logging. Retrying...")
                     reAuthUser(retry + 1, onSuccess)
                 } else {
@@ -322,7 +320,7 @@ object TESLTrackerData {
         }
     }
 
-    fun checkForUpdate(retry: Int = 0, onSuccess: (String) -> Unit) {
+    fun checkForUpdate(retry: Int = 0, onSuccess: (String, String) -> Unit) {
         with(firebaseDatabaseAPI.get("$NODE_WABBATRACK.json").one()) {
             val lastVersion = entries.find { it.key == "lastVersion" }?.value.toString().replace("\"", "")
             if (lastVersion == TESLTracker.APP_VERSION) {
@@ -340,7 +338,8 @@ object TESLTrackerData {
                 }
             }
             Logger.i("New version detect, downloading version $lastVersion")
-            onSuccess(lastVersion)
+            val changeLog = entries.find { it.key == "changeLog" }?.value.toString().replace("\"", "")
+            onSuccess(lastVersion, changeLog)
             val url = entries.find { it.key == "url" }?.value.toString()
             val updaterUrl = entries.find { it.key == "updater" }?.value.toString()
             downloadFile(updaterUrl, UPDATER_FILE_NAME) {
@@ -352,7 +351,7 @@ object TESLTrackerData {
                     } else {
                         Logger.e("Update file md5 don't match \nActual: $downloadedMD5 \nExpected: $md5")
                         downloadedUpdateFile.delete()
-                        if (retry < 3) {
+                        if (retry < MAX_RETRY) {
                             checkForUpdate(retry + 1, onSuccess)
                         }
                     }

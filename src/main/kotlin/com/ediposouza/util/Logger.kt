@@ -39,6 +39,7 @@ object Logger {
 
     fun e(exception: Exception?) {
         print(exception?.message ?: "", Level.ERROR)
+        exception?.printStackTrace()
     }
 
     private fun print(text: String, level: Level) {

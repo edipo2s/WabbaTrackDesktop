@@ -332,7 +332,7 @@ data class Card(
 ) : Serializable {
     companion object {
 
-        val DUMMY = Card("Unknown", "", CardSet.UNKNOWN, CardAttribute.AGILITY, CardAttribute.AGILITY, CardAttribute.AGILITY,
+        val DUMMY = Card("Unknown", "", CardSet.UNKNOWN, CardAttribute.NEUTRAL, CardAttribute.NEUTRAL, CardAttribute.NEUTRAL,
                 CardRarity.COMMON, false, 0, 0, 0, CardType.UNKNOWN, CardRace.ARGONIAN, listOf(), "", CardArenaTier.NONE,
                 listOf(), false, "")
 
