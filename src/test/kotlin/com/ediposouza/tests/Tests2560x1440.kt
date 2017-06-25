@@ -1,7 +1,9 @@
 package com.ediposouza.tests
 
 import com.ediposouza.TESLTracker
+import com.ediposouza.data.PHash
 import com.ediposouza.extensions.getDeckBuilderFirstLineCardCrop
+import com.ediposouza.extensions.getDeckBuilderNoneLeftCardCrop
 import com.ediposouza.resolution.ReferenceConfig2560x1440
 import com.ediposouza.util.BaseResolutionTests
 import com.ediposouza.util.Recognizer
@@ -42,6 +44,20 @@ class Tests2560x1440 : BaseResolutionTests() {
         Truth.assertThat(Recognizer.recognizeCardImage(croppedImage1)).isNotEqualTo(deckBuilderCards1)
         val croppedImage2 = getFileImage("ScreenDeckBuilderEmpty.png").getDeckBuilderFirstLineCardCrop(4)
         Truth.assertThat(Recognizer.recognizeCardImage(croppedImage2)).isNotEqualTo(deckBuilderCards2)
+    }
+
+    @Test
+    override fun testDeckBuilderNoneLeftCard() {
+        val croppedImage1 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(1)
+        Truth.assertThat(Recognizer.recognizeImageInMap(croppedImage1, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage2 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(2)
+        Truth.assertThat(Recognizer.recognizeImageInMap(croppedImage2, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage3 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(3)
+        Truth.assertThat(Recognizer.recognizeImageInMap(croppedImage3, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage4 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(4)
+        Truth.assertThat(Recognizer.recognizeImageInMap(croppedImage4, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
+        val croppedImage5 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(5)
+        Truth.assertThat(Recognizer.recognizeImageInMap(croppedImage5, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
     }
 
 }
