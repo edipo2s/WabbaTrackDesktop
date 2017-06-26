@@ -196,7 +196,7 @@ open class BaseResolutionTests : BaseRecognizeTests() {
     }
 
     @Test
-    fun testDeckBuilderNoneLeftCard() {
+    open fun testDeckBuilderNoneLeftCard() {
         val croppedImage1 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(1)
         assertThat(Recognizer.recognizeImageInMap(croppedImage1, PHash.DECK_ITEMS_LIST)).isNotEqualTo(PHash.DECK_ITEM_NONE_LEFT)
         val croppedImage2 = getFileImage("Deck/DeckBuilderNoneLeft.png").getDeckBuilderNoneLeftCardCrop(2)
