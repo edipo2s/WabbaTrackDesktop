@@ -125,7 +125,7 @@ class TESLTracker : App(MainStageView::class) {
 
         fun showRestartToUpdateNow() {
             hasUpdateReady = true
-            showMessage("Update $APP_VERSION ready to install.")
+            showMessage("Update ready to install.")
         }
 
         fun doExit() {
