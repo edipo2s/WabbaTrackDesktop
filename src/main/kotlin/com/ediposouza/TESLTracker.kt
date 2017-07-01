@@ -61,7 +61,7 @@ class TESLTracker : App(MainStageView::class) {
     companion object {
 
         val APP_NAME = "WabbaTrack"
-        val APP_VERSION = "0.3.2"
+        val APP_VERSION = "0.4.0"
         val DEBUG_FILE_NAME = "WabbaTrack.debug"
         val WABBATRACK_URL = "https://edipo2s.github.io/WabbaTrack/"
         val supportedResolutions = "1360x768, 1366x768, 1680x1080, 1920x1080 or 2560x1440"
