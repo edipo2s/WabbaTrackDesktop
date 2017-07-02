@@ -8,6 +8,7 @@ import java.io.Serializable
 enum class CardSet(val title: String) {
 
     CORE("Core"),
+    HEROESOFSKYRIM("Heroes of Skyrim"),
     MADHOUSE("Madhouse Collection"),
     FALLOFTHEDARKBROTHERHOOD("The Fall of the Dark Brotherhood"),
     TOKENS("Tokens"),
