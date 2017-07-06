@@ -190,6 +190,7 @@ object GameState : StateHandler.TESLState {
                         playerRank = this
                         playerRankLegend = playerRank == 0
                         Logger.i("--PlayerRank: $this!")
+                        matchMode = MatchMode.RANKED
                     }
                 }
             }
